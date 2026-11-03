@@ -3,7 +3,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ROOT / "sources"
 OUT = ROOT / "public"
 DATA = OUT / "data"
