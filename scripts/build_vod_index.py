@@ -150,6 +150,158 @@ def get_commons_metadata_batch(file_titles):
     return results
 
 
+
+# Internet Archive's feature_films collection is a second discovery source.
+IA_SCRAPE_URL = "https://archive.org/services/search/v1/scrape"
+IA_METADATA_URL = "https://archive.org/metadata/{}"
+IA_MAX_ITEMS = 1200
+IA_WORKERS = 8
+IA_ALLOWED_LICENSE = re.compile(
+    r"(publicdomain|creativecommons\.org/publicdomain/|creativecommons\.org/licenses/(by|by-sa|by-nd|zero)/)",
+    re.I,
+)
+
+
+def ia_json(url, attempts=5):
+    request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
+    for attempt in range(attempts):
+        try:
+            with urlopen(request, timeout=60) as response:
+                return json.load(response)
+        except HTTPError as error:
+            if error.code not in (429, 500, 502, 503, 504) or attempt == attempts - 1:
+                raise
+            retry_after = error.headers.get("Retry-After")
+            try:
+                delay = min(max(float(retry_after), 2), 90) if retry_after else min(3 * (2 ** attempt), 60)
+            except ValueError:
+                delay = min(3 * (2 ** attempt), 60)
+            time.sleep(delay)
+        except (URLError, TimeoutError):
+            if attempt == attempts - 1:
+                raise
+            time.sleep(min(3 * (2 ** attempt), 60))
+
+
+def ia_list_items():
+    """Read the full IA feature_films identifier list; process only the top 1,200."""
+    params = {
+        "q": "collection:feature_films AND mediatype:movies",
+        "fields": "identifier,title,downloads",
+        "count": "1000",
+    }
+    items = []
+    cursor = None
+    while True:
+        query = dict(params)
+        if cursor:
+            query["cursor"] = cursor
+        payload = ia_json(IA_SCRAPE_URL + "?" + urlencode(query))
+        items.extend(payload.get("items", []))
+        cursor = payload.get("cursor")
+        if not cursor:
+            break
+    items.sort(key=lambda item: int(item.get("downloads") or 0), reverse=True)
+    print(f"Internet Archive feature_films list found {len(items)} records")
+    return items[:IA_MAX_ITEMS], len(items)
+
+
+def ia_duration(value):
+    if value in (None, ""):
+        return None
+    try:
+        if ":" in str(value):
+            total = 0.0
+            for part in str(value).split(":"):
+                total = total * 60 + float(part)
+            return total
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def ia_fetch_candidate(item):
+    identifier = item.get("identifier")
+    if not identifier:
+        return None, None
+    try:
+        payload = ia_json(IA_METADATA_URL.format(identifier))
+        meta = payload.get("metadata") or {}
+        license_url = str(meta.get("licenseurl") or "")
+        # Exclude missing, non-commercial, and non-redistributable license labels.
+        if not IA_ALLOWED_LICENSE.search(license_url) or re.search(r"(^|[-/])nc([-/]|$)", license_url, re.I):
+            return None, None
+
+        files = payload.get("files") or []
+        preferred = {"h.264": 0, "h.264 hd": 1, "mpeg4": 2, "512kb mpeg4": 3}
+        playable = []
+        for file_info in files:
+            name = file_info.get("name", "")
+            if not name.lower().endswith(".mp4"):
+                continue
+            fmt = str(file_info.get("format") or "").lower()
+            if fmt not in preferred:
+                continue
+            duration = ia_duration(file_info.get("length"))
+            if duration is not None and duration >= MIN_DURATION_SECONDS:
+                playable.append((preferred[fmt], name, file_info, duration))
+        if not playable:
+            return None, None
+
+        playable.sort(key=lambda row: (row[0], row[1]))
+        _, filename, video, duration = playable[0]
+        runtime = ia_duration((meta.get("runtime") or [None])[0] if isinstance(meta.get("runtime"), list) else meta.get("runtime"))
+        if runtime is not None and runtime >= MIN_DURATION_SECONDS:
+            duration = runtime
+        title = clean((meta.get("title") or [item.get("title") or identifier])[0] if isinstance(meta.get("title"), list) else meta.get("title") or item.get("title") or identifier)
+        year_match = re.search(r"\b(18|19|20)\d{2}\b", str(meta.get("year") or meta.get("date") or ""))
+        year = int(year_match.group(0)) if year_match else None
+        size = video.get("size")
+        record = {
+            "title": title,
+            "release_year": year,
+            "country": None,
+            "language": None,
+            "commons_file_title": None,
+            "file_page_url": f"https://archive.org/details/{identifier}",
+            "direct_file_url": f"https://archive.org/download/{identifier}/{quote(filename)}",
+            "mime_type": "video/mp4",
+            "file_size_bytes": int(size) if str(size or "").isdigit() else None,
+            "duration_seconds": duration,
+            "license_short_name": license_url.rsplit("/", 2)[-2] if license_url.endswith("/") else license_url,
+            "usage_terms": "Explicit Internet Archive license URL; verify the underlying work and this file version",
+            "license_url": license_url,
+            "artist": clean((meta.get("creator") or [""])[0] if isinstance(meta.get("creator"), list) else meta.get("creator")),
+            "attribution": "",
+            "description": clean((meta.get("description") or [""])[0] if isinstance(meta.get("description"), list) else meta.get("description")),
+            "source": "Internet Archive feature_films collection",
+            "source_category": "collection:feature_films AND mediatype:movies",
+            "source_identifier": identifier,
+            "rights_review_status": "pending_manual_review",
+            "commercial_use_allowed": False,
+            "playback_status": "not_tested",
+        }
+        return record, None
+    except Exception as error:
+        return None, f"{identifier}: {type(error).__name__}: {error}"
+
+
+def get_internet_archive_candidates():
+    items, total_count = ia_list_items()
+    records = []
+    failures = []
+    with ThreadPoolExecutor(max_workers=IA_WORKERS) as pool:
+        futures = [pool.submit(ia_fetch_candidate, item) for item in items]
+        for number, future in enumerate(as_completed(futures), 1):
+            record, failure = future.result()
+            if record:
+                records.append(record)
+            if failure:
+                failures.append(failure)
+            if number % 100 == 0 or number == len(futures):
+                print(f"Internet Archive metadata processed: {number}/{len(futures)}; candidates={len(records)}")
+    return records, total_count, len(items), failures
+
 def main():
     source_files = get_category_video_files()
     print(f"Commons category scan found {len(source_files)} video files")
@@ -198,12 +350,25 @@ def main():
 
         print(f"Metadata batches processed: {min(offset + batch_size, len(file_items))}/{len(file_items)}")
 
+
+    ia_records, ia_total_count, ia_processed_count, ia_failures = get_internet_archive_candidates()
+    existing_urls = {record.get("direct_file_url") for record in records}
+    for record in ia_records:
+        if record.get("direct_file_url") not in existing_urls:
+            records.append(record)
+            existing_urls.add(record.get("direct_file_url"))
+    print(f"Internet Archive candidates added: {len(ia_records)}; metadata failures: {len(ia_failures)}")
+
     output = {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "catalog_scope": "Videos listed in Wikimedia Commons public-domain film categories, longer than 60 minutes",
+        "catalog_scope": "Long-form video candidates from Wikimedia Commons public-domain film categories and Internet Archive feature_films with explicit public-domain or commercial Creative Commons license labels",
         "source_categories": START_CATEGORIES,
         "scanned_video_file_count": len(source_files),
+        "internet_archive_collection_record_count": ia_total_count,
+        "internet_archive_metadata_processed_count": ia_processed_count,
+        "internet_archive_candidate_count": len(ia_records),
+        "internet_archive_metadata_failures": ia_failures,
         "candidate_count": len(records),
         "metadata_failure_count": len(metadata_failures),
         "metadata_failures": metadata_failures,
