@@ -156,6 +156,16 @@ def get_commons_metadata_batch(file_titles):
 IA_SCRAPE_URL = "https://archive.org/services/search/v1/scrape"
 IA_METADATA_URL = "https://archive.org/metadata/{}"
 IA_MAX_ITEMS = 3000
+IA_REGIONAL_QUERY_LIMIT = 200
+IA_REGIONAL_QUERIES = [
+    ("hindi", "mediatype:movies AND (language:Hindi OR language:hin)"),
+    ("bengali", "mediatype:movies AND (language:Bengali OR language:ben)"),
+    ("tamil_telugu", "mediatype:movies AND (language:Tamil OR language:tam OR language:Telugu OR language:tel)"),
+    ("arabic_urdu", "mediatype:movies AND (language:Arabic OR language:ara OR language:Urdu OR language:urd)"),
+    ("korean", "mediatype:movies AND (language:Korean OR language:kor)"),
+    ("chinese", "mediatype:movies AND (language:Chinese OR language:chi OR language:zho)"),
+    ("documentaries", "mediatype:movies AND subject:documentary"),
+]
 IA_WORKERS = 8
 IA_ALLOWED_LICENSE = re.compile(
     r"(publicdomain|creativecommons\.org/publicdomain/|creativecommons\.org/licenses/(by|by-sa|by-nd|zero)/)",
@@ -184,28 +194,91 @@ def ia_json(url, attempts=5):
             time.sleep(min(3 * (2 ** attempt), 60))
 
 
-def ia_list_items():
-    """Read the full IA feature_films identifier list; process the top 3,000 by downloads."""
+def ia_scrape_query(query, limit):
+    """Fetch at most limit identifiers for one Internet Archive discovery query."""
     params = {
-        "q": "collection:feature_films AND mediatype:movies",
+        "q": query,
         "fields": "identifier,title,downloads",
-        "count": "1000",
+        "count": "500",
     }
     items = []
     cursor = None
-    while True:
-        query = dict(params)
+    while len(items) < limit:
+        request_params = dict(params)
+        request_params["count"] = str(min(500, limit - len(items)))
         if cursor:
-            query["cursor"] = cursor
-        payload = ia_json(IA_SCRAPE_URL + "?" + urlencode(query))
-        items.extend(payload.get("items", []))
+            request_params["cursor"] = cursor
+        payload = ia_json(IA_SCRAPE_URL + "?" + urlencode(request_params))
+        batch = payload.get("items", [])
+        if not batch:
+            break
+        items.extend(batch)
         cursor = payload.get("cursor")
         if not cursor:
             break
-    items.sort(key=lambda item: int(item.get("downloads") or 0), reverse=True)
-    print(f"Internet Archive feature_films list found {len(items)} records")
-    return items[:IA_MAX_ITEMS], len(items)
+    return items[:limit]
 
+
+def ia_list_items():
+    """Keep the original feature_films source and add bounded regional/documentary searches."""
+    discovery = [
+        ("feature_films", "collection:feature_films AND mediatype:movies", IA_MAX_ITEMS)
+    ]
+    discovery.extend(
+        (name, query, IA_REGIONAL_QUERY_LIMIT)
+        for name, query in IA_REGIONAL_QUERIES
+    )
+
+    unique = {}
+    query_stats = []
+    total_matches_seen = 0
+    for name, query, limit in discovery:
+        try:
+            found = ia_scrape_query(query, limit)
+            total_matches_seen += len(found)
+            added = 0
+            for item in found:
+                identifier = item.get("identifier")
+                if identifier and identifier not in unique:
+                    item = dict(item)
+                    item["_discovery_query"] = query
+                    item["_discovery_group"] = name
+                    unique[identifier] = item
+                    added += 1
+            query_stats.append({
+                "query_group": name,
+                "query": query,
+                "limit": limit,
+                "records_returned": len(found),
+                "new_unique_records": added,
+            })
+            print(
+                f"Internet Archive {name}: returned={len(found)}; "
+                f"new_unique={added}; unique_total={len(unique)}"
+            )
+        except Exception as error:
+            query_stats.append({
+                "query_group": name,
+                "query": query,
+                "limit": limit,
+                "records_returned": 0,
+                "new_unique_records": 0,
+                "error": f"{type(error).__name__}: {error}",
+            })
+            print(f"Internet Archive query {name} unavailable: {error}")
+
+    items = list(unique.values())
+    items.sort(
+        key=lambda item: (
+            item.get("_discovery_group") != "feature_films",
+            -int(item.get("downloads") or 0),
+        )
+    )
+    print(
+        f"Internet Archive discovery complete: {len(items)} unique identifiers "
+        f"from {total_matches_seen} query results"
+    )
+    return items, total_matches_seen, len(items), query_stats
 
 def ia_duration(value):
     if value in (None, ""):
@@ -275,8 +348,10 @@ def ia_fetch_candidate(item):
             "artist": clean((meta.get("creator") or [""])[0] if isinstance(meta.get("creator"), list) else meta.get("creator")),
             "attribution": "",
             "description": clean((meta.get("description") or [""])[0] if isinstance(meta.get("description"), list) else meta.get("description")),
-            "source": "Internet Archive feature_films collection",
-            "source_category": "collection:feature_films AND mediatype:movies",
+            "source": f"Internet Archive {item.get('_discovery_group', 'search')} search",
+            "source_category": item.get("_discovery_query"),
+            "discovery_group": item.get("_discovery_group"),
+            "discovery_query": item.get("_discovery_query"),
             "source_identifier": identifier,
             "rights_review_status": "pending_manual_review",
             "commercial_use_allowed": False,
@@ -288,7 +363,7 @@ def ia_fetch_candidate(item):
 
 
 def get_internet_archive_candidates():
-    items, total_count = ia_list_items()
+    items, total_count, unique_count, query_stats = ia_list_items()
     records = []
     failures = []
     with ThreadPoolExecutor(max_workers=IA_WORKERS) as pool:
@@ -301,7 +376,7 @@ def get_internet_archive_candidates():
                 failures.append(failure)
             if number % 100 == 0 or number == len(futures):
                 print(f"Internet Archive metadata processed: {number}/{len(futures)}; candidates={len(records)}")
-    return records, total_count, len(items), failures
+    return records, total_count, len(items), failures, query_stats, unique_count
 
 def main():
     source_files = get_category_video_files()
@@ -353,10 +428,18 @@ def main():
 
 
     ia_records, ia_total_count, ia_processed_count, ia_failures = [], 0, 0, []
+    ia_query_stats, ia_unique_identifier_count = [], 0
     try:
-        ia_records, ia_total_count, ia_processed_count, ia_failures = get_internet_archive_candidates()
+        (
+            ia_records,
+            ia_total_count,
+            ia_processed_count,
+            ia_failures,
+            ia_query_stats,
+            ia_unique_identifier_count,
+        ) = get_internet_archive_candidates()
     except Exception as error:
-        ia_failures.append(f"collection scan: {type(error).__name__}: {error}")
+        ia_failures.append(f"discovery scan: {type(error).__name__}: {error}")
         print(f"Internet Archive scan unavailable; keeping Commons results: {error}")
     existing_urls = {record.get("direct_file_url") for record in records}
     for record in ia_records:
@@ -368,10 +451,12 @@ def main():
     output = {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "catalog_scope": "Long-form video candidates discovered through Wikimedia Commons public-domain film categories and Internet Archive feature_films; license metadata is an unverified discovery signal only",
+        "catalog_scope": "Long-form video candidates discovered through Wikimedia Commons public-domain film categories and bounded Internet Archive feature-film, regional-language, and documentary searches; license metadata is an unverified discovery signal only",
         "source_categories": START_CATEGORIES,
         "scanned_video_file_count": len(source_files),
-        "internet_archive_collection_record_count": ia_total_count,
+        "internet_archive_query_result_count": ia_total_count,
+        "internet_archive_unique_identifier_count": ia_unique_identifier_count,
+        "internet_archive_discovery_queries": ia_query_stats,
         "internet_archive_metadata_processed_count": ia_processed_count,
         "internet_archive_candidate_count": len(ia_records),
         "internet_archive_metadata_failures": ia_failures,
