@@ -368,7 +368,7 @@ def main():
     output = {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "catalog_scope": "Long-form video candidates from Wikimedia Commons public-domain film categories and Internet Archive feature_films with explicit public-domain or commercial Creative Commons license labels",
+        "catalog_scope": "Long-form video candidates discovered through Wikimedia Commons public-domain film categories and Internet Archive feature_films; license metadata is an unverified discovery signal only",
         "source_categories": START_CATEGORIES,
         "scanned_video_file_count": len(source_files),
         "internet_archive_collection_record_count": ia_total_count,
@@ -378,7 +378,7 @@ def main():
         "candidate_count": len(records),
         "metadata_failure_count": len(metadata_failures),
         "metadata_failures": metadata_failures,
-        "rights_policy": "Commons category membership is a discovery signal, not final legal clearance. Verify the individual file license and public-domain status in every relevant territory before enabling playback. No item is approved for commercial use by this index.",
+        "rights_policy": "This is a research index only, not a rights-cleared catalog. Wikimedia Commons category membership and Internet Archive licenseurl/rights metadata are discovery clues, not proof of ownership or permission; Internet Archive states it cannot guarantee item copyright status and that license information may be supplied by uploaders. Verify the underlying work, uploader authority, exact file/version, license conditions (including attribution and share-alike), and public-domain status in every target territory before any redistribution or ad-supported playback. No item is approved for commercial use; all items remain pending_manual_review and commercial_use_allowed=false.",
         "items": records,
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
