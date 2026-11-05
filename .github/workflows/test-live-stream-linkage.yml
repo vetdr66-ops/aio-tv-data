@@ -1,0 +1,32 @@
+name: Test live stream linkage
+
+on:
+  push:
+    branches:
+      - test/live-stream-filter
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test/live-stream-filter
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build test data
+        run: python scripts/build_data.py
+      - name: Upload linkage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-stream-linkage-report
+          path: |
+            public/data/index.json
+            public/data/unmatched_streams.json
+            public/data/countries/
+          if-no-files-found: error
