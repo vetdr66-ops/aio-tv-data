@@ -173,6 +173,16 @@ def main():
     for category, items in by_category.items():
         write_json(DATA / "categories" / f"{category}.json", items)
 
+    # Separate review list: channels with at least one linked stream.
+    # This does not remove channels from the country/category source datasets.
+    channels_with_streams_list = [
+        item
+        for channel in channels
+        if (item := channels_by_id.get(channel.get("id")))
+        and item["stream_count"] > 0
+    ]
+    write_json(DATA / "channels_with_streams.json", channels_with_streams_list)
+
     write_json(DATA / "unmatched_streams.json", unmatched_streams)
     write_json(DATA / "index.json", {
         "source": "sources/links2.txt and sources/links.txt",
@@ -195,6 +205,7 @@ def main():
             "country": "data/countries/{code}.json",
             "category": "data/categories/{id}.json",
             "unmatched_streams": "data/unmatched_streams.json",
+            "channels_with_streams": "data/channels_with_streams.json",
         },
         "retention_policy": "All source channel and stream records are retained; status flags do not remove records.",
     })
