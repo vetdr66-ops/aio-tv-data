@@ -1,0 +1,52 @@
+name: Build VOD candidate index
+
+on:
+  push:
+    branches:
+      - vod-catalog-prototype
+    paths:
+      - "scripts/build_vod_index.py"
+      - ".github/workflows/build-vod-index.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout prototype branch
+        uses: actions/checkout@v4
+        with:
+          ref: vod-catalog-prototype
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build candidate index
+        run: python scripts/build_vod_index.py
+
+      - name: Validate generated JSON and summarize
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("public/vod/index.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          items = data.get("items", [])
+          print(f"Candidate records: {len(items)}")
+          print(f"Catalog scope: {data.get('catalog_scope', 'not specified')}")
+          print("Rights status: pending manual review; no item is cleared for commercial use.")
+          PY
+
+      - name: Upload candidate index
+        uses: actions/upload-artifact@v4
+        with:
+          name: vod-candidate-index
+          path: public/vod/index.json
+          if-no-files-found: error
+          retention-days: 7
