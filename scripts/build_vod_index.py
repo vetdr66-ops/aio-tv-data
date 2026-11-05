@@ -112,39 +112,42 @@ def get_category_video_files():
     return files
 
 
-def get_commons_metadata(filename):
+def get_commons_metadata_batch(file_titles):
+    """Fetch metadata for multiple Commons files in one API request."""
     params = {
         "action": "query",
         "format": "json",
         "formatversion": "2",
-        "titles": "File:" + filename,
+        "titles": "|".join(file_titles),
         "prop": "imageinfo|videoinfo",
         "iiprop": "url|size|mime|extmetadata",
         "viprop": "duration|size",
     }
     payload = fetch_json(COMMONS_API, params)
-    pages = payload.get("query", {}).get("pages", [])
-    if not pages or pages[0].get("missing") is not None:
-        return None
-    page = pages[0]
-    image = (page.get("imageinfo") or [{}])[0]
-    video = (page.get("videoinfo") or [{}])[0]
-    ext = image.get("extmetadata") or {}
-    duration = video.get("duration")
-    return {
-        "commons_file_title": page.get("title"),
-        "file_page_url": image.get("descriptionurl"),
-        "direct_file_url": image.get("url"),
-        "mime_type": image.get("mime"),
-        "file_size_bytes": image.get("size"),
-        "duration_seconds": duration,
-        "license_short_name": clean((ext.get("LicenseShortName") or {}).get("value")),
-        "usage_terms": clean((ext.get("UsageTerms") or {}).get("value")),
-        "license_url": clean((ext.get("LicenseUrl") or {}).get("value")),
-        "artist": clean((ext.get("Artist") or {}).get("value")),
-        "attribution": clean((ext.get("Attribution") or {}).get("value")),
-        "description": clean((ext.get("ImageDescription") or {}).get("value")),
-    }
+    results = {}
+
+    for page in payload.get("query", {}).get("pages", []):
+        if page.get("missing") is not None:
+            continue
+        image = (page.get("imageinfo") or [{}])[0]
+        video = (page.get("videoinfo") or [{}])[0]
+        ext = image.get("extmetadata") or {}
+        results[page.get("title")] = {
+            "commons_file_title": page.get("title"),
+            "file_page_url": image.get("descriptionurl"),
+            "direct_file_url": image.get("url"),
+            "mime_type": image.get("mime"),
+            "file_size_bytes": image.get("size"),
+            "duration_seconds": video.get("duration"),
+            "license_short_name": clean((ext.get("LicenseShortName") or {}).get("value")),
+            "usage_terms": clean((ext.get("UsageTerms") or {}).get("value")),
+            "license_url": clean((ext.get("LicenseUrl") or {}).get("value")),
+            "artist": clean((ext.get("Artist") or {}).get("value")),
+            "attribution": clean((ext.get("Attribution") or {}).get("value")),
+            "description": clean((ext.get("ImageDescription") or {}).get("value")),
+        }
+
+    return results
 
 
 def main():
@@ -154,35 +157,46 @@ def main():
     records = []
     metadata_failures = []
 
-    for file_title, source_category in source_files.items():
-        filename = file_title.removeprefix("File:")
+    file_items = list(source_files.items())
+    batch_size = 20
+
+    for offset in range(0, len(file_items), batch_size):
+        batch = file_items[offset:offset + batch_size]
+        titles = [title for title, _ in batch]
         try:
-            metadata = get_commons_metadata(filename)
+            metadata_by_title = get_commons_metadata_batch(titles)
         except (HTTPError, URLError, TimeoutError) as error:
             code = getattr(error, "code", "network")
-            print(f"Skipping metadata temporarily unavailable for {file_title}: {code}")
-            metadata_failures.append({"file_title": file_title, "error": str(code)})
+            print(f"Skipping metadata batch {offset // batch_size + 1}: {code}")
+            metadata_failures.extend(
+                {"file_title": title, "error": str(code)} for title in titles
+            )
             continue
 
-        if not metadata or not metadata.get("direct_file_url"):
-            continue
+        for file_title, source_category in batch:
+            filename = file_title.removeprefix("File:")
+            metadata = metadata_by_title.get(file_title)
+            if not metadata or not metadata.get("direct_file_url"):
+                continue
 
-        duration = metadata.get("duration_seconds")
-        if not isinstance(duration, (int, float)) or duration < MIN_DURATION_SECONDS:
-            continue
+            duration = metadata.get("duration_seconds")
+            if not isinstance(duration, (int, float)) or duration < MIN_DURATION_SECONDS:
+                continue
 
-        records.append({
-            "title": filename.rsplit(".", 1)[0],
-            "release_year": None,
-            "country": None,
-            "language": None,
-            **metadata,
-            "source": "Wikimedia Commons public-domain film video category",
-            "source_category": source_category,
-            "rights_review_status": "pending_manual_review",
-            "commercial_use_allowed": False,
-            "playback_status": "not_tested",
-        })
+            records.append({
+                "title": filename.rsplit(".", 1)[0],
+                "release_year": None,
+                "country": None,
+                "language": None,
+                **metadata,
+                "source": "Wikimedia Commons public-domain film video category",
+                "source_category": source_category,
+                "rights_review_status": "pending_manual_review",
+                "commercial_use_allowed": False,
+                "playback_status": "not_tested",
+            })
+
+        print(f"Metadata batches processed: {min(offset + batch_size, len(file_items))}/{len(file_items)}")
 
     output = {
         "schema_version": 1,
