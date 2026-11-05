@@ -5,12 +5,13 @@ This script DOES NOT certify commercial rights. Every item remains blocked until
 its Commons license and territorial public-domain status are reviewed manually.
 """
 import html
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
 import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import quote, unquote, urlparse
 
 from email.utils import parsedate_to_datetime
 from urllib.error import HTTPError, URLError
@@ -351,7 +352,12 @@ def main():
         print(f"Metadata batches processed: {min(offset + batch_size, len(file_items))}/{len(file_items)}")
 
 
-    ia_records, ia_total_count, ia_processed_count, ia_failures = get_internet_archive_candidates()
+    ia_records, ia_total_count, ia_processed_count, ia_failures = [], 0, 0, []
+    try:
+        ia_records, ia_total_count, ia_processed_count, ia_failures = get_internet_archive_candidates()
+    except Exception as error:
+        ia_failures.append(f"collection scan: {type(error).__name__}: {error}")
+        print(f"Internet Archive scan unavailable; keeping Commons results: {error}")
     existing_urls = {record.get("direct_file_url") for record in records}
     for record in ia_records:
         if record.get("direct_file_url") not in existing_urls:
