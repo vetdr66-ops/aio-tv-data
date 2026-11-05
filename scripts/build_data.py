@@ -72,14 +72,48 @@ def main():
 
     streams_by_channel = defaultdict(list)
     unmatched_streams = []
+    channel_ids = {channel.get("id") for channel in channels if channel.get("id")}
+
+    # Match names only when the normalized name points to exactly one channel.
+    def normalize_name(value):
+        return " ".join(str(value or "").strip().casefold().split())
+
+    channel_names = defaultdict(set)
+    for channel in channels:
+        channel_id = channel.get("id")
+        if not channel_id:
+            continue
+        for name in [channel.get("name"), *(channel.get("alt_names") or [])]:
+            normalized = normalize_name(name)
+            if normalized:
+                channel_names[normalized].add(channel_id)
+
+    matched_by_id = 0
+    matched_by_title = 0
 
     for position, stream in enumerate(streams):
         channel_id = stream.get("channel")
         stream_item = dict(stream)
         stream_item["source_index"] = position
-        if channel_id:
+
+        if channel_id and channel_id in channel_ids:
             streams_by_channel[channel_id].append(stream_item)
+            matched_by_id += 1
+        elif not channel_id:
+            candidates = channel_names.get(normalize_name(stream.get("title")), set())
+            if len(candidates) == 1:
+                matched_channel_id = next(iter(candidates))
+                streams_by_channel[matched_channel_id].append(stream_item)
+                stream_item["matched_by"] = "exact_title"
+                matched_by_title += 1
+            else:
+                stream_item["unmatched_reason"] = (
+                    "ambiguous_title" if len(candidates) > 1 else "no_exact_title_match"
+                )
+                unmatched_streams.append(stream_item)
         else:
+            stream_item["unmatched_reason"] = "unknown_channel_id"
+            stream_item["unmatched_channel_id"] = channel_id
             unmatched_streams.append(stream_item)
 
     channels_by_id = {}
@@ -122,18 +156,16 @@ def main():
             by_category[key].append(item)
             category_counts[key] += 1
 
-    # Keep every stream, including duplicates, unsupported schemes, missing IDs,
-    # and IDs that have no matching channel metadata.
-    unmatched_ids = set()
-    for position, stream in enumerate(streams):
-        channel_id = stream.get("channel")
-        if channel_id and channel_id not in channels_by_id:
-            unmatched_ids.add(channel_id)
-            unmatched_streams.append({
-                **stream,
-                "source_index": position,
-                "unmatched_channel_id": channel_id,
-            })
+    # Keep all unmatched source streams for review; source files are never modified.
+    unmatched_ids = {
+        stream.get("channel")
+        for stream in unmatched_streams
+        if stream.get("channel")
+    }
+    channels_with_streams = sum(
+        1 for channel in channels
+        if channel.get("id") and streams_by_channel.get(channel.get("id"))
+    )
 
     for code, items in by_country.items():
         write_json(DATA / "countries" / f"{code}.json", items)
@@ -149,6 +181,11 @@ def main():
         "channels_with_ids": sum(1 for channel in channels if channel.get("id")),
         "total_streams": len(streams),
         "streams_with_channel_id": sum(1 for stream in streams if stream.get("channel")),
+        "matched_streams_by_id": matched_by_id,
+        "matched_streams_by_title": matched_by_title,
+        "matched_streams_total": matched_by_id + matched_by_title,
+        "channels_with_streams": channels_with_streams,
+        "channels_without_streams": len(channels) - channels_with_streams,
         "unmatched_streams": len(unmatched_streams),
         "unmatched_channel_ids": len(unmatched_ids),
         "countries": dict(sorted(country_counts.items())),
@@ -167,6 +204,8 @@ def main():
     print(
         f"Built {len(channels)} channels and {len(streams)} streams; "
         f"{len(by_country)} countries, {len(by_category)} source categories, "
+        f"{matched_by_id} matched by ID, {matched_by_title} matched by exact title, "
+        f"{channels_with_streams} channels with streams, "
         f"{len(unmatched_streams)} unmatched streams."
     )
 
