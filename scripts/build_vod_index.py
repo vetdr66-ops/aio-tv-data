@@ -19,27 +19,13 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / "public" / "vod" / "index.json"
-SPARQL_ENDPOINT = "https://query.wikidata.org/sparql"
 COMMONS_API = "https://commons.wikimedia.org/w/api.php"
+START_CATEGORIES = ["Category:Videos of films in the public domain"]
 USER_AGENT = "AIO-TV-VOD-Catalog/0.1 (metadata indexing; rights review required)"
 MIN_DURATION_SECONDS = 60 * 60
 VIDEO_EXTENSIONS = (".webm", ".ogv", ".mp4", ".mkv", ".avi")
 REQUEST_INTERVAL_SECONDS = 1.1
 _LAST_REQUEST_AT = 0.0
-
-QUERY = """
-SELECT DISTINCT ?film ?filmLabel ?year ?video WHERE {
-  ?film wdt:P31/wdt:P279* wd:Q11424;
-        wdt:P10 ?video;
-        wdt:P577 ?date.
-  VALUES ?country { wd:Q668 wd:Q129286 }
-  ?film wdt:P495 ?country.
-  FILTER(YEAR(?date) < 1964)
-  BIND(YEAR(?date) AS ?year)
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en,hi,bn,ta,te,ml,ur". }
-}
-ORDER BY ?filmLabel
-"""
 
 
 def fetch_json(url, params=None):
@@ -88,12 +74,42 @@ def clean(value):
     return re.sub(r"\s+", " ", html.unescape(value)).strip()
 
 
-def commons_filename(file_uri):
-    parsed = urlparse(file_uri)
-    marker = "/Special:FilePath/"
-    if marker not in parsed.path:
-        return ""
-    return unquote(parsed.path.split(marker, 1)[1]).replace("_", " ")
+def get_category_video_files():
+    """Collect video files from the public-domain film category and its subcategories."""
+    pending = list(START_CATEGORIES)
+    visited_categories = set()
+    files = {}
+
+    while pending:
+        category = pending.pop(0)
+        if category in visited_categories:
+            continue
+        visited_categories.add(category)
+        params = {
+            "action": "query",
+            "format": "json",
+            "formatversion": "2",
+            "list": "categorymembers",
+            "cmtitle": category,
+            "cmtype": "file|subcat",
+            "cmlimit": "500",
+        }
+        while True:
+            payload = fetch_json(COMMONS_API, params)
+            members = payload.get("query", {}).get("categorymembers", [])
+            for member in members:
+                title = member.get("title", "")
+                if member.get("ns") == 14 and title.startswith("Category:"):
+                    if title not in visited_categories:
+                        pending.append(title)
+                elif member.get("ns") == 6 and title.lower().endswith(VIDEO_EXTENSIONS):
+                    files[title] = category
+            continuation = payload.get("continue")
+            if not continuation:
+                break
+            params.update(continuation)
+
+    return files
 
 
 def get_commons_metadata(filename):
@@ -132,29 +148,22 @@ def get_commons_metadata(filename):
 
 
 def main():
-    result = fetch_json(SPARQL_ENDPOINT, {"query": QUERY, "format": "json"})
-    bindings = result.get("results", {}).get("bindings", [])
+    source_files = get_category_video_files()
+    print(f"Commons category scan found {len(source_files)} video files")
+
     records = []
-    seen = set()
     metadata_failures = []
 
-    for row in bindings:
-        film_uri = row.get("film", {}).get("value", "")
-        video_uri = row.get("video", {}).get("value", "")
-        filename = commons_filename(video_uri)
-        if not filename or not filename.lower().endswith(VIDEO_EXTENSIONS):
-            continue
-        if filename.casefold() in seen:
-            continue
-        seen.add(filename.casefold())
-
+    for file_title, source_category in source_files.items():
+        filename = file_title.removeprefix("File:")
         try:
             metadata = get_commons_metadata(filename)
         except (HTTPError, URLError, TimeoutError) as error:
             code = getattr(error, "code", "network")
-            print(f"Skipping metadata temporarily unavailable for {filename}: {code}")
-            metadata_failures.append({"filename": filename, "error": str(code)})
+            print(f"Skipping metadata temporarily unavailable for {file_title}: {code}")
+            metadata_failures.append({"file_title": file_title, "error": str(code)})
             continue
+
         if not metadata or not metadata.get("direct_file_url"):
             continue
 
@@ -163,13 +172,13 @@ def main():
             continue
 
         records.append({
-            "title": clean(row.get("filmLabel", {}).get("value")) or filename,
-            "release_year": row.get("year", {}).get("value"),
-            "country": "India",
+            "title": filename.rsplit(".", 1)[0],
+            "release_year": None,
+            "country": None,
             "language": None,
-            "wikidata_url": film_uri,
             **metadata,
-            "source": "Wikidata P10 + Wikimedia Commons file metadata",
+            "source": "Wikimedia Commons public-domain film video category",
+            "source_category": source_category,
             "rights_review_status": "pending_manual_review",
             "commercial_use_allowed": False,
             "playback_status": "not_tested",
@@ -178,17 +187,18 @@ def main():
     output = {
         "schema_version": 1,
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "catalog_scope": "Indian films released before 1964 with a Commons video file longer than 60 minutes",
+        "catalog_scope": "Videos listed in Wikimedia Commons public-domain film categories, longer than 60 minutes",
+        "source_categories": START_CATEGORIES,
+        "scanned_video_file_count": len(source_files),
         "candidate_count": len(records),
         "metadata_failure_count": len(metadata_failures),
         "metadata_failures": metadata_failures,
-        "rights_policy": "No item is approved for commercial playback by this index. Verify the individual file license and public-domain status in every relevant territory before enabling playback.",
+        "rights_policy": "Commons category membership is a discovery signal, not final legal clearance. Verify the individual file license and public-domain status in every relevant territory before enabling playback. No item is approved for commercial use by this index.",
         "items": records,
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(records)} review candidates to {OUTPUT}")
-
 
 if __name__ == "__main__":
     main()
