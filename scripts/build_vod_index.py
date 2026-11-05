@@ -155,7 +155,7 @@ def get_commons_metadata_batch(file_titles):
 # Internet Archive's feature_films collection is a second discovery source.
 IA_SCRAPE_URL = "https://archive.org/services/search/v1/scrape"
 IA_METADATA_URL = "https://archive.org/metadata/{}"
-IA_MAX_ITEMS = 1200
+IA_MAX_ITEMS = 3000
 IA_WORKERS = 8
 IA_ALLOWED_LICENSE = re.compile(
     r"(publicdomain|creativecommons\.org/publicdomain/|creativecommons\.org/licenses/(by|by-sa|by-nd|zero)/)",
@@ -185,7 +185,7 @@ def ia_json(url, attempts=5):
 
 
 def ia_list_items():
-    """Read the full IA feature_films identifier list; process only the top 1,200."""
+    """Read the full IA feature_films identifier list; process the top 3,000 by downloads."""
     params = {
         "q": "collection:feature_films AND mediatype:movies",
         "fields": "identifier,title,downloads",
