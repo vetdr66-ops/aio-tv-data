@@ -27,6 +27,7 @@ jobs:
           name: live-stream-linkage-report
           path: |
             public/data/index.json
+            public/data/channels_with_streams.json
             public/data/unmatched_streams.json
             public/data/countries/
           if-no-files-found: error
