@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+from email.utils import parsedate_to_datetime
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -23,6 +24,8 @@ COMMONS_API = "https://commons.wikimedia.org/w/api.php"
 USER_AGENT = "AIO-TV-VOD-Catalog/0.1 (metadata indexing; rights review required)"
 MIN_DURATION_SECONDS = 60 * 60
 VIDEO_EXTENSIONS = (".webm", ".ogv", ".mp4", ".mkv", ".avi")
+REQUEST_INTERVAL_SECONDS = 1.1
+_LAST_REQUEST_AT = 0.0
 
 QUERY = """
 SELECT DISTINCT ?film ?filmLabel ?year ?video WHERE {
@@ -40,17 +43,42 @@ ORDER BY ?filmLabel
 
 
 def fetch_json(url, params=None):
+    global _LAST_REQUEST_AT
     if params:
         url = url + ("&" if "?" in url else "?") + urlencode(params)
     request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/sparql-results+json, application/json"})
-    for attempt in range(4):
+    for attempt in range(6):
+        wait_for = REQUEST_INTERVAL_SECONDS - (time.monotonic() - _LAST_REQUEST_AT)
+        if wait_for > 0:
+            time.sleep(wait_for)
         try:
             with urlopen(request, timeout=60) as response:
+                _LAST_REQUEST_AT = time.monotonic()
                 return json.load(response)
-        except (HTTPError, URLError, TimeoutError):
-            if attempt == 3:
+        except HTTPError as error:
+            _LAST_REQUEST_AT = time.monotonic()
+            if error.code == 429 or error.code in (500, 502, 503, 504):
+                retry_after = error.headers.get("Retry-After")
+                try:
+                    delay = float(retry_after) if retry_after else 5 * (2 ** attempt)
+                except ValueError:
+                    try:
+                        retry_date = parsedate_to_datetime(retry_after)
+                        delay = max(1, retry_date.timestamp() - time.time())
+                    except (TypeError, ValueError, OverflowError):
+                        delay = 5 * (2 ** attempt)
+                delay = min(max(delay, 1), 120)
+                print(f"HTTP {error.code}; retry {attempt + 1}/6 after {delay:.0f}s")
+                if attempt == 5:
+                    raise
+                time.sleep(delay)
+                continue
+            raise
+        except (URLError, TimeoutError):
+            _LAST_REQUEST_AT = time.monotonic()
+            if attempt == 5:
                 raise
-            time.sleep(2 ** attempt)
+            time.sleep(min(5 * (2 ** attempt), 60))
 
 
 def clean(value):
@@ -108,6 +136,7 @@ def main():
     bindings = result.get("results", {}).get("bindings", [])
     records = []
     seen = set()
+    metadata_failures = []
 
     for row in bindings:
         film_uri = row.get("film", {}).get("value", "")
@@ -119,8 +148,13 @@ def main():
             continue
         seen.add(filename.casefold())
 
-        metadata = get_commons_metadata(filename)
-        time.sleep(0.15)
+        try:
+            metadata = get_commons_metadata(filename)
+        except (HTTPError, URLError, TimeoutError) as error:
+            code = getattr(error, "code", "network")
+            print(f"Skipping metadata temporarily unavailable for {filename}: {code}")
+            metadata_failures.append({"filename": filename, "error": str(code)})
+            continue
         if not metadata or not metadata.get("direct_file_url"):
             continue
 
@@ -146,6 +180,8 @@ def main():
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "catalog_scope": "Indian films released before 1964 with a Commons video file longer than 60 minutes",
         "candidate_count": len(records),
+        "metadata_failure_count": len(metadata_failures),
+        "metadata_failures": metadata_failures,
         "rights_policy": "No item is approved for commercial playback by this index. Verify the individual file license and public-domain status in every relevant territory before enabling playback.",
         "items": records,
     }
