@@ -120,6 +120,21 @@
       "format": "geojson",
       "license": "CC-BY",
       "homepage": "https://opendata.prod.transport.nsw.gov.au/data/dataset/live-traffic-cameras"
+    },
+    {
+      "id": "opencctv_global_index",
+      "country": "MULTI",
+      "country_name_ar": "مصدر عالمي متعدد الدول",
+      "provider": "OpenCCTV public camera index",
+      "kind": "global_camera_discovery",
+      "status": "pending_license_review",
+      "api_url": "https://opencctv.org/api/cameras/markers",
+      "metadata_url": "https://opencctv.org/api/cameras/batch",
+      "format": "json",
+      "parser": "opencctv_markers_batch",
+      "approx_camera_count": 137671,
+      "homepage": "https://opencctv.org/open-cameras",
+      "notes": "Candidate discovery source only. Import only records with explicit direct-display eligibility and confirmed operator reuse terms; do not treat directory access as redistribution permission."
     }
   ]
 }
