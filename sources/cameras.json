@@ -55,6 +55,24 @@
       "attribution": "Source: Ministère des Transports et de la Mobilité durable, Données Québec, CC BY 4.0",
       "attribution_url": "https://www.donneesquebec.ca/recherche/dataset/camera-de-circulation",
       "homepage": "https://www.quebec511.info/"
+    },
+    {
+      "id": "hongkong_td",
+      "country": "HK",
+      "country_name_ar": "هونغ كونغ",
+      "provider": "Hong Kong Transport Department / DATA.GOV.HK",
+      "kind": "traffic",
+      "status": "active",
+      "api_url": "https://tdcctv.data.one.gov.hk/",
+      "metadata_url": "https://data.gov.hk/en-data/dataset/hk-td-tis_2-traffic-snapshot-images",
+      "format": "jpeg+csv+xml",
+      "parser": "hongkong_traffic_snapshot",
+      "refresh_seconds": 120,
+      "license": "DATA.GOV.HK Terms of Use",
+      "commercial_use": true,
+      "attribution": "Source: Transport Department, Government of the Hong Kong SAR / DATA.GOV.HK",
+      "attribution_url": "https://data.gov.hk/en/terms-and-conditions",
+      "homepage": "https://www.td.gov.hk/"
     }
   ],
   "pending_sources": [
