@@ -1,0 +1,75 @@
+{
+  "source": {
+    "name": "FreeCastHub public-iptv",
+    "repository": "https://github.com/freecasthub/public-iptv",
+    "playlist": "https://raw.githubusercontent.com/freecasthub/public-iptv/main/playlist.m3u",
+    "license": "Unlicense",
+    "imported_at": "2026-11-06",
+    "selection": "Only direct HLS entries absent by exact URL from current AIO_TV stream catalog and absent by exact channel name from current channel catalog",
+    "status": "review_only_not_published"
+  },
+  "channels": [
+    {
+      "id": "AlJazeeraEnglish.qa",
+      "name": "Al Jazeera English",
+      "alt_names": [],
+      "network": "Al Jazeera Media Network",
+      "owners": [],
+      "country": "QA",
+      "categories": [
+        "news"
+      ],
+      "is_nsfw": false,
+      "launched": null,
+      "closed": null,
+      "replaced_by": null,
+      "website": "https://www.aljazeera.com/",
+      "status": "pending_stream_test",
+      "source_name": "FreeCastHub public-iptv"
+    },
+    {
+      "id": "KanKids.il",
+      "name": "Kan Kids",
+      "alt_names": [],
+      "network": "KAN",
+      "owners": [],
+      "country": "IL",
+      "categories": [
+        "kids"
+      ],
+      "is_nsfw": false,
+      "launched": null,
+      "closed": null,
+      "replaced_by": null,
+      "website": "https://www.kan.org.il/",
+      "status": "pending_stream_test",
+      "source_name": "FreeCastHub public-iptv"
+    }
+  ],
+  "streams": [
+    {
+      "channel": "AlJazeeraEnglish.qa",
+      "feed": "HD",
+      "title": "Al Jazeera English",
+      "url": "https://live-hls-web-aje.getaj.net/AJE/index.m3u8",
+      "quality": "unknown",
+      "labels": [
+        "pending_test"
+      ],
+      "user_agent": null,
+      "referrer": null
+    },
+    {
+      "channel": "KanKids.il",
+      "feed": "HD",
+      "title": "Kan Kids",
+      "url": "https://kan23.media.kan.org.il/hls/live/2024691/2024691/master.m3u8",
+      "quality": "unknown",
+      "labels": [
+        "pending_test"
+      ],
+      "user_agent": null,
+      "referrer": null
+    }
+  ]
+}
