@@ -21,6 +21,7 @@ jobs:
       - run: python scripts/build_data.py
       - run: python scripts/build_cameras.py
       - run: python scripts/import_global_cameras.py
+      - run: python scripts/import_open_eagle_eye.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public
