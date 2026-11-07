@@ -39,8 +39,8 @@ jobs:
       - name: Restore and commit camera catalog
         if: ${{ inputs.restore_camera_backup || contains(github.event.head_commit.message, '[restore-camera-catalog]') }}
         run: |
-          test -f restore/artifact.tar
-          tar -xf restore/artifact.tar ./cameras
+          test -f restore/github-pages/artifact.tar
+          tar -xf restore/github-pages/artifact.tar ./cameras
           test -s cameras/global-index.json
           python -c "import json; d=json.load(open('cameras/global-index.json', encoding='utf-8')); assert d.get('total_cameras') == 6903, d.get('total_cameras')"
           git config user.name "github-actions[bot]"
