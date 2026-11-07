@@ -2,12 +2,6 @@ name: Build IPTV data
 
 on:
   workflow_dispatch:
-    inputs:
-      restore_camera_backup:
-        description: "Restore the verified camera catalog from the November 6 backup"
-        required: false
-        type: boolean
-        default: false
   push:
     branches:
       - main
@@ -15,8 +9,7 @@ on:
     - cron: "17 */12 * * *"
 
 permissions:
-  actions: read
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -25,35 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Download verified camera backup
-        if: ${{ inputs.restore_camera_backup || contains(github.event.head_commit.message, '[restore-camera-catalog]') }}
-        uses: actions/download-artifact@v4
-        with:
-          artifact-ids: 13523825923
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          run-id: 42257465927
-          path: restore
-
-      - name: Restore and commit camera catalog
-        if: ${{ inputs.restore_camera_backup || contains(github.event.head_commit.message, '[restore-camera-catalog]') }}
-        run: |
-          test -f restore/github-pages/artifact.tar
-          tar -xf restore/github-pages/artifact.tar ./cameras
-          test -s cameras/global-index.json
-          python -c "import json; d=json.load(open('cameras/global-index.json', encoding='utf-8')); assert d.get('total_cameras') == 6903, d.get('total_cameras')"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add cameras
-          if [ -f .restore-camera-catalog ]; then
-            rm .restore-camera-catalog
-            git add -A .restore-camera-catalog
-          fi
-          if ! git diff --cached --quiet; then
-            git commit -m "Restore verified live camera catalog"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
 
       - uses: actions/setup-python@v5
         with:
