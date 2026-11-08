@@ -1,10 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T12:49:48.014Z",
+  "updated_at": "2026-11-08T19:01:05.407Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
       "country": "eg"
+    },
+    "MBCMasrDrama.sa": {
+      "country": "eg",
+      "categories": [
+        "series"
+      ],
+      "logo": "",
+      "streams": [
+        {
+          "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-masr-drama/567b703c19ede6598222de81b0e4508b/index.m3u8",
+          "channel": "MBCMasrDrama.sa"
+        }
+      ],
+      "enabled": true
     }
   },
   "groups": {},
@@ -22,6 +36,14 @@
       "old_country": "sa",
       "new_country": "eg",
       "changed_at": "2026-11-08T12:49:48.014Z"
+    },
+    {
+      "channel_id": "MBCMasrDrama.sa",
+      "action": "edit_channel",
+      "changed_at": "2026-11-08T19:01:05.407Z",
+      "new_name": "MBC Masr Drama",
+      "new_country": "eg"
     }
-  ]
+  ],
+  "added_channels": {}
 }
