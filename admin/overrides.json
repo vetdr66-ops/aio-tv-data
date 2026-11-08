@@ -1,7 +1,19 @@
 {
   "version": 1,
-  "updated_at": null,
-  "channels": {},
+  "updated_at": "2026-11-08T14:37:00+02:00",
+  "channels": {
+    "AlAlamAlYawm.sa": {
+      "display_name": "Mekameleen"
+    }
+  },
   "groups": {},
-  "audit": []
+  "audit": [
+    {
+      "channel_id": "AlAlamAlYawm.sa",
+      "action": "change_display_name",
+      "old_name": "Al Alam Al Yawm",
+      "new_name": "Mekameleen",
+      "changed_at": "2026-11-08T14:37:00+02:00"
+    }
+  ]
 }
