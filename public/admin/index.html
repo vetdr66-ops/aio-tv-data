@@ -128,7 +128,6 @@ function render(){
  const q=$("search").value.trim().toLowerCase(),co=$("countryFilter").value,st=$("stateFilter").value;
  let list=catalog.filter(c=>(!q||String(c.name||"").toLowerCase().includes(q)||String(c.id||"").toLowerCase().includes(q))&&(!co||String(c.country||"").toLowerCase()===co));
  list=list.filter(c=>st==="all"||(st==="archived"?c.is_archived:!c.is_archived));
- $("shown").textContent=list.length;
  $("rows").innerHTML=list.length?list.map(c=>'<tr><td><div class="namecell">'+esc(c.name||c.id)+'</div><div class="subcell">'+esc(c.id)+'</div></td><td>'+esc(countryLabel(c.country))+'</td><td>'+esc((c.categories||[]).join(", ")||"—")+'</td><td><span class="badge '+(c.is_archived?"archived":"")+'">'+(c.is_archived?"مؤرشفة":"منشورة")+'</span></td><td><div class="actions"><button class="secondary" data-edit="'+esc(c.id)+'">تعديل</button>'+(c.is_archived?'<button class="success" data-restore="'+esc(c.id)+'">استعادة</button>':'<button class="danger" data-archive="'+esc(c.id)+'">أرشفة</button>')+'</div></td></tr>').join(""):'<tr><td colspan="5" class="empty">لا توجد نتائج.</td></tr>';
  $("rows").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
  $("rows").querySelectorAll("[data-archive]").forEach(b=>b.onclick=()=>archive(b.dataset.archive));
