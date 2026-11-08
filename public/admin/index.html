@@ -83,7 +83,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
 const OWNER="vetdr66-ops",REPO="aio-tv-data",PATH="admin/overrides.json",BRANCH="main";
 const PAGES="https://vetdr66-ops.github.io/aio-tv-data/";
 const $=id=>document.getElementById(id);
-let fileSha=null,overrides=null,catalog=[],catalogIndex=null,selected=null,countryNames={eg:"مصر",sa:"السعودية",ae:"الإمارات",qa:"قطر",kw:"الكويت",bh:"البحرين",om:"عُمان",jo:"الأردن",lb:"لبنان",sy:"سوريا",iq:"العراق",ma:"المغرب",dz:"الجزائر",tn:"تونس",ly:"ليبيا",sd:"السودان",us:"أمريكا",gb:"بريطانيا",fr:"فرنسا",de:"ألمانيا",tr:"تركيا",in:"الهند",kr:"كوريا الجنوبية",cn:"الصين"};
+let fileSha=null,overrides=null,catalog=[],catalogIndex=null,selected=null,searchTimer=null,countryNames={eg:"مصر",sa:"السعودية",ae:"الإمارات",qa:"قطر",kw:"الكويت",bh:"البحرين",om:"عُمان",jo:"الأردن",lb:"لبنان",sy:"سوريا",iq:"العراق",ma:"المغرب",dz:"الجزائر",tn:"تونس",ly:"ليبيا",sd:"السودان",us:"أمريكا",gb:"بريطانيا",fr:"فرنسا",de:"ألمانيا",tr:"تركيا",in:"الهند",kr:"كوريا الجنوبية",cn:"الصين"};
 function token(){return $("token").value.trim()}
 function setStatus(s){$("status").textContent=s}
 function countryLabel(c){return countryNames[String(c||"").toLowerCase()]||String(c||"غير محدد").toUpperCase()}
@@ -102,11 +102,13 @@ async function loadCatalog(){
  Object.keys(overrides.added_channels||{}).forEach(id=>{if(!catalog.some(x=>x.id===id)){const a=overrides.added_channels[id];catalog.push({...a,id,is_admin_added:true,streams:a.streams||[]})}});
  const archived=Object.entries(overrides.channels||{}).filter(x=>x[1]&&x[1].enabled===false).map(([id,o])=>({...((o&&o.snapshot)||{}),id,name:(o.display_name||((o.snapshot||{}).name)||id),country:o.country||((o.snapshot||{}).country)||"",categories:o.categories||((o.snapshot||{}).categories)||[],logo:o.logo||((o.snapshot||{}).logo)||"",streams:o.streams||((o.snapshot||{}).streams)||[],is_archived:true,is_admin_added:!!((o.snapshot||{}).is_admin_added)}));
  archived.forEach(a=>{if(!catalog.some(x=>x.id===a.id))catalog.push(a)});
+ catalog.forEach(c=>{c._searchKey=(String(c.name||"")+" "+String(c.id||"")).toLocaleLowerCase()});
  renderStatistics(archived.length);
  const opts=codes.map(c=>'<option value="'+c+'">'+countryLabel(c)+'</option>').join("");
  $("countryFilter").innerHTML='<option value="">كل الدول</option>'+opts;
  $("channelCountry").innerHTML=opts+'<option value="eg">مصر</option>';
  render();
+ renderAudit();
 }
 function renderStatistics(archivedCount){
  const idx=catalogIndex||{};
@@ -125,14 +127,15 @@ function renderStatistics(archivedCount){
  $("categoryStats").innerHTML=categoryKeys.map(k=>'<tr><td>'+esc(labels[k]||k)+'</td><td>'+Number(categories[k]||0)+'</td><td>'+Number(missingCategories[k]||0)+'</td><td>'+(Number(categories[k]||0)+Number(missingCategories[k]||0))+'</td></tr>').join("")||'<tr><td colspan="4">لا توجد بيانات</td></tr>';
 }
 function render(){
- const q=$("search").value.trim().toLowerCase(),co=$("countryFilter").value,st=$("stateFilter").value;
- let list=catalog.filter(c=>(!q||String(c.name||"").toLowerCase().includes(q)||String(c.id||"").toLowerCase().includes(q))&&(!co||String(c.country||"").toLowerCase()===co));
+ const q=$("search").value.trim().toLocaleLowerCase(),co=$("countryFilter").value,st=$("stateFilter").value;
+ let list=catalog.filter(c=>(!q||c._searchKey.includes(q))&&(!co||String(c.country||"").toLowerCase()===co));
  list=list.filter(c=>st==="all"||(st==="archived"?c.is_archived:!c.is_archived));
- $("rows").innerHTML=list.length?list.map(c=>'<tr><td><div class="namecell">'+esc(c.name||c.id)+'</div><div class="subcell">'+esc(c.id)+'</div></td><td>'+esc(countryLabel(c.country))+'</td><td>'+esc((c.categories||[]).join(", ")||"—")+'</td><td><span class="badge '+(c.is_archived?"archived":"")+'">'+(c.is_archived?"مؤرشفة":"منشورة")+'</span></td><td><div class="actions"><button class="secondary" data-edit="'+esc(c.id)+'">تعديل</button>'+(c.is_archived?'<button class="success" data-restore="'+esc(c.id)+'">استعادة</button>':'<button class="danger" data-archive="'+esc(c.id)+'">أرشفة</button>')+'</div></td></tr>').join(""):'<tr><td colspan="5" class="empty">لا توجد نتائج.</td></tr>';
+ const totalMatches=list.length,shown=list.slice(0,100);
+ $("rows").innerHTML=shown.length?shown.map(c=>'<tr><td><div class="namecell">'+esc(c.name||c.id)+'</div><div class="subcell">'+esc(c.id)+'</div></td><td>'+esc(countryLabel(c.country))+'</td><td>'+esc((c.categories||[]).join(", ")||"—")+'</td><td><span class="badge '+(c.is_archived?"archived":"")+'">'+(c.is_archived?"مؤرشفة":"منشورة")+'</span></td><td><div class="actions"><button class="secondary" data-edit="'+esc(c.id)+'">تعديل</button>'+(c.is_archived?'<button class="success" data-restore="'+esc(c.id)+'">استعادة</button>':'<button class="danger" data-archive="'+esc(c.id)+'">أرشفة</button>')+'</div></td></tr>').join(""):'<tr><td colspan="5" class="empty">لا توجد نتائج.</td></tr>';
+ if(totalMatches>100) $("rows").innerHTML+='<tr><td colspan="5" class="empty">عرض أول 100 نتيجة من '+totalMatches+' نتيجة. استخدم البحث أو فلتر الدولة لتضييق النتائج.</td></tr>';
  $("rows").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
  $("rows").querySelectorAll("[data-archive]").forEach(b=>b.onclick=()=>archive(b.dataset.archive));
  $("rows").querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>restore(b.dataset.restore));
- renderAudit();
 }
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function renderAudit(){$("audit").innerHTML=(overrides.audit||[]).slice().reverse().slice(0,25).map(a=>'<div>'+esc(a.action||"تعديل")+' — '+esc(a.channel_id||"")+'<br><span class="muted">'+esc(a.changed_at||"")+'</span></div>').join("")||"لا توجد تغييرات مسجلة."}
@@ -152,6 +155,6 @@ async function saveChannel(){try{if(!overrides)throw Error("اتصل بالمس�
 async function archive(id){if(!overrides)return;const c=catalog.find(x=>x.id===id);if(!c)return;if(!confirm("أرشفة القناة "+(c.name||id)+"؟ ستختفي من التطبيق ويمكن استعادتها لاحقًا."))return;const o=overrides.channels[id]||{};o.snapshot={...c};o.enabled=false;overrides.channels[id]=o;audit(id,"archive_channel");try{await commit("Archive channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر تنفيذ الأرشفة: "+e.message)}}
 async function restore(id){const o=overrides.channels[id]||{};o.enabled=true;delete o.snapshot;overrides.channels[id]=o;audit(id,"restore_channel");try{await commit("Restore channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر الاستعادة: "+e.message)}}
 async function connect(){try{if(!token())throw Error("أدخل رمز GitHub الإداري");setStatus("جارٍ الاتصال وتحميل البيانات...");await loadOverrides();await loadCatalog();setStatus("تم الاتصال وتحميل القنوات والتعديلات بنجاح.");}catch(e){setStatus("فشل الاتصال: "+e.message)}}
-$("connect").onclick=connect;$("reload").onclick=connect;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=render;$("countryFilter").onchange=render;$("stateFilter").onchange=render;
+$("connect").onclick=connect;$("reload").onclick=connect;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
 </script>
 </body></html>
