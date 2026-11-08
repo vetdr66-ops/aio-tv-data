@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:22:51.368Z",
+  "updated_at": "2026-11-08T21:33:17.563Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -135,6 +135,30 @@
       "country": "eg"
     },
     "OSNYahala.ae": {
+      "country": "eg"
+    },
+    "AlAanTV.ae": {
+      "country": "eg"
+    },
+    "AlArabiyaPrograms.ae": {
+      "country": "eg"
+    },
+    "AlarabiyaPortrait.ae": {
+      "country": "eg"
+    },
+    "ChinaArabTV.ae": {
+      "country": "eg"
+    },
+    "FoxArabia.ae": {
+      "country": "eg"
+    },
+    "FujairahTV.ae": {
+      "country": "eg"
+    },
+    "MBCPersia.ae": {
+      "country": "eg"
+    },
+    "MBCFM.ae": {
       "country": "eg"
     }
   },
@@ -364,6 +388,54 @@
       "channel_id": "OSNYahala.ae",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlAanTV.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:33:17.563Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlArabiyaPrograms.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:33:17.563Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlarabiyaPortrait.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:33:17.563Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "ChinaArabTV.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:33:17.563Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "FoxArabia.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:33:17.563Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "FujairahTV.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:33:17.563Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCPersia.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:33:17.563Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCFM.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:33:17.563Z",
       "new_country": "eg"
     }
   ],
