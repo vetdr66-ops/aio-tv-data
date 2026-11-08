@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:36:03.657Z",
+  "updated_at": "2026-11-08T21:37:42.164Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -177,6 +177,9 @@
       "country": "eg"
     },
     "SamiraTV.dz": {
+      "country": "eg"
+    },
+    "DijlahZaman.iq": {
       "country": "eg"
     }
   },
@@ -490,6 +493,12 @@
       "channel_id": "SamiraTV.dz",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:36:03.657Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "DijlahZaman.iq",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:37:42.164Z",
       "new_country": "eg"
     }
   ],
