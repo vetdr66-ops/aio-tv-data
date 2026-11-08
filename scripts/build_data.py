@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ROOT / "sources"
 OUT = ROOT / "public"
 DATA = OUT / "data"
+OVERRIDES_FILE = ROOT / "admin" / "overrides.json"
 
 # Source categories are preserved exactly. These labels are presentation metadata,
 # not guesses about a channel's language, genre, or programming.
@@ -69,6 +70,9 @@ def main():
     # Read the two user-provided source files; do not discard any source records.
     streams = load_source("links.txt")
     channels = load_source("links2.txt")
+    with OVERRIDES_FILE.open("r", encoding="utf-8") as overrides_file:
+        admin_data = json.load(overrides_file)
+    channel_overrides = admin_data.get("channels", {})
 
     streams_by_channel = defaultdict(list)
     unmatched_streams = []
@@ -109,6 +113,30 @@ def main():
         item["is_nsfw"] = bool(channel.get("is_nsfw"))
         item["is_closed"] = bool(channel.get("closed"))
         item["classification_status"] = "source_category" if original_categories else "needs_review"
+
+        # Apply manager changes to generated output only; source files remain untouched.
+        override = channel_overrides.get(channel_id, {}) if channel_id else {}
+        item["admin_override"] = override
+        if override.get("display_name"):
+            item["original_name"] = channel.get("name")
+            item["name"] = override["display_name"]
+        if "logo" in override:
+            item["logo"] = override["logo"]
+        if "categories" in override:
+            item["categories"] = override["categories"]
+            item["localized_categories"] = [
+                {
+                    "id": safe_key(category),
+                    "name": CATEGORY_LABELS.get(safe_key(category), safe_key(category)),
+                    "source": "admin",
+                }
+                for category in override["categories"]
+            ]
+        if "streams" in override:
+            item["streams"] = override["streams"]
+            item["stream_count"] = len(item["streams"])
+        if "enabled" in override:
+            item["is_admin_disabled"] = not bool(override["enabled"])
 
         if channel_id:
             channels_by_id[channel_id] = item
