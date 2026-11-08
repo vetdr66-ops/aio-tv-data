@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:37:42.164Z",
+  "updated_at": "2026-11-08T21:39:15.115Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -180,6 +180,15 @@
       "country": "eg"
     },
     "DijlahZaman.iq": {
+      "country": "eg"
+    },
+    "RoyaComedy.jo": {
+      "country": "eg"
+    },
+    "RoyaDrama.jo": {
+      "country": "eg"
+    },
+    "RoyaTV.jo": {
       "country": "eg"
     }
   },
@@ -499,6 +508,24 @@
       "channel_id": "DijlahZaman.iq",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:37:42.164Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "RoyaComedy.jo",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:39:15.110Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "RoyaDrama.jo",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:39:15.112Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "RoyaTV.jo",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:39:15.115Z",
       "new_country": "eg"
     }
   ],
