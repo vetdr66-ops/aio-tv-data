@@ -96,7 +96,11 @@ def main():
     by_country = defaultdict(list)
     by_category = defaultdict(list)
     country_counts = defaultdict(int)
+    country_no_stream_counts = defaultdict(int)
     category_counts = defaultdict(int)
+    category_no_stream_counts = defaultdict(int)
+    channels_with_streams = 0
+    channels_without_streams = 0
 
     for position, channel in enumerate(channels):
         channel_id = channel.get("id")
@@ -154,12 +158,24 @@ def main():
 
         country = safe_key(item.get("country"))
         by_country[country].append(item)
-        country_counts[country] += 1
+        has_streams = any(
+            (stream.get("url") if isinstance(stream, dict) else stream)
+            for stream in item.get("streams", [])
+        )
+        if has_streams:
+            channels_with_streams += 1
+            country_counts[country] += 1
+        else:
+            channels_without_streams += 1
+            country_no_stream_counts[country] += 1
 
         for category in item.get("categories", original_categories):
             key = safe_key(category)
             by_category[key].append(item)
-            category_counts[key] += 1
+            if has_streams:
+                category_counts[key] += 1
+            else:
+                category_no_stream_counts[key] += 1
 
     # Keep every stream, including duplicates, unsupported schemes, missing IDs,
     # and IDs that have no matching channel metadata.
@@ -186,18 +202,23 @@ def main():
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "total_channels": len(channels),
         "channels_with_ids": sum(1 for channel in channels if channel.get("id")),
+        "channels_with_streams": channels_with_streams,
+        "channels_without_streams": channels_without_streams,
         "total_streams": len(streams),
         "streams_with_channel_id": sum(1 for stream in streams if stream.get("channel")),
         "unmatched_streams": len(unmatched_streams),
         "unmatched_channel_ids": len(unmatched_ids),
         "countries": dict(sorted(country_counts.items())),
+        "countries_without_streams": dict(sorted(country_no_stream_counts.items())),
         "categories": dict(sorted(category_counts.items())),
+        "categories_without_streams": dict(sorted(category_no_stream_counts.items())),
         "category_labels": CATEGORY_LABELS,
         "paths": {
             "country": "data/countries/{code}.json",
             "category": "data/categories/{id}.json",
             "unmatched_streams": "data/unmatched_streams.json",
         },
+        "statistics_policy": "Country and category counts include only enabled channels with at least one stream URL; channels without streams are counted separately.",
         "retention_policy": "All source channel and stream records are retained; status flags do not remove records.",
     })
 
