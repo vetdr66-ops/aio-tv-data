@@ -1,9 +1,10 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T14:37:00+02:00",
+  "updated_at": "2026-11-08T12:49:48.014Z",
   "channels": {
     "AlAlamAlYawm.sa": {
-      "display_name": "Mekameleen"
+      "display_name": "Mekameleen",
+      "country": "eg"
     }
   },
   "groups": {},
@@ -14,6 +15,13 @@
       "old_name": "Al Alam Al Yawm",
       "new_name": "Mekameleen",
       "changed_at": "2026-11-08T14:37:00+02:00"
+    },
+    {
+      "channel_id": "AlAlamAlYawm.sa",
+      "action": "change_country",
+      "old_country": "sa",
+      "new_country": "eg",
+      "changed_at": "2026-11-08T12:49:48.014Z"
     }
   ]
 }
