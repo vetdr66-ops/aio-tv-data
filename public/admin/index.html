@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIO TV | إدارة القنوات</title>
+<style>
+:root{color-scheme:dark;font-family:Tahoma,Arial,sans-serif;background:#10151d;color:#eef2f7}
+body{margin:0;padding:24px;max-width:1100px;margin:auto}h1{font-size:25px;margin:0 0 8px}
+p{color:#aab6c5;line-height:1.7}.panel{background:#192230;border:1px solid #2d3a4b;border-radius:12px;padding:16px;margin:14px 0}
+label{display:block;margin:10px 0 6px;color:#cbd5e1}input,textarea{box-sizing:border-box;width:100%;padding:11px;border-radius:8px;border:1px solid #40516a;background:#0f1722;color:#fff;font:14px Consolas,monospace}
+textarea{min-height:420px;direction:ltr;text-align:left;line-height:1.5}
+button{border:0;border-radius:8px;padding:11px 18px;margin:8px 6px 0 0;background:#2563eb;color:white;font-weight:bold;cursor:pointer}
+button.secondary{background:#334155}button:disabled{opacity:.5;cursor:wait}
+#status{white-space:pre-wrap;margin-top:12px;color:#93c5fd}.hint{font-size:13px;color:#9caec2}
+</style></head>
+<body>
+<h1>إدارة بيانات AIO TV</h1>
+<p>لوحة الإدارة المركزية المجانية. التعديلات تحفظ في مستودع البيانات وتدخل في التحديث التالي للكتالوج.</p>
+<section class="panel">
+<label>GitHub Fine-grained token (يُستخدم داخل هذه الجلسة فقط ولا يُحفظ)</label>
+<input id="token" type="password" autocomplete="off" placeholder="الصق رمز GitHub هنا">
+<div class="hint">أنشئ رمزًا للمستودع aio-tv-data فقط، بصلاحية Contents: Read and write. لا تضع الرمز داخل التطبيق.</div>
+<button id="load">تحميل التعديلات</button><button id="save">حفظ التعديلات</button>
+<div id="status">لم يتم الاتصال بعد.</div>
+</section>
+<section class="panel">
+<label>ملف التعديلات المركزي — admin/overrides.json</label>
+<textarea id="data" spellcheck="false"></textarea>
+<p class="hint">صيغة القناة: "CHANNEL_ID": {"display_name":"الاسم المعروض","logo":"https://...","categories":["news"],"enabled":false,"streams":[{"url":"https://..."}]}. احذف الخاصية لإلغاء تعديلها. لا تُعدّل ملفات المصادر الأصلية.</p>
+</section>
+<script>
+const owner="vetdr66-ops",repo="aio-tv-data",path="admin/overrides.json",branch="main";
+const $=id=>document.getElementById(id);
+let sha=null;
+async function api(url,options={}){const token=$("token").value.trim();if(!token)throw Error("أدخل رمز GitHub أولاً");const response=await fetch(url,{...options,headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28",...(options.headers||{})}});const body=await response.json().catch(()=>({}));if(!response.ok)throw Error(body.message||("HTTP "+response.status));return body}
+$("load").onclick=async()=>{try{$("status").textContent="جارٍ تحميل الملف...";const d=await api("https://api.github.com/repos/"+owner+"/"+repo+"/contents/"+path+"?ref="+branch);sha=d.sha;$("data").value=new TextDecoder().decode(Uint8Array.from(atob(d.content.replace(/\n/g,"")),c=>c.charCodeAt(0)));$("status").textContent="تم تحميل التعديلات بنجاح."}catch(e){$("status").textContent="فشل التحميل: "+e.message}};
+$("save").onclick=async()=>{try{const parsed=JSON.parse($("data").value);if(!parsed||typeof parsed!=="object"||!parsed.channels)throw Error("صيغة الملف غير صحيحة: يلزم وجود channels");$("save").disabled=true;$("status").textContent="جارٍ حفظ التعديلات...";const encoded=btoa(Array.from(new TextEncoder().encode(JSON.stringify(parsed,null,2)+"\n"),b=>String.fromCharCode(b)).join(""));const result=await api("https://api.github.com/repos/"+owner+"/"+repo+"/contents/"+path,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"Update AIO TV admin overrides",content:encoded,sha,branch})});sha=result.content.sha;$("status").textContent="تم الحفظ. سيبدأ GitHub Actions بناء الكتالوج تلقائيًا."}catch(e){$("status").textContent="فشل الحفظ: "+e.message}finally{$("save").disabled=false}};
+</script></body></html>
