@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:40:40.272Z",
+  "updated_at": "2026-11-08T21:42:10.145Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -213,6 +213,15 @@
       "country": "eg"
     },
     "TeleMaroc.ma": {
+      "country": "eg"
+    },
+    "OmanTVCultural.om": {
+      "country": "eg"
+    },
+    "OmanTVMubashir.om": {
+      "country": "eg"
+    },
+    "OmanTV.om": {
       "country": "eg"
     }
   },
@@ -598,6 +607,24 @@
       "channel_id": "TeleMaroc.ma",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:40:40.272Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "OmanTVCultural.om",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:42:10.139Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "OmanTVMubashir.om",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:42:10.142Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "OmanTV.om",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:42:10.145Z",
       "new_country": "eg"
     }
   ],
