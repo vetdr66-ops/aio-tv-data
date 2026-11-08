@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:45:48.514Z",
+  "updated_at": "2026-11-08T21:49:45.979Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -258,6 +258,15 @@
       "country": "eg"
     },
     "Maraya.sa": {
+      "country": "eg"
+    },
+    "MBCMax.sa": {
+      "country": "eg"
+    },
+    "MBCLoud.sa": {
+      "country": "eg"
+    },
+    "MoviesAction.sa": {
       "country": "eg"
     }
   },
@@ -733,6 +742,24 @@
       "channel_id": "Maraya.sa",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:45:48.514Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCMax.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:49:45.974Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCLoud.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:49:45.977Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MoviesAction.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:49:45.979Z",
       "new_country": "eg"
     }
   ],
