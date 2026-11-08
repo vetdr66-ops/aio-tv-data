@@ -14,7 +14,7 @@ input,select,textarea{width:100%;background:#0b1525;color:#eef4ff;border:1px sol
 input:focus,select:focus,textarea:focus{outline:2px solid #2563eb55;border-color:#3b82f6}
 button{border:0;border-radius:9px;padding:11px 15px;background:#2563eb;color:white;font-weight:700;cursor:pointer}
 button:hover{filter:brightness(1.12)}button:disabled{opacity:.5;cursor:wait}.secondary{background:#26364c}.danger{background:#9f343e}.success{background:#087f69}.muted{color:#9fb0c8}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin:20px 0}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:12px;margin:20px 0}.analytics{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}.analytics .panel{min-width:0}.analytics h2{font-size:16px;margin:0 0 12px}.analytics table{min-width:0}.analytics th,.analytics td{padding:9px 7px;font-size:12px}
 .stat,.panel{background:#121f32;border:1px solid #293c55;border-radius:14px;padding:16px}
 .stat strong{display:block;font-size:24px;margin-bottom:5px}.stat span{color:#9fb0c8;font-size:12px}
 .layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(330px,1fr);gap:16px;align-items:start}
@@ -29,7 +29,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
 .help{font-size:11px;color:#8fa4c0;line-height:1.7}.status{margin-top:12px;padding:10px 12px;border-radius:9px;background:#102b36;color:#a8f0d9;font-size:12px;white-space:pre-wrap}
 .audit{max-height:210px;overflow:auto;font-size:12px;color:#a9bad0;line-height:1.9}.audit div{border-bottom:1px solid #29394f;padding:5px 0}
 .empty{text-align:center;padding:32px;color:#91a4bd}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.analytics{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.wrap{padding:13px}.top{padding:16px}.connect input{width:100%}.connect{width:100%}.connect button{flex:1}.toolbar{grid-template-columns:1fr}.twocol{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:12px}}
 </style>
 </head>
@@ -40,10 +40,15 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
 </header>
 <main class="wrap">
  <section class="stats">
-  <div class="stat"><strong id="total">—</strong><span>القنوات المنشورة</span></div>
-  <div class="stat"><strong id="shown">—</strong><span>نتائج البحث</span></div>
+  <div class="stat"><strong id="total">—</strong><span>قنوات لديها بث</span></div>
+  <div class="stat"><strong id="noStreamCount">—</strong><span>قنوات بلا بث</span></div>
+  <div class="stat"><strong id="streamLinksCount">—</strong><span>روابط البث في المصدر</span></div>
   <div class="stat"><strong id="archivedCount">—</strong><span>القنوات المؤرشفة</span></div>
-  <div class="stat"><strong id="countryCount">—</strong><span>الدول</span></div>
+  <div class="stat"><strong id="countryCount">—</strong><span>الدول ذات القنوات المبثوثة</span></div>
+ </section>
+ <section class="analytics">
+  <div class="panel"><h2>إحصائيات الدول</h2><div class="tablewrap"><table><thead><tr><th>الدولة</th><th>لديها بث</th><th>بلا بث</th><th>الإجمالي النشط</th></tr></thead><tbody id="countryStats"></tbody></table></div></div>
+  <div class="panel"><h2>إحصائيات التصنيفات</h2><div class="tablewrap"><table><thead><tr><th>التصنيف</th><th>لديها بث</th><th>بلا بث</th><th>الإجمالي النشط</th></tr></thead><tbody id="categoryStats"></tbody></table></div></div>
  </section>
  <div class="layout">
   <section class="panel">
@@ -78,7 +83,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
 const OWNER="vetdr66-ops",REPO="aio-tv-data",PATH="admin/overrides.json",BRANCH="main";
 const PAGES="https://vetdr66-ops.github.io/aio-tv-data/";
 const $=id=>document.getElementById(id);
-let fileSha=null,overrides=null,catalog=[],selected=null,countryNames={eg:"مصر",sa:"السعودية",ae:"الإمارات",qa:"قطر",kw:"الكويت",bh:"البحرين",om:"عُمان",jo:"الأردن",lb:"لبنان",sy:"سوريا",iq:"العراق",ma:"المغرب",dz:"الجزائر",tn:"تونس",ly:"ليبيا",sd:"السودان",us:"أمريكا",gb:"بريطانيا",fr:"فرنسا",de:"ألمانيا",tr:"تركيا",in:"الهند",kr:"كوريا الجنوبية",cn:"الصين"};
+let fileSha=null,overrides=null,catalog=[],catalogIndex=null,selected=null,countryNames={eg:"مصر",sa:"السعودية",ae:"الإمارات",qa:"قطر",kw:"الكويت",bh:"البحرين",om:"عُمان",jo:"الأردن",lb:"لبنان",sy:"سوريا",iq:"العراق",ma:"المغرب",dz:"الجزائر",tn:"تونس",ly:"ليبيا",sd:"السودان",us:"أمريكا",gb:"بريطانيا",fr:"فرنسا",de:"ألمانيا",tr:"تركيا",in:"الهند",kr:"كوريا الجنوبية",cn:"الصين"};
 function token(){return $("token").value.trim()}
 function setStatus(s){$("status").textContent=s}
 function countryLabel(c){return countryNames[String(c||"").toLowerCase()]||String(c||"غير محدد").toUpperCase()}
@@ -90,19 +95,34 @@ function encode64(s){const a=new TextEncoder().encode(s);let b="";a.forEach(x=>b
 async function loadOverrides(){const d=await api("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/"+PATH+"?ref="+BRANCH);fileSha=d.sha;overrides=JSON.parse(decode64(d.content));overrides.channels=overrides.channels||{};overrides.added_channels=overrides.added_channels||{};overrides.audit=overrides.audit||[]}
 async function loadCatalog(){
  const idx=await (await fetch(PAGES+"data/index.json",{cache:"no-store"})).json();
- const codes=Object.keys(idx.countries||{});
+ catalogIndex=idx;
+ const codes=[...new Set([...Object.keys(idx.countries||{}),...Object.keys(idx.countries_without_streams||{})])].sort();
  const lists=await Promise.all(codes.map(async c=>{const r=await fetch(PAGES+"data/countries/"+c+".json",{cache:"no-store"});if(!r.ok)throw Error("تعذر تحميل بيانات الدولة "+c);return await r.json()}));
  catalog=lists.flat();
  Object.keys(overrides.added_channels||{}).forEach(id=>{if(!catalog.some(x=>x.id===id)){const a=overrides.added_channels[id];catalog.push({...a,id,is_admin_added:true,streams:a.streams||[]})}});
  const archived=Object.entries(overrides.channels||{}).filter(x=>x[1]&&x[1].enabled===false).map(([id,o])=>({...((o&&o.snapshot)||{}),id,name:(o.display_name||((o.snapshot||{}).name)||id),country:o.country||((o.snapshot||{}).country)||"",categories:o.categories||((o.snapshot||{}).categories)||[],logo:o.logo||((o.snapshot||{}).logo)||"",streams:o.streams||((o.snapshot||{}).streams)||[],is_archived:true,is_admin_added:!!((o.snapshot||{}).is_admin_added)}));
  archived.forEach(a=>{if(!catalog.some(x=>x.id===a.id))catalog.push(a)});
- $("total").textContent=catalog.filter(x=>!x.is_archived).length;
- $("archivedCount").textContent=archived.length;
- $("countryCount").textContent=codes.length;
+ renderStatistics(archived.length);
  const opts=codes.map(c=>'<option value="'+c+'">'+countryLabel(c)+'</option>').join("");
  $("countryFilter").innerHTML='<option value="">كل الدول</option>'+opts;
  $("channelCountry").innerHTML=opts+'<option value="eg">مصر</option>';
  render();
+}
+function renderStatistics(archivedCount){
+ const idx=catalogIndex||{};
+ const ready=idx.countries||{},missing=idx.countries_without_streams||{};
+ const categories=idx.categories||{},missingCategories=idx.categories_without_streams||{};
+ const sum=o=>Object.values(o).reduce((n,v)=>n+Number(v||0),0);
+ $("total").textContent=sum(ready);
+ $("noStreamCount").textContent=sum(missing);
+ $("streamLinksCount").textContent=Number(idx.total_streams||0);
+ $("archivedCount").textContent=archivedCount;
+ $("countryCount").textContent=Object.keys(ready).length;
+ const countryKeys=[...new Set([...Object.keys(ready),...Object.keys(missing)])].sort();
+ $("countryStats").innerHTML=countryKeys.map(k=>'<tr><td>'+esc(countryLabel(k))+' ('+esc(k.toUpperCase())+')</td><td>'+Number(ready[k]||0)+'</td><td>'+Number(missing[k]||0)+'</td><td>'+(Number(ready[k]||0)+Number(missing[k]||0))+'</td></tr>').join("")||'<tr><td colspan="4">لا توجد بيانات</td></tr>';
+ const categoryKeys=[...new Set([...Object.keys(categories),...Object.keys(missingCategories)])].sort();
+ const labels=idx.category_labels||{};
+ $("categoryStats").innerHTML=categoryKeys.map(k=>'<tr><td>'+esc(labels[k]||k)+'</td><td>'+Number(categories[k]||0)+'</td><td>'+Number(missingCategories[k]||0)+'</td><td>'+(Number(categories[k]||0)+Number(missingCategories[k]||0))+'</td></tr>').join("")||'<tr><td colspan="4">لا توجد بيانات</td></tr>';
 }
 function render(){
  const q=$("search").value.trim().toLowerCase(),co=$("countryFilter").value,st=$("stateFilter").value;
