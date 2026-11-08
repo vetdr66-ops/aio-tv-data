@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:33:17.563Z",
+  "updated_at": "2026-11-08T21:34:27.554Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -159,6 +159,12 @@
       "country": "eg"
     },
     "MBCFM.ae": {
+      "country": "eg"
+    },
+    "BahrainInternational.bh": {
+      "country": "eg"
+    },
+    "BahrainQuran.bh": {
       "country": "eg"
     }
   },
@@ -436,6 +442,18 @@
       "channel_id": "MBCFM.ae",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:33:17.563Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "BahrainInternational.bh",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:34:27.554Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "BahrainQuran.bh",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:34:27.554Z",
       "new_country": "eg"
     }
   ],
