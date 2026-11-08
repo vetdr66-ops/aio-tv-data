@@ -122,6 +122,8 @@ def main():
             item["name"] = override["display_name"]
         if "logo" in override:
             item["logo"] = override["logo"]
+        if "country" in override:
+            item["country"] = safe_key(override["country"])
         if "categories" in override:
             item["categories"] = override["categories"]
             item["localized_categories"] = [
@@ -141,7 +143,7 @@ def main():
         if channel_id:
             channels_by_id[channel_id] = item
 
-        country = safe_key(channel.get("country"))
+        country = safe_key(item.get("country"))
         by_country[country].append(item)
         country_counts[country] += 1
 
