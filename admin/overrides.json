@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T19:01:05.407Z",
+  "updated_at": "2026-11-08T19:21:18.447Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -16,6 +16,24 @@
         {
           "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-mbc-masr-drama/567b703c19ede6598222de81b0e4508b/index.m3u8",
           "channel": "MBCMasrDrama.sa"
+        }
+      ],
+      "enabled": true
+    },
+    "AlEkhbariya.sa": {
+      "country": "eg",
+      "categories": [
+        "news"
+      ],
+      "logo": "",
+      "streams": [
+        {
+          "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-al-ekhbaria/297b3ef1cd0633ad9cfba7473a686a06/index.m3u8",
+          "channel": "AlEkhbariya.sa"
+        },
+        {
+          "url": "https://cdn-globecast.akamaized.net/live/eds/al_ekhbariya/hls_roku/index.m3u8",
+          "channel": "AlEkhbariya.sa"
         }
       ],
       "enabled": true
@@ -42,6 +60,13 @@
       "action": "edit_channel",
       "changed_at": "2026-11-08T19:01:05.407Z",
       "new_name": "MBC Masr Drama",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlEkhbariya.sa",
+      "action": "edit_channel",
+      "changed_at": "2026-11-08T19:21:18.447Z",
+      "new_name": "Al Ekhbariya",
       "new_country": "eg"
     }
   ],
