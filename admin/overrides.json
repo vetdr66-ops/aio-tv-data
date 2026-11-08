@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:43:49.011Z",
+  "updated_at": "2026-11-08T21:45:48.514Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -240,6 +240,24 @@
       "country": "eg"
     },
     "AlJazeeraMubasher.qa": {
+      "country": "eg"
+    },
+    "AsharqDiscovery.sa": {
+      "country": "eg"
+    },
+    "AsharqDocumentary.sa": {
+      "country": "eg"
+    },
+    "AsharqNews.sa": {
+      "country": "eg"
+    },
+    "MBCMood.sa": {
+      "country": "eg"
+    },
+    "MBCPlusDrama.sa": {
+      "country": "eg"
+    },
+    "Maraya.sa": {
       "country": "eg"
     }
   },
@@ -679,6 +697,42 @@
       "channel_id": "AlJazeeraMubasher.qa",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:43:49.011Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AsharqDiscovery.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:45:48.494Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AsharqDocumentary.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:45:48.497Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AsharqNews.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:45:48.500Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCMood.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:45:48.506Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCPlusDrama.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:45:48.512Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "Maraya.sa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:45:48.514Z",
       "new_country": "eg"
     }
   ],
