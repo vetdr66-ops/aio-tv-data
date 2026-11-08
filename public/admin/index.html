@@ -2,37 +2,137 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AIO TV | إدارة القنوات</title>
+<title>AIO TV | لوحة الإدارة</title>
 <style>
-:root{color-scheme:dark;font-family:Tahoma,Arial,sans-serif;background:#10151d;color:#eef2f7}
-body{margin:0;padding:24px;max-width:1100px;margin:auto}h1{font-size:25px;margin:0 0 8px}
-p{color:#aab6c5;line-height:1.7}.panel{background:#192230;border:1px solid #2d3a4b;border-radius:12px;padding:16px;margin:14px 0}
-label{display:block;margin:10px 0 6px;color:#cbd5e1}input,textarea{box-sizing:border-box;width:100%;padding:11px;border-radius:8px;border:1px solid #40516a;background:#0f1722;color:#fff;font:14px Consolas,monospace}
-textarea{min-height:420px;direction:ltr;text-align:left;line-height:1.5}
-button{border:0;border-radius:8px;padding:11px 18px;margin:8px 6px 0 0;background:#2563eb;color:white;font-weight:bold;cursor:pointer}
-button.secondary{background:#334155}button:disabled{opacity:.5;cursor:wait}
-#status{white-space:pre-wrap;margin-top:12px;color:#93c5fd}.hint{font-size:13px;color:#9caec2}
-</style></head>
+:root{color-scheme:dark;font-family:Tahoma,Arial,sans-serif;background:#0b1220;color:#e8eef8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0,#172c4b 0,transparent 32%),#0b1220;min-height:100vh}
+.top{padding:22px 28px;border-bottom:1px solid #26364c;background:#0d1728dd;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#2563eb,#14b8a6);display:grid;place-items:center;font-weight:900;font-size:20px}
+h1{font-size:22px;margin:0}.sub{color:#9fb0c8;font-size:13px;margin-top:6px}
+.wrap{max-width:1440px;margin:auto;padding:24px}.connect{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.connect input{width:310px}
+input,select,textarea{width:100%;background:#0b1525;color:#eef4ff;border:1px solid #344862;border-radius:9px;padding:11px 12px;font:14px Tahoma,Arial}
+input:focus,select:focus,textarea:focus{outline:2px solid #2563eb55;border-color:#3b82f6}
+button{border:0;border-radius:9px;padding:11px 15px;background:#2563eb;color:white;font-weight:700;cursor:pointer}
+button:hover{filter:brightness(1.12)}button:disabled{opacity:.5;cursor:wait}.secondary{background:#26364c}.danger{background:#9f343e}.success{background:#087f69}.muted{color:#9fb0c8}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin:20px 0}
+.stat,.panel{background:#121f32;border:1px solid #293c55;border-radius:14px;padding:16px}
+.stat strong{display:block;font-size:24px;margin-bottom:5px}.stat span{color:#9fb0c8;font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(330px,1fr);gap:16px;align-items:start}
+.toolbar{display:grid;grid-template-columns:1fr 180px 150px auto;gap:9px;margin-bottom:14px}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:600px}th,td{text-align:right;padding:12px 9px;border-bottom:1px solid #29394f;font-size:13px}th{color:#9fb0c8;font-weight:600}
+.namecell{font-weight:700}.subcell{font-size:11px;color:#91a4bd;margin-top:5px;direction:ltr;text-align:right}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:7px 10px;font-size:12px}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#1c3657;color:#9bc4ff;font-size:11px}.archived{background:#49252c;color:#ffb7bf}
+.formtitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.formtitle h2{font-size:17px;margin:0}
+.field{margin:12px 0}.field label{display:block;color:#bdcbe0;font-size:12px;margin-bottom:6px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-height:1.5}
+.help{font-size:11px;color:#8fa4c0;line-height:1.7}.status{margin-top:12px;padding:10px 12px;border-radius:9px;background:#102b36;color:#a8f0d9;font-size:12px;white-space:pre-wrap}
+.audit{max-height:210px;overflow:auto;font-size:12px;color:#a9bad0;line-height:1.9}.audit div{border-bottom:1px solid #29394f;padding:5px 0}
+.empty{text-align:center;padding:32px;color:#91a4bd}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.wrap{padding:13px}.top{padding:16px}.connect input{width:100%}.connect{width:100%}.connect button{flex:1}.toolbar{grid-template-columns:1fr}.twocol{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:12px}}
+</style>
+</head>
 <body>
-<h1>إدارة بيانات AIO TV</h1>
-<p>لوحة الإدارة المركزية المجانية. التعديلات تحفظ في مستودع البيانات وتدخل في التحديث التالي للكتالوج.</p>
-<section class="panel">
-<label>GitHub Fine-grained token (يُستخدم داخل هذه الجلسة فقط ولا يُحفظ)</label>
-<input id="token" type="password" autocomplete="off" placeholder="الصق رمز GitHub هنا">
-<div class="hint">أنشئ رمزًا للمستودع aio-tv-data فقط، بصلاحية Contents: Read and write. لا تضع الرمز داخل التطبيق.</div>
-<button id="load">تحميل التعديلات</button><button id="save">حفظ التعديلات</button>
-<div id="status">لم يتم الاتصال بعد.</div>
-</section>
-<section class="panel">
-<label>ملف التعديلات المركزي — admin/overrides.json</label>
-<textarea id="data" spellcheck="false"></textarea>
-<p class="hint">صيغة القناة: "CHANNEL_ID": {"display_name":"الاسم المعروض","logo":"https://...","categories":["news"],"enabled":false,"streams":[{"url":"https://..."}]}. احذف الخاصية لإلغاء تعديلها. لا تُعدّل ملفات المصادر الأصلية.</p>
-</section>
+<header class="top">
+ <div class="brand"><div class="logo">A</div><div><h1>لوحة إدارة AIO TV</h1><div class="sub">إدارة مركزية للقنوات والبيانات — التغييرات تصل لجميع المستخدمين بعد النشر</div></div></div>
+ <div class="connect"><input id="token" type="password" autocomplete="off" placeholder="رمز GitHub الإداري"><button id="connect">اتصال وتحميل</button><button class="secondary" id="reload">تحديث</button></div>
+</header>
+<main class="wrap">
+ <section class="stats">
+  <div class="stat"><strong id="total">—</strong><span>القنوات المنشورة</span></div>
+  <div class="stat"><strong id="shown">—</strong><span>نتائج البحث</span></div>
+  <div class="stat"><strong id="archivedCount">—</strong><span>القنوات المؤرشفة</span></div>
+  <div class="stat"><strong id="countryCount">—</strong><span>الدول</span></div>
+ </section>
+ <div class="layout">
+  <section class="panel">
+   <div class="toolbar">
+    <input id="search" placeholder="ابحث باسم القناة أو المعرّف...">
+    <select id="countryFilter"><option value="">كل الدول</option></select>
+    <select id="stateFilter"><option value="active">القنوات المنشورة</option><option value="archived">الأرشيف</option><option value="all">الكل</option></select>
+    <button id="add">+ إضافة قناة</button>
+   </div>
+   <div class="tablewrap"><table><thead><tr><th>القناة</th><th>الدولة</th><th>التصنيف</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="rows"><tr><td colspan="5" class="empty">اتصل بالمستودع لتحميل القنوات.</td></tr></tbody></table></div>
+   <div id="status" class="status">لم يتم الاتصال بعد.</div>
+  </section>
+  <aside>
+   <section class="panel">
+    <div class="formtitle"><h2 id="formTitle">بيانات القناة</h2><button class="secondary" id="clear">تفريغ</button></div>
+    <div class="field"><label>معرّف القناة</label><input id="channelId" placeholder="يُنشأ تلقائيًا للقناة الجديدة"></div>
+    <div class="field"><label>اسم القناة المعروض</label><input id="channelName" placeholder="اسم القناة"></div>
+    <div class="twocol">
+     <div class="field"><label>الدولة</label><select id="channelCountry"></select></div>
+     <div class="field"><label>التصنيفات (افصل بينها بفاصلة)</label><input id="channelCategories" placeholder="news, general"></div>
+    </div>
+    <div class="field"><label>رابط الشعار</label><input id="channelLogo" placeholder="https://..."></div>
+    <div class="field"><label>روابط البث — رابط واحد في كل سطر</label><textarea id="channelStreams" placeholder="https://server/channel/index.m3u8"></textarea><div class="help">يمكن إضافة أكثر من رابط بديل. لا تغيّر الروابط إلا إذا طلبت ذلك.</div></div>
+    <div class="actions"><button id="save">حفظ القناة</button><button class="secondary" id="cancel">إلغاء</button><button class="danger" id="archive" style="display:none">أرشفة</button><button class="success" id="restore" style="display:none">استعادة</button></div>
+    <div class="help" style="margin-top:12px">الأرشفة تخفي القناة من التطبيق مع الاحتفاظ بسجلها وإمكانية استعادتها. لا يتم حذف ملفات المصدر الأصلية.</div>
+   </section>
+   <section class="panel" style="margin-top:14px"><div class="formtitle"><h2>سجل آخر التغييرات</h2></div><div class="audit" id="audit">لا توجد تغييرات محمّلة.</div></section>
+  </aside>
+ </div>
+</main>
 <script>
-const owner="vetdr66-ops",repo="aio-tv-data",path="admin/overrides.json",branch="main";
+const OWNER="vetdr66-ops",REPO="aio-tv-data",PATH="admin/overrides.json",BRANCH="main";
+const PAGES="https://vetdr66-ops.github.io/aio-tv-data/";
 const $=id=>document.getElementById(id);
-let sha=null;
-async function api(url,options={}){const token=$("token").value.trim();if(!token)throw Error("أدخل رمز GitHub أولاً");const response=await fetch(url,{...options,headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28",...(options.headers||{})}});const body=await response.json().catch(()=>({}));if(!response.ok)throw Error(body.message||("HTTP "+response.status));return body}
-$("load").onclick=async()=>{try{$("status").textContent="جارٍ تحميل الملف...";const d=await api("https://api.github.com/repos/"+owner+"/"+repo+"/contents/"+path+"?ref="+branch);sha=d.sha;$("data").value=new TextDecoder().decode(Uint8Array.from(atob(d.content.replace(/\n/g,"")),c=>c.charCodeAt(0)));$("status").textContent="تم تحميل التعديلات بنجاح."}catch(e){$("status").textContent="فشل التحميل: "+e.message}};
-$("save").onclick=async()=>{try{const parsed=JSON.parse($("data").value);if(!parsed||typeof parsed!=="object"||!parsed.channels)throw Error("صيغة الملف غير صحيحة: يلزم وجود channels");$("save").disabled=true;$("status").textContent="جارٍ حفظ التعديلات...";const encoded=btoa(Array.from(new TextEncoder().encode(JSON.stringify(parsed,null,2)+"\n"),b=>String.fromCharCode(b)).join(""));const result=await api("https://api.github.com/repos/"+owner+"/"+repo+"/contents/"+path,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"Update AIO TV admin overrides",content:encoded,sha,branch})});sha=result.content.sha;$("status").textContent="تم الحفظ. سيبدأ GitHub Actions بناء الكتالوج تلقائيًا."}catch(e){$("status").textContent="فشل الحفظ: "+e.message}finally{$("save").disabled=false}};
-</script></body></html>
+let fileSha=null,overrides=null,catalog=[],selected=null,countryNames={eg:"مصر",sa:"السعودية",ae:"الإمارات",qa:"قطر",kw:"الكويت",bh:"البحرين",om:"عُمان",jo:"الأردن",lb:"لبنان",sy:"سوريا",iq:"العراق",ma:"المغرب",dz:"الجزائر",tn:"تونس",ly:"ليبيا",sd:"السودان",us:"أمريكا",gb:"بريطانيا",fr:"فرنسا",de:"ألمانيا",tr:"تركيا",in:"الهند",kr:"كوريا الجنوبية",cn:"الصين"};
+function token(){return $("token").value.trim()}
+function setStatus(s){$("status").textContent=s}
+function countryLabel(c){return countryNames[String(c||"").toLowerCase()]||String(c||"غير محدد").toUpperCase()}
+function urlsOf(c){return (c.streams||[]).map(x=>typeof x==="string"?x:x.url).filter(Boolean)}
+function headers(){return {Authorization:"Bearer "+token(),Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"}}
+async function api(url,options){const r=await fetch(url,{...(options||{}),headers:{...headers(),...((options||{}).headers||{})}});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.message||("HTTP "+r.status));return j}
+function decode64(s){const b=atob(s.replace(/\n/g,""));const a=Uint8Array.from(b,x=>x.charCodeAt(0));return new TextDecoder().decode(a)}
+function encode64(s){const a=new TextEncoder().encode(s);let b="";a.forEach(x=>b+=String.fromCharCode(x));return btoa(b)}
+async function loadOverrides(){const d=await api("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/"+PATH+"?ref="+BRANCH);fileSha=d.sha;overrides=JSON.parse(decode64(d.content));overrides.channels=overrides.channels||{};overrides.added_channels=overrides.added_channels||{};overrides.audit=overrides.audit||[]}
+async function loadCatalog(){
+ const idx=await (await fetch(PAGES+"data/index.json",{cache:"no-store"})).json();
+ const codes=Object.keys(idx.countries||{});
+ const lists=await Promise.all(codes.map(async c=>{const r=await fetch(PAGES+"data/countries/"+c+".json",{cache:"no-store"});if(!r.ok)throw Error("تعذر تحميل بيانات الدولة "+c);return await r.json()}));
+ catalog=lists.flat();
+ Object.keys(overrides.added_channels||{}).forEach(id=>{if(!catalog.some(x=>x.id===id)){const a=overrides.added_channels[id];catalog.push({...a,id,is_admin_added:true,streams:a.streams||[]})}});
+ const archived=Object.entries(overrides.channels||{}).filter(x=>x[1]&&x[1].enabled===false).map(([id,o])=>({...((o&&o.snapshot)||{}),id,name:(o.display_name||((o.snapshot||{}).name)||id),country:o.country||((o.snapshot||{}).country)||"",categories:o.categories||((o.snapshot||{}).categories)||[],logo:o.logo||((o.snapshot||{}).logo)||"",streams:o.streams||((o.snapshot||{}).streams)||[],is_archived:true,is_admin_added:!!((o.snapshot||{}).is_admin_added)}));
+ archived.forEach(a=>{if(!catalog.some(x=>x.id===a.id))catalog.push(a)});
+ $("total").textContent=catalog.filter(x=>!x.is_archived).length;
+ $("archivedCount").textContent=archived.length;
+ $("countryCount").textContent=codes.length;
+ const opts=codes.map(c=>'<option value="'+c+'">'+countryLabel(c)+'</option>').join("");
+ $("countryFilter").innerHTML='<option value="">كل الدول</option>'+opts;
+ $("channelCountry").innerHTML=opts+'<option value="eg">مصر</option>';
+ render();
+}
+function render(){
+ const q=$("search").value.trim().toLowerCase(),co=$("countryFilter").value,st=$("stateFilter").value;
+ let list=catalog.filter(c=>(!q||String(c.name||"").toLowerCase().includes(q)||String(c.id||"").toLowerCase().includes(q))&&(!co||String(c.country||"").toLowerCase()===co));
+ list=list.filter(c=>st==="all"||(st==="archived"?c.is_archived:!c.is_archived));
+ $("shown").textContent=list.length;
+ $("rows").innerHTML=list.length?list.map(c=>'<tr><td><div class="namecell">'+esc(c.name||c.id)+'</div><div class="subcell">'+esc(c.id)+'</div></td><td>'+esc(countryLabel(c.country))+'</td><td>'+esc((c.categories||[]).join(", ")||"—")+'</td><td><span class="badge '+(c.is_archived?"archived":"")+'">'+(c.is_archived?"مؤرشفة":"منشورة")+'</span></td><td><div class="actions"><button class="secondary" data-edit="'+esc(c.id)+'">تعديل</button>'+(c.is_archived?'<button class="success" data-restore="'+esc(c.id)+'">استعادة</button>':'<button class="danger" data-archive="'+esc(c.id)+'">أرشفة</button>')+'</div></td></tr>').join(""):'<tr><td colspan="5" class="empty">لا توجد نتائج.</td></tr>';
+ $("rows").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
+ $("rows").querySelectorAll("[data-archive]").forEach(b=>b.onclick=()=>archive(b.dataset.archive));
+ $("rows").querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>restore(b.dataset.restore));
+ renderAudit();
+}
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderAudit(){$("audit").innerHTML=(overrides.audit||[]).slice().reverse().slice(0,25).map(a=>'<div>'+esc(a.action||"تعديل")+' — '+esc(a.channel_id||"")+'<br><span class="muted">'+esc(a.changed_at||"")+'</span></div>').join("")||"لا توجد تغييرات مسجلة."}
+function clearForm(){selected=null;$("formTitle").textContent="إضافة قناة جديدة";$("channelId").value="";$("channelId").disabled=false;$("channelName").value="";$("channelCountry").value="eg";$("channelCategories").value="general";$("channelLogo").value="";$("channelStreams").value="";$("archive").style.display="none";$("restore").style.display="none"}
+function edit(id){const c=catalog.find(x=>x.id===id);if(!c)return;selected=c;$("formTitle").textContent="تعديل بيانات القناة";$("channelId").value=c.id;$("channelId").disabled=true;$("channelName").value=c.name||"";$("channelCountry").value=String(c.country||"eg").toLowerCase();$("channelCategories").value=(c.categories||[]).join(", ");$("channelLogo").value=c.logo||"";$("channelStreams").value=urlsOf(c).join("\n");$("archive").style.display=c.is_archived?"none":"inline-block";$("restore").style.display=c.is_archived?"inline-block":"none"}
+function makeId(name){return "admin."+name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,".").replace(/^\.+|\.+$/g,"")}
+function add(){clearForm();$("formTitle").textContent="إضافة قناة جديدة"}
+function validate(){const id=$("channelId").value.trim()||makeId($("channelName").value.trim());$("channelId").value=id;if(!id||!$("channelName").value.trim())throw Error("أدخل معرّف القناة واسمها");if(!/^[a-zA-Z0-9._-]+$/.test(id))throw Error("المعرّف يجب أن يحتوي أحرفًا وأرقامًا ونقاطًا فقط");const lines=$("channelStreams").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);for(const u of lines)if(!/^https?:\/\//i.test(u))throw Error("رابط غير صالح: "+u);return {id,lines}}
+function audit(id,action,extra){overrides.audit.push({channel_id:id,action:action,changed_at:new Date().toISOString(),...(extra||{})});overrides.updated_at=new Date().toISOString()}
+async function commit(message){$("save").disabled=true;try{const body=JSON.stringify(overrides,null,2)+"\n";const result=await api("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/"+PATH,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,content:encode64(body),sha:fileSha,branch:BRANCH})});fileSha=result.content.sha;setStatus("تم حفظ التعديلات في المستودع. يجري الآن بناء الكتالوج ونشره تلقائيًا.");renderAudit()}finally{$("save").disabled=false}}
+async function saveChannel(){try{if(!overrides)throw Error("اتصل بالمستودع أولاً");const v=validate(),name=$("channelName").value.trim(),country=$("channelCountry").value,categories=$("channelCategories").value.split(",").map(x=>x.trim()).filter(Boolean),logo=$("channelLogo").value.trim(),streams=v.lines.map(url=>({url:url,channel:v.id}));const old=selected;
+ if(!old){if(catalog.some(c=>c.id===v.id))throw Error("هذا المعرّف مستخدم بالفعل");overrides.added_channels[v.id]={name:name,country:country,categories:categories,logo:logo,streams:streams};audit(v.id,"add_channel",{new_name:name});}
+ else if(old.is_admin_added){const item=overrides.added_channels[v.id]||{};overrides.added_channels[v.id]={...item,name:name,country:country,categories:categories,logo:logo,streams:streams};const o=overrides.channels[v.id]||{};delete o.display_name;delete o.country;delete o.categories;delete o.logo;delete o.streams;overrides.channels[v.id]=o;audit(v.id,"edit_admin_channel");}
+ else {const o=overrides.channels[v.id]||{};o.display_name=name===(old.original_name||old.name)?null:name;if(o.display_name===null)delete o.display_name;o.country=country;o.categories=categories;o.logo=logo;o.streams=streams;o.enabled=true;delete o.snapshot;overrides.channels[v.id]=o;audit(v.id,"edit_channel",{new_name:name,new_country:country});}
+ await commit(old?"Edit channel "+v.id:"Add channel "+v.id);await loadCatalog();clearForm();
+ }catch(e){setStatus("تعذر الحفظ: "+e.message)}}
+async function archive(id){if(!overrides)return;const c=catalog.find(x=>x.id===id);if(!c)return;if(!confirm("أرشفة القناة "+(c.name||id)+"؟ ستختفي من التطبيق ويمكن استعادتها لاحقًا."))return;const o=overrides.channels[id]||{};o.snapshot={...c};o.enabled=false;overrides.channels[id]=o;audit(id,"archive_channel");try{await commit("Archive channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر تنفيذ الأرشفة: "+e.message)}}
+async function restore(id){const o=overrides.channels[id]||{};o.enabled=true;delete o.snapshot;overrides.channels[id]=o;audit(id,"restore_channel");try{await commit("Restore channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر الاستعادة: "+e.message)}}
+async function connect(){try{if(!token())throw Error("أدخل رمز GitHub الإداري");setStatus("جارٍ الاتصال وتحميل البيانات...");await loadOverrides();await loadCatalog();setStatus("تم الاتصال وتحميل القنوات والتعديلات بنجاح.");}catch(e){setStatus("فشل الاتصال: "+e.message)}}
+$("connect").onclick=connect;$("reload").onclick=connect;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=render;$("countryFilter").onchange=render;$("stateFilter").onchange=render;
+</script>
+</body></html>
