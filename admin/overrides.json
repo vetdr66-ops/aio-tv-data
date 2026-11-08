@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:42:10.145Z",
+  "updated_at": "2026-11-08T21:43:49.011Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -222,6 +222,24 @@
       "country": "eg"
     },
     "OmanTV.om": {
+      "country": "eg"
+    },
+    "AlJazeera.qa": {
+      "country": "eg"
+    },
+    "AlJazeera2.qa": {
+      "country": "eg"
+    },
+    "AlArabyTV.qa": {
+      "country": "eg"
+    },
+    "AlArabyTV2.qa": {
+      "country": "eg"
+    },
+    "AlJazeeraDocumentary.qa": {
+      "country": "eg"
+    },
+    "AlJazeeraMubasher.qa": {
       "country": "eg"
     }
   },
@@ -625,6 +643,42 @@
       "channel_id": "OmanTV.om",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:42:10.145Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlJazeera.qa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:43:48.991Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlJazeera2.qa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:43:48.994Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlArabyTV.qa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:43:48.999Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlArabyTV2.qa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:43:49.004Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlJazeeraDocumentary.qa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:43:49.009Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlJazeeraMubasher.qa",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:43:49.011Z",
       "new_country": "eg"
     }
   ],
