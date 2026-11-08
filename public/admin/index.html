@@ -98,7 +98,7 @@ async function loadCatalog(){
  const idx=await (await fetch(PAGES+"data/index.json",{cache:"no-store"})).json();
  catalogIndex=idx;
  populateCategoryOptions();
- const codes=[...new Set([...Object.keys(idx.countries||{}),...Object.keys(idx.countries_without_streams||{})])].sort();
+ const codes=[...new Set([...Object.keys(idx.countries||{}),...Object.keys(idx.countries_without_streams||{}),"eg"])].sort();
  const lists=await Promise.all(codes.map(async c=>{const r=await fetch(PAGES+"data/countries/"+c+".json",{cache:"no-store"});if(r.status===404)return [];if(!r.ok)throw Error("تعذر تحميل بيانات الدولة "+c);return await r.json()}));
  catalog=lists.flat().map(c=>{
   const o=overrides.channels[c.id];
@@ -158,9 +158,10 @@ function render(){
  $("rows").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
  $("rows").querySelectorAll("[data-archive]").forEach(b=>b.onclick=()=>archive(b.dataset.archive));
  $("rows").querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>restore(b.dataset.restore));
+ updateMoveButton();
 }
 function updateMoveButton(){$("moveSelected").textContent="نقل المحدد إلى مصر ("+selectedChannelIds.size+")";$("moveSelected").disabled=selectedChannelIds.size===0}
-async function moveSelectedToEgypt(){if(!overrides)throw Error("اتصل بالمستودع أولاً");const ids=[...selectedChannelIds].filter(id=>catalog.some(c=>c.id===id));if(!ids.length){setStatus("حدد قناة واحدة على الأقل.");return}if(!confirm("نقل "+ids.length+" قناة محددة إلى مصر؟ لن تتغير المعرّفات أو الأسماء أو روابط البث أو الشعارات أو التصنيفات."))return;try{for(const id of ids){const c=catalog.find(x=>x.id===id);if(c.is_admin_added){const a=overrides.added_channels[id]||{};a.country="eg";overrides.added_channels[id]=a}else{const o=overrides.channels[id]||{};o.country="eg";overrides.channels[id]=o}audit(id,"move_channel_to_egypt",{new_country:"eg"})}await commit("Move "+ids.length+" channels to Egypt");selectedChannelIds.clear();await loadCatalog();setStatus("تم نقل "+ids.length+" قناة إلى مصر. ستُحدّث بيانات التطبيق بعد اكتمال النشر.");}catch(e){setStatus("تعذر نقل القنوات: "+e.message)}}
+async function moveSelectedToEgypt(){if(!overrides)throw Error("اتصل بالمستودع أولاً");const ids=[...selectedChannelIds].filter(id=>catalog.some(c=>c.id===id));if(!ids.length){setStatus("حدد قناة واحدة على الأقل.");return}if(!confirm("نقل "+ids.length+" قناة محددة إلى مصر؟ لن تتغير المعرّفات أو الأسماء أو روابط البث أو الشعارات أو التصنيفات."))return;try{for(const id of ids){const c=catalog.find(x=>x.id===id);if(c.is_admin_added){const a=overrides.added_channels[id]||{};a.country="eg";overrides.added_channels[id]=a}else{const o=overrides.channels[id]||{};o.country="eg";overrides.channels[id]=o}audit(id,"move_channel_to_egypt",{new_country:"eg"})}await commit("Move "+ids.length+" channels to Egypt");selectedChannelIds.clear();await loadCatalog();$("countryFilter").value="eg";$("search").value="";$("stateFilter").value="active";render();setStatus("تم نقل "+ids.length+" قناة إلى مصر. ستُحدّث بيانات التطبيق بعد اكتمال النشر.");}catch(e){setStatus("تعذر نقل القنوات: "+e.message)}}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function renderAudit(){$("audit").innerHTML=(overrides.audit||[]).slice().reverse().slice(0,25).map(a=>'<div>'+esc(a.action||"تعديل")+' — '+esc(a.channel_id||"")+'<br><span class="muted">'+esc(a.changed_at||"")+'</span></div>').join("")||"لا توجد تغييرات مسجلة."}
 function clearForm(){selected=null;$("formTitle").textContent="إضافة قناة جديدة";$("channelId").value="";$("channelId").disabled=false;$("channelName").value="";$("channelCountry").value="eg";populateCategoryOptions(["general"]);$("channelLogo").value="";$("channelStreams").value="";$("archive").style.display="none";$("restore").style.display="none"}
