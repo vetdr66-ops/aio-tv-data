@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:39:15.115Z",
+  "updated_at": "2026-11-08T21:40:40.272Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -189,6 +189,30 @@
       "country": "eg"
     },
     "RoyaTV.jo": {
+      "country": "eg"
+    },
+    "2M.ma": {
+      "country": "eg"
+    },
+    "AlAoula.ma": {
+      "country": "eg"
+    },
+    "AflamTV.ma": {
+      "country": "eg"
+    },
+    "AlMaghribia.ma": {
+      "country": "eg"
+    },
+    "Assadissa.ma": {
+      "country": "eg"
+    },
+    "Athaqafia.ma": {
+      "country": "eg"
+    },
+    "TamazightTV.ma": {
+      "country": "eg"
+    },
+    "TeleMaroc.ma": {
       "country": "eg"
     }
   },
@@ -526,6 +550,54 @@
       "channel_id": "RoyaTV.jo",
       "action": "move_channel",
       "changed_at": "2026-11-08T21:39:15.115Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "2M.ma",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:40:40.254Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlAoula.ma",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:40:40.256Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AflamTV.ma",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:40:40.259Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlMaghribia.ma",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:40:40.265Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "Assadissa.ma",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:40:40.267Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "Athaqafia.ma",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:40:40.268Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "TamazightTV.ma",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:40:40.270Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "TeleMaroc.ma",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:40:40.272Z",
       "new_country": "eg"
     }
   ],
