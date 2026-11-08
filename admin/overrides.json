@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T19:21:18.447Z",
+  "updated_at": "2026-11-08T21:06:38.664Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -37,6 +37,33 @@
         }
       ],
       "enabled": true
+    },
+    "Aflam.sa": {
+      "country": "eg"
+    },
+    "AlHadath.sa": {
+      "country": "eg"
+    },
+    "AlQuranAlKareemTV.sa": {
+      "country": "eg"
+    },
+    "AlSunnahAlNabawiyahTV.sa": {
+      "country": "eg"
+    },
+    "AlMajdHolyQuran.sa": {
+      "country": "eg"
+    },
+    "AlMajdScientific.sa": {
+      "country": "eg"
+    },
+    "DramaBadawia.sa": {
+      "country": "eg"
+    },
+    "Fairuz.sa": {
+      "country": "eg"
+    },
+    "LBC.sa": {
+      "country": "eg"
     }
   },
   "groups": {},
@@ -67,6 +94,60 @@
       "action": "edit_channel",
       "changed_at": "2026-11-08T19:21:18.447Z",
       "new_name": "Al Ekhbariya",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "Aflam.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.640Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlHadath.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.643Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlQuranAlKareemTV.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.647Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlSunnahAlNabawiyahTV.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.652Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlMajdHolyQuran.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.654Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlMajdScientific.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.656Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "DramaBadawia.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.658Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "Fairuz.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.661Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "LBC.sa",
+      "action": "move_channel_to_egypt",
+      "changed_at": "2026-11-08T21:06:38.664Z",
       "new_country": "eg"
     }
   ],
