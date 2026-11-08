@@ -24,7 +24,7 @@ button:hover{filter:brightness(1.12)}button:disabled{opacity:.5;cursor:wait}.sec
 .actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:7px 10px;font-size:12px}
 .badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#1c3657;color:#9bc4ff;font-size:11px}.archived{background:#49252c;color:#ffb7bf}
 .formtitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.formtitle h2{font-size:17px;margin:0}
-.field{margin:12px 0}.field label{display:block;color:#bdcbe0;font-size:12px;margin-bottom:6px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{margin:12px 0}.field label{display:block;color:#bdcbe0;font-size:12px;margin-bottom:6px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}select[multiple]{min-height:154px;padding:7px}select[multiple] option{padding:7px}
 textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-height:1.5}
 .help{font-size:11px;color:#8fa4c0;line-height:1.7}.status{margin-top:12px;padding:10px 12px;border-radius:9px;background:#102b36;color:#a8f0d9;font-size:12px;white-space:pre-wrap}
 .audit{max-height:210px;overflow:auto;font-size:12px;color:#a9bad0;line-height:1.9}.audit div{border-bottom:1px solid #29394f;padding:5px 0}
@@ -68,7 +68,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
     <div class="field"><label>اسم القناة المعروض</label><input id="channelName" placeholder="اسم القناة"></div>
     <div class="twocol">
      <div class="field"><label>الدولة</label><select id="channelCountry"></select></div>
-     <div class="field"><label>التصنيفات (افصل بينها بفاصلة)</label><input id="channelCategories" placeholder="news, general"></div>
+     <div class="field"><label>التصنيفات (يمكن اختيار تصنيف واحد أو أكثر)</label><select id="channelCategories" multiple size="7"></select><div class="help">استخدم Ctrl أثناء النقر لاختيار أكثر من تصنيف. القائمة مأخوذة من التصنيفات الموجودة في إحصائيات الكتالوج.</div></div>
     </div>
     <div class="field"><label>رابط الشعار</label><input id="channelLogo" placeholder="https://..."></div>
     <div class="field"><label>روابط البث — رابط واحد في كل سطر</label><textarea id="channelStreams" placeholder="https://server/channel/index.m3u8"></textarea><div class="help">يمكن إضافة أكثر من رابط بديل. لا تغيّر الروابط إلا إذا طلبت ذلك.</div></div>
@@ -96,6 +96,7 @@ async function loadOverrides(){const d=await api("https://api.github.com/repos/"
 async function loadCatalog(){
  const idx=await (await fetch(PAGES+"data/index.json",{cache:"no-store"})).json();
  catalogIndex=idx;
+ populateCategoryOptions();
  const codes=[...new Set([...Object.keys(idx.countries||{}),...Object.keys(idx.countries_without_streams||{})])].sort();
  const lists=await Promise.all(codes.map(async c=>{const r=await fetch(PAGES+"data/countries/"+c+".json",{cache:"no-store"});if(!r.ok)throw Error("تعذر تحميل بيانات الدولة "+c);return await r.json()}));
  catalog=lists.flat();
@@ -110,6 +111,13 @@ async function loadCatalog(){
  render();
  renderAudit();
 }
+function populateCategoryOptions(selectedCategories=[]){
+ const idx=catalogIndex||{},known=idx.categories||{},missing=idx.categories_without_streams||{},labels=idx.category_labels||{};
+ const keys=[...new Set([...Object.keys(known),...Object.keys(missing),...selectedCategories.map(s=>String(s))])].sort();
+ const selected=new Set(selectedCategories.map(s=>String(s)));
+ $("channelCategories").innerHTML=keys.map(k=>'<option value="'+esc(k)+'"'+(selected.has(k)?' selected':'')+'>'+esc(labels[k]||k)+' ('+esc(k)+')</option>').join("");
+}
+function selectedCategoryValues(){return Array.from($("channelCategories").selectedOptions).map(option=>option.value)}
 function renderStatistics(archivedCount){
  const idx=catalogIndex||{};
  const ready=idx.countries||{},missing=idx.countries_without_streams||{};
@@ -139,14 +147,14 @@ function render(){
 }
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function renderAudit(){$("audit").innerHTML=(overrides.audit||[]).slice().reverse().slice(0,25).map(a=>'<div>'+esc(a.action||"تعديل")+' — '+esc(a.channel_id||"")+'<br><span class="muted">'+esc(a.changed_at||"")+'</span></div>').join("")||"لا توجد تغييرات مسجلة."}
-function clearForm(){selected=null;$("formTitle").textContent="إضافة قناة جديدة";$("channelId").value="";$("channelId").disabled=false;$("channelName").value="";$("channelCountry").value="eg";$("channelCategories").value="general";$("channelLogo").value="";$("channelStreams").value="";$("archive").style.display="none";$("restore").style.display="none"}
-function edit(id){const c=catalog.find(x=>x.id===id);if(!c)return;selected=c;$("formTitle").textContent="تعديل بيانات القناة";$("channelId").value=c.id;$("channelId").disabled=true;$("channelName").value=c.name||"";$("channelCountry").value=String(c.country||"eg").toLowerCase();$("channelCategories").value=(c.categories||[]).join(", ");$("channelLogo").value=c.logo||"";$("channelStreams").value=urlsOf(c).join("\n");$("archive").style.display=c.is_archived?"none":"inline-block";$("restore").style.display=c.is_archived?"inline-block":"none"}
+function clearForm(){selected=null;$("formTitle").textContent="إضافة قناة جديدة";$("channelId").value="";$("channelId").disabled=false;$("channelName").value="";$("channelCountry").value="eg";populateCategoryOptions(["general"]);$("channelLogo").value="";$("channelStreams").value="";$("archive").style.display="none";$("restore").style.display="none"}
+function edit(id){const c=catalog.find(x=>x.id===id);if(!c)return;selected=c;$("formTitle").textContent="تعديل بيانات القناة";$("channelId").value=c.id;$("channelId").disabled=true;$("channelName").value=c.name||"";$("channelCountry").value=String(c.country||"eg").toLowerCase();populateCategoryOptions(c.categories||[]);$("channelLogo").value=c.logo||"";$("channelStreams").value=urlsOf(c).join("\n");$("archive").style.display=c.is_archived?"none":"inline-block";$("restore").style.display=c.is_archived?"inline-block":"none"}
 function makeId(name){return "admin."+name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,".").replace(/^\.+|\.+$/g,"")}
 function add(){clearForm();$("formTitle").textContent="إضافة قناة جديدة"}
 function validate(){const id=$("channelId").value.trim()||makeId($("channelName").value.trim());$("channelId").value=id;if(!id||!$("channelName").value.trim())throw Error("أدخل معرّف القناة واسمها");if(!/^[a-zA-Z0-9._-]+$/.test(id))throw Error("المعرّف يجب أن يحتوي أحرفًا وأرقامًا ونقاطًا فقط");const lines=$("channelStreams").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);for(const u of lines)if(!/^https?:\/\//i.test(u))throw Error("رابط غير صالح: "+u);return {id,lines}}
 function audit(id,action,extra){overrides.audit.push({channel_id:id,action:action,changed_at:new Date().toISOString(),...(extra||{})});overrides.updated_at=new Date().toISOString()}
 async function commit(message){$("save").disabled=true;try{const body=JSON.stringify(overrides,null,2)+"\n";const result=await api("https://api.github.com/repos/"+OWNER+"/"+REPO+"/contents/"+PATH,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,content:encode64(body),sha:fileSha,branch:BRANCH})});fileSha=result.content.sha;setStatus("تم حفظ التعديلات في المستودع. يجري الآن بناء الكتالوج ونشره تلقائيًا.");renderAudit()}finally{$("save").disabled=false}}
-async function saveChannel(){try{if(!overrides)throw Error("اتصل بالمستودع أولاً");const v=validate(),name=$("channelName").value.trim(),country=$("channelCountry").value,categories=$("channelCategories").value.split(",").map(x=>x.trim()).filter(Boolean),logo=$("channelLogo").value.trim(),streams=v.lines.map(url=>({url:url,channel:v.id}));const old=selected;
+async function saveChannel(){try{if(!overrides)throw Error("اتصل بالمستودع أولاً");const v=validate(),name=$("channelName").value.trim(),country=$("channelCountry").value,categories=selectedCategoryValues(),logo=$("channelLogo").value.trim(),streams=v.lines.map(url=>({url:url,channel:v.id}));const old=selected;
  if(!old){if(catalog.some(c=>c.id===v.id))throw Error("هذا المعرّف مستخدم بالفعل");overrides.added_channels[v.id]={name:name,country:country,categories:categories,logo:logo,streams:streams};audit(v.id,"add_channel",{new_name:name});}
  else if(old.is_admin_added){const item=overrides.added_channels[v.id]||{};overrides.added_channels[v.id]={...item,name:name,country:country,categories:categories,logo:logo,streams:streams};const o=overrides.channels[v.id]||{};delete o.display_name;delete o.country;delete o.categories;delete o.logo;delete o.streams;overrides.channels[v.id]=o;audit(v.id,"edit_admin_channel");}
  else {const o=overrides.channels[v.id]||{};o.display_name=name===(old.original_name||old.name)?null:name;if(o.display_name===null)delete o.display_name;o.country=country;o.categories=categories;o.logo=logo;o.streams=streams;o.enabled=true;delete o.snapshot;overrides.channels[v.id]=o;audit(v.id,"edit_channel",{new_name:name,new_country:country});}
