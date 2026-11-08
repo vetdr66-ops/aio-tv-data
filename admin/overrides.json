@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:06:38.664Z",
+  "updated_at": "2026-11-08T21:22:51.368Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -63,6 +63,78 @@
       "country": "eg"
     },
     "LBC.sa": {
+      "country": "eg"
+    },
+    "AbuDhabiDrama.ae": {
+      "country": "eg"
+    },
+    "AbuDhabiEmirates.ae": {
+      "country": "eg"
+    },
+    "AjmanTV.ae": {
+      "country": "eg"
+    },
+    "AlWoustaTV.ae": {
+      "country": "eg"
+    },
+    "AlYaumTV.ae": {
+      "country": "eg"
+    },
+    "Alarabiya.ae": {
+      "country": "eg"
+    },
+    "B4UAflam.ae": {
+      "country": "eg"
+    },
+    "CNBCArabiya.ae": {
+      "country": "eg"
+    },
+    "DubaiOne.ae": {
+      "country": "eg"
+    },
+    "DubaiTV.ae": {
+      "country": "eg"
+    },
+    "DubaiTVInternational.ae": {
+      "country": "eg"
+    },
+    "DubaiZaman.ae": {
+      "country": "eg"
+    },
+    "Majid.ae": {
+      "country": "eg"
+    },
+    "MBC1.ae": {
+      "country": "eg"
+    },
+    "MBC2.ae": {
+      "country": "eg"
+    },
+    "MBC3.ae": {
+      "country": "eg"
+    },
+    "MBC4.ae": {
+      "country": "eg"
+    },
+    "MBC5.ae": {
+      "country": "eg"
+    },
+    "MBCAction.ae": {
+      "country": "eg"
+    },
+    "MBCBollywood.ae": {
+      "country": "eg"
+    },
+    "MBCDrama.ae": {
+      "country": "eg"
+    },
+    "MBCPlusVariety.ae": {
+      "country": "eg"
+    },
+    "NationalGeographicAbuDhabi.ae": {
+      "country": "eg"
+    },
+    "OSNYahala.ae": {
       "country": "eg"
     }
   },
@@ -148,6 +220,150 @@
       "channel_id": "LBC.sa",
       "action": "move_channel_to_egypt",
       "changed_at": "2026-11-08T21:06:38.664Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AbuDhabiDrama.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AbuDhabiEmirates.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AjmanTV.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlWoustaTV.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "AlYaumTV.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "Alarabiya.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "B4UAflam.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "CNBCArabiya.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "DubaiOne.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "DubaiTV.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "DubaiTVInternational.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "DubaiZaman.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "Majid.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBC1.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBC2.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBC3.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBC4.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBC5.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCAction.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCBollywood.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCDrama.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "MBCPlusVariety.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "NationalGeographicAbuDhabi.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "OSNYahala.ae",
+      "action": "move_channel",
+      "changed_at": "2026-11-08T21:22:51.368Z",
       "new_country": "eg"
     }
   ],
