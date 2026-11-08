@@ -73,6 +73,12 @@ def main():
     with OVERRIDES_FILE.open("r", encoding="utf-8") as overrides_file:
         admin_data = json.load(overrides_file)
     channel_overrides = admin_data.get("channels", {})
+    added_channels = admin_data.get("added_channels", {})
+    existing_ids = {channel.get("id") for channel in channels if channel.get("id")}
+    for added_id, added_channel in added_channels.items():
+        if added_id in existing_ids:
+            raise ValueError(f"Admin channel ID already exists in source: {added_id}")
+        channels.append({**added_channel, "id": added_id, "is_admin_added": True})
 
     streams_by_channel = defaultdict(list)
     unmatched_streams = []
@@ -108,7 +114,7 @@ def main():
         item["source_index"] = position
         item["original_categories"] = original_categories
         item["localized_categories"] = localized_categories
-        item["streams"] = list(streams_by_channel.get(channel_id, [])) if channel_id else []
+        item["streams"] = list(channel.get("streams", streams_by_channel.get(channel_id, []))) if channel_id else []
         item["stream_count"] = len(item["streams"])
         item["is_nsfw"] = bool(channel.get("is_nsfw"))
         item["is_closed"] = bool(channel.get("closed"))
@@ -143,11 +149,14 @@ def main():
         if channel_id:
             channels_by_id[channel_id] = item
 
+        if override.get("enabled") is False:
+            continue
+
         country = safe_key(item.get("country"))
         by_country[country].append(item)
         country_counts[country] += 1
 
-        for category in original_categories:
+        for category in item.get("categories", original_categories):
             key = safe_key(category)
             by_category[key].append(item)
             category_counts[key] += 1
