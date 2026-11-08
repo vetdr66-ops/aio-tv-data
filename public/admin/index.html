@@ -98,7 +98,7 @@ async function loadCatalog(){
  catalogIndex=idx;
  populateCategoryOptions();
  const codes=[...new Set([...Object.keys(idx.countries||{}),...Object.keys(idx.countries_without_streams||{})])].sort();
- const lists=await Promise.all(codes.map(async c=>{const r=await fetch(PAGES+"data/countries/"+c+".json",{cache:"no-store"});if(!r.ok)throw Error("تعذر تحميل بيانات الدولة "+c);return await r.json()}));
+ const lists=await Promise.all(codes.map(async c=>{const r=await fetch(PAGES+"data/countries/"+c+".json",{cache:"no-store"});if(r.status===404)return [];if(!r.ok)throw Error("تعذر تحميل بيانات الدولة "+c);return await r.json()}));
  catalog=lists.flat();
  Object.keys(overrides.added_channels||{}).forEach(id=>{if(!catalog.some(x=>x.id===id)){const a=overrides.added_channels[id];catalog.push({...a,id,is_admin_added:true,streams:a.streams||[]})}});
  const archived=Object.entries(overrides.channels||{}).filter(x=>x[1]&&x[1].enabled===false).map(([id,o])=>({...((o&&o.snapshot)||{}),id,name:(o.display_name||((o.snapshot||{}).name)||id),country:o.country||((o.snapshot||{}).country)||"",categories:o.categories||((o.snapshot||{}).categories)||[],logo:o.logo||((o.snapshot||{}).logo)||"",streams:o.streams||((o.snapshot||{}).streams)||[],is_archived:true,is_admin_added:!!((o.snapshot||{}).is_admin_added)}));
