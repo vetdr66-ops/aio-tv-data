@@ -13,12 +13,12 @@ h1{font-size:22px;margin:0}.sub{color:#9fb0c8;font-size:13px;margin-top:6px}
 input,select,textarea{width:100%;background:#0b1525;color:#eef4ff;border:1px solid #344862;border-radius:9px;padding:11px 12px;font:14px Tahoma,Arial}
 input:focus,select:focus,textarea:focus{outline:2px solid #2563eb55;border-color:#3b82f6}
 button{border:0;border-radius:9px;padding:11px 15px;background:#2563eb;color:white;font-weight:700;cursor:pointer}
-button:hover{filter:brightness(1.12)}button:disabled{opacity:.5;cursor:wait}.secondary{background:#26364c}.danger{background:#9f343e}.success{background:#087f69}.muted{color:#9fb0c8}
+button:hover{filter:brightness(1.12)}button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#26364c}.danger{background:#9f343e}.success{background:#087f69}.muted{color:#9fb0c8}
 .stats{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:12px;margin:20px 0}.analytics{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}.analytics .panel{min-width:0}.analytics h2{font-size:16px;margin:0 0 12px}.analytics table{min-width:0}.analytics th,.analytics td{padding:9px 7px;font-size:12px}
 .stat,.panel{background:#121f32;border:1px solid #293c55;border-radius:14px;padding:16px}
 .stat strong{display:block;font-size:24px;margin-bottom:5px}.stat span{color:#9fb0c8;font-size:12px}
 .layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(330px,1fr);gap:16px;align-items:start}
-.toolbar{display:grid;grid-template-columns:1fr 180px 150px auto auto;gap:9px;margin-bottom:14px}
+.toolbar{display:grid;grid-template-columns:1fr 180px 150px 170px auto auto;gap:9px;margin-bottom:14px}
 .tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:600px}th,td{text-align:right;padding:12px 9px;border-bottom:1px solid #29394f;font-size:13px}th{color:#9fb0c8;font-weight:600}
 .namecell{font-weight:700}.subcell{font-size:11px;color:#91a4bd;margin-top:5px;direction:ltr;text-align:right}
 .actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:7px 10px;font-size:12px}
@@ -57,7 +57,8 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
     <select id="countryFilter"><option value="">كل الدول</option></select>
     <select id="stateFilter"><option value="active">القنوات المنشورة</option><option value="archived">الأرشيف</option><option value="all">الكل</option></select>
     <button id="add">+ إضافة قناة</button>
-    <button class="success" id="moveSelected">نقل المحدد إلى مصر (0)</button>
+    <select id="moveCountry" aria-label="الدولة الهدف"><option value="">اختر الدولة الهدف</option></select>
+    <button class="success" id="moveSelected" disabled>نقل المحدد (0)</button>
    </div>
    <div class="tablewrap"><table><thead><tr><th>اختيار</th><th>القناة</th><th>الدولة</th><th>التصنيف</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="rows"><tr><td colspan="6" class="empty">اتصل بالمستودع لتحميل القنوات.</td></tr></tbody></table></div>
    <div id="status" class="status">لم يتم الاتصال بعد.</div>
@@ -120,6 +121,7 @@ async function loadCatalog(){
  const opts=codes.map(c=>'<option value="'+c+'">'+countryLabel(c)+'</option>').join("");
  $("countryFilter").innerHTML='<option value="">كل الدول</option>'+opts;
  $("channelCountry").innerHTML=opts+'<option value="eg">مصر</option>';
+ $("moveCountry").innerHTML='<option value="">اختر الدولة الهدف</option>'+$("channelCountry").innerHTML;
  render();
  renderAudit();
 }
@@ -160,8 +162,8 @@ function render(){
  $("rows").querySelectorAll("[data-restore]").forEach(b=>b.onclick=()=>restore(b.dataset.restore));
  updateMoveButton();
 }
-function updateMoveButton(){$("moveSelected").textContent="نقل المحدد إلى مصر ("+selectedChannelIds.size+")";$("moveSelected").disabled=selectedChannelIds.size===0}
-async function moveSelectedToEgypt(){if(!overrides)throw Error("اتصل بالمستودع أولاً");const ids=[...selectedChannelIds].filter(id=>catalog.some(c=>c.id===id));if(!ids.length){setStatus("حدد قناة واحدة على الأقل.");return}if(!confirm("نقل "+ids.length+" قناة محددة إلى مصر؟ لن تتغير المعرّفات أو الأسماء أو روابط البث أو الشعارات أو التصنيفات."))return;try{for(const id of ids){const c=catalog.find(x=>x.id===id);if(c.is_admin_added){const a=overrides.added_channels[id]||{};a.country="eg";overrides.added_channels[id]=a}else{const o=overrides.channels[id]||{};o.country="eg";overrides.channels[id]=o}audit(id,"move_channel_to_egypt",{new_country:"eg"})}await commit("Move "+ids.length+" channels to Egypt");selectedChannelIds.clear();await loadCatalog();$("countryFilter").value="eg";$("search").value="";$("stateFilter").value="active";render();$("rows").querySelectorAll("[data-select-channel]").forEach(b=>b.checked=false);selectedChannelIds.clear();updateMoveButton();setStatus("تم نقل "+ids.length+" قناة إلى مصر. ستُحدّث بيانات التطبيق بعد اكتمال النشر.");}catch(e){setStatus("تعذر نقل القنوات: "+e.message)}}
+function updateMoveButton(){$("moveSelected").textContent="نقل المحدد ("+selectedChannelIds.size+")";$("moveSelected").disabled=selectedChannelIds.size===0}
+async function moveSelectedToCountry(){if(!overrides)throw Error("اتصل بالمستودع أولاً");const target=$("moveCountry").value;if(!target){setStatus("اختر الدولة الهدف أولاً.");return}const ids=[...selectedChannelIds].filter(id=>catalog.some(c=>c.id===id));if(!ids.length){setStatus("حدد قناة واحدة على الأقل.");return}if(ids.some(id=>catalog.find(c=>c.id===id).is_archived)){setStatus("لا يمكن نقل قنوات مؤرشفة. أزل تحديدها أولاً.");return}if(!confirm("نقل "+ids.length+" قناة محددة إلى "+countryLabel(target)+"؟ لن تتغير المعرّفات أو الأسماء أو روابط البث أو الشعارات أو التصنيفات."))return;try{for(const id of ids){const c=catalog.find(x=>x.id===id);if(c.is_admin_added){const a=overrides.added_channels[id]||{};a.country=target;overrides.added_channels[id]=a}else{const o=overrides.channels[id]||{};o.country=target;overrides.channels[id]=o}audit(id,"move_channel",{new_country:target})}await commit("Move "+ids.length+" channels to "+target);selectedChannelIds.clear();await loadCatalog();$("countryFilter").value=target;$("moveCountry").value="";$("search").value="";$("stateFilter").value="active";render();$("rows").querySelectorAll("[data-select-channel]").forEach(b=>b.checked=false);updateMoveButton();setStatus("تم نقل "+ids.length+" قناة إلى "+countryLabel(target)+". ستُحدّث بيانات التطبيق بعد اكتمال النشر.");}catch(e){setStatus("تعذر نقل القنوات: "+e.message)}}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function renderAudit(){$("audit").innerHTML=(overrides.audit||[]).slice().reverse().slice(0,25).map(a=>'<div>'+esc(a.action||"تعديل")+' — '+esc(a.channel_id||"")+'<br><span class="muted">'+esc(a.changed_at||"")+'</span></div>').join("")||"لا توجد تغييرات مسجلة."}
 function clearForm(){selected=null;$("formTitle").textContent="إضافة قناة جديدة";$("channelId").value="";$("channelId").disabled=false;$("channelName").value="";$("channelCountry").value="eg";populateCategoryOptions(["general"]);$("channelLogo").value="";$("channelStreams").value="";$("archive").style.display="none";$("restore").style.display="none"}
@@ -181,6 +183,6 @@ async function saveChannel(){try{if(!overrides)throw Error("اتصل بالمس�
 async function archive(id){if(!overrides)return;const c=catalog.find(x=>x.id===id);if(!c)return;if(!confirm("أرشفة القناة "+(c.name||id)+"؟ ستختفي من التطبيق ويمكن استعادتها لاحقًا."))return;const o=overrides.channels[id]||{};o.snapshot={...c};o.enabled=false;overrides.channels[id]=o;audit(id,"archive_channel");try{await commit("Archive channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر تنفيذ الأرشفة: "+e.message)}}
 async function restore(id){const o=overrides.channels[id]||{};o.enabled=true;delete o.snapshot;overrides.channels[id]=o;audit(id,"restore_channel");try{await commit("Restore channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر الاستعادة: "+e.message)}}
 async function connect(){try{if(!token())throw Error("أدخل رمز GitHub الإداري");setStatus("جارٍ الاتصال وتحميل البيانات...");await loadOverrides();await loadCatalog();setStatus("تم الاتصال وتحميل القنوات والتعديلات بنجاح.");}catch(e){setStatus("فشل الاتصال: "+e.message)}}
-$("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToEgypt;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
+$("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
 </script>
 </body></html>
