@@ -1,0 +1,686 @@
+{
+  "schema_version": 1,
+  "catalog_name": "Arabic & Quran Radio",
+  "created_date": "2026-11-09",
+  "status": "expanded_working_catalog",
+  "notes": [
+    "كتالوج الإذاعات العربية وإذاعات القرآن والبرامج الدينية الناطقة بالعربية.",
+    "روابط البث مدرجة كما وردت في المصدر ولم يتم اختبار جميعها بصورة مستقلة."
+  ],
+  "data_sources": [
+    {
+      "name": "Radio Browser API",
+      "url": "https://de1.api.radio-browser.info",
+      "purpose": "Worldwide internet radio discovery by country, language and tags"
+    },
+    {
+      "name": "FreqTrail Egypt",
+      "url": "https://www.freqtrail.com/stations/EG",
+      "purpose": "Egyptian radio stream directory"
+    },
+    {
+      "name": "FreqTrail Saudi Arabia",
+      "url": "https://www.freqtrail.com/stations/SA",
+      "purpose": "Saudi radio stream directory"
+    },
+    {
+      "name": "FreqTrail Kuwait",
+      "url": "https://www.freqtrail.com/stations/KW",
+      "purpose": "Kuwaiti radio stream directory"
+    },
+    {
+      "name": "MP3 Quran API",
+      "url": "https://www.mp3quran.net/api/radio/",
+      "purpose": "Multilingual Quran radio station lists"
+    },
+    {
+      "name": "Shortwave DB",
+      "url": "https://www.shortwavedb.org/",
+      "purpose": "International shortwave frequency schedules"
+    },
+    {
+      "name": "ILGRadio",
+      "url": "https://www.ilgradio.com/",
+      "purpose": "International shortwave broadcast and utility schedules"
+    }
+  ],
+  "stations": [
+    {
+      "id": "EG_QURAN_CAIRO",
+      "name": "إذاعة القرآن الكريم من القاهرة",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran"
+      ],
+      "stream_url": "http://n12.radiojar.com/8s5u5tpdtwzuv?listen",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_MISHARY_ALAFASY",
+      "name": "إذاعة مشاري العفاسي",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://qurango.net/radio/mishary_alafasi",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_HUSSARY_WARSH",
+      "name": "إذاعة محمود خليل الحصري - ورش",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://qurango.net/radio/mahmoud_khalil_alhussary_warsh",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_MUSTAFA_ISMAIL",
+      "name": "إذاعة مصطفى إسماعيل",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://qurango.net/radio/mustafa_ismail",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_YASSER_ALDOSARI",
+      "name": "إذاعة ياسر الدوسري",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://qurango.net/radio/yasser_aldosari",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_RADIO_9090",
+      "name": "Radio 9090",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "talk",
+        "general"
+      ],
+      "stream_url": "http://9090streaming.mobtada.com/9090FMEGYPT",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_OM_KALTHOUM",
+      "name": "OM Kalthom / أم كلثوم",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "classics"
+      ],
+      "stream_url": "https://stream.zeno.fm/zsgrfxg71s8uv",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_NOGOUM_FM",
+      "name": "Nogoum FM",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "pop"
+      ],
+      "stream_url": "https://stream-159.zeno.fm/qb1zvsykm98uv",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_SHA3BY_FM",
+      "name": "SHA3BY FM",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "shaabi"
+      ],
+      "stream_url": "https://radio95.radioca.st/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_ABDEL_HALIM",
+      "name": "Abdel Halim Hafez / عبدالحليم حافظ",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "classics"
+      ],
+      "stream_url": "https://stream.zeno.fm/8a4eqkd0pnhvv",
+      "format": "AAC",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_AMR_DIAB",
+      "name": "Amr Diab Radio",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "pop"
+      ],
+      "stream_url": "https://stream-40.zeno.fm/xa4yhh4k838uv",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_RADIO_HITS",
+      "name": "Radio Hits 88.2 Cairo",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "arabic"
+      ],
+      "stream_url": "https://radiohits882.radioca.st/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_ONSPORT_FM",
+      "name": "On Sport FM",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "sports",
+        "talk"
+      ],
+      "stream_url": "https://carina.streamerr.co:2020/stream/OnSportFM",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_QURAN_RADIO",
+      "name": "Saudi Quran1",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran"
+      ],
+      "stream_url": "http://n01.radiojar.com/0tpy1h0kxtzuv",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_AL_ARABIYA_FM",
+      "name": "العربية FM",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "news",
+        "talk"
+      ],
+      "stream_url": "https://fm.alarabiya.net/fm/myStream/playlist.m3u8",
+      "format": "HLS",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_TARATEEL",
+      "name": "Mp3Quran Tarateel",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran"
+      ],
+      "stream_url": "https://qurango.net/radio/tarateel",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_SUNNA_RADIO",
+      "name": "إذاعة السنة",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "hadith"
+      ],
+      "stream_url": "http://andromeda.shoutca.st:8189/live",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_QURAN_MAKKAH",
+      "name": "إذاعة القرآن الكريم - مكة المكرمة",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran"
+      ],
+      "stream_url": "https://edge.mixlr.com/channel/rwumx",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_REPLAY_NEWS",
+      "name": "Replay News - العربية",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "news"
+      ],
+      "stream_url": "https://replaynewsar.ice.infomaniak.ch/replaynewsar-128.mp3",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_ASHARQ_BLOOMBERG",
+      "name": "راديو الشرق مع بلومبرغ",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "news",
+        "business",
+        "talk"
+      ],
+      "stream_url": "https://l3.itworkscdn.net/asharqradioalive/asharqradioaudio.aac",
+      "format": "AAC",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_ROTANA_FM",
+      "name": "Rotana FM",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "general"
+      ],
+      "stream_url": "http://philae.shoutca.st:8250/stream",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_ALIFALIF_FM",
+      "name": "AlifAlif FM",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "general"
+      ],
+      "stream_url": "https://alifalifjobs.com/radio/8000/AlifAlifLive.mp3",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_SBA_JEDDAH",
+      "name": "SBA Jeddah Radio 98.0 FM",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "general",
+        "public"
+      ],
+      "stream_url": "https://live.kwikmotion.com/sbrksajeddahradio/radio/chunks.m3u8",
+      "format": "HLS",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "SA_MBC_MOOD",
+      "name": "MBC Mood",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music"
+      ],
+      "stream_url": "https://radio-mbc-mood.mbc.net/radio-mbc-mood.m3u8",
+      "format": "HLS",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/SA",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_GENERAL_RADIO",
+      "name": "Kuwait General Radio",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "general",
+        "public"
+      ],
+      "stream_url": "https://kwtkrdota.cdn.mangomolo.com/k1rdo/k1rdo/playlist.m3u8",
+      "format": "HLS",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_SUNAN_DARIMI",
+      "name": "Sunan ad-Darimi",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "hadith"
+      ],
+      "stream_url": "https://serverkw.quran-uni.com:8358/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_ADAB_MUFRAD",
+      "name": "Al-Adab Al-Mufrad",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "hadith"
+      ],
+      "stream_url": "https://serverkw.quran-uni.com:8366/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_QURAN_HUSSARY",
+      "name": "محمود خليل الحصري",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://serverkw.quran-uni.com:8018/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_QURAN_GHAMIDI",
+      "name": "سعد الغامدي",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://serverkw.quran-uni.com:8026/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_QURAN_ALSUFI",
+      "name": "عبدالرشيد الصوفي",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://serverkw.quran-uni.com:8054/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_QURAN_KHALID_JALIL",
+      "name": "خالد الجليل",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://serverkw.quran-uni.com:8062/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_TAFSEER_SAADY",
+      "name": "تفسير الشيخ السعدي",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "tafsir"
+      ],
+      "stream_url": "https://serverkw.quran-uni.com:8012/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "KW_WARSH_ALKOUCHI",
+      "name": "رواية ورش - العكوشي",
+      "country": "Kuwait",
+      "country_code": "KW",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "religious",
+        "quran",
+        "recitation"
+      ],
+      "stream_url": "https://serverkw.quran-uni.com:8164/;",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    }
+  ]
+}
