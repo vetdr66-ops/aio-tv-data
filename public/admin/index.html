@@ -29,6 +29,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
 .help{font-size:11px;color:#8fa4c0;line-height:1.7}.status{margin-top:12px;padding:10px 12px;border-radius:9px;background:#102b36;color:#a8f0d9;font-size:12px;white-space:pre-wrap}
 .audit{max-height:210px;overflow:auto;font-size:12px;color:#a9bad0;line-height:1.9}.audit div{border-bottom:1px solid #29394f;padding:5px 0}
 .empty{text-align:center;padding:32px;color:#91a4bd}
+.pagination{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}.pagination span{color:#9fb0c8;font-size:12px}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.analytics{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.wrap{padding:13px}.top{padding:16px}.connect input{width:100%}.connect{width:100%}.connect button{flex:1}.toolbar{grid-template-columns:1fr}.twocol{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:12px}}
 </style>
@@ -51,7 +52,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
   <div class="panel"><h2>إحصائيات التصنيفات</h2><div class="tablewrap"><table><thead><tr><th>التصنيف</th><th>لديها بث</th><th>بلا بث</th><th>الإجمالي النشط</th></tr></thead><tbody id="categoryStats"></tbody></table></div></div>
  </section>
  <section class="panel" style="margin:16px 0">
-  <div class="formtitle"><h2>مركز فحص البث — عينة تجريبية</h2><button class="secondary" id="refreshHealth">تحديث التقرير</button></div>
+  <div class="formtitle"><h2>مركز فحص البث — عينة تجريبية</h2><div class="actions"><select id="healthFilter" aria-label="تصفية نتائج فحص البث"><option value="all">كل نتائج الفحص</option><option value="down">المتوقفة المؤكدة</option><option value="unknown">تعذر التحقق</option></select><button class="secondary" id="refreshHealth">تحديث التقرير</button></div></div>
   <div id="streamHealthSummary" class="help">لم يتم تحميل تقرير الفحص بعد.</div>
   <div class="tablewrap" style="margin-top:10px"><table style="min-width:720px"><thead><tr><th>القناة</th><th>الرابط / المضيف</th><th>الفحص التقني</th><th>الإتاحة</th><th>HTTP</th><th>التفاصيل</th></tr></thead><tbody id="streamHealthRows"><tr><td colspan="6" class="empty">في انتظار أول تقرير.</td></tr></tbody></table></div>
   <div class="help" style="margin-top:8px">الفحص تجريبي لأول 10 قنوات ذات روابط. «تعذر التحقق» لا يعني أن الرابط متوقف. لا يغيّر الفحص أي قناة أو رابط.</div>
@@ -66,7 +67,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
     <select id="moveCountry" aria-label="الدولة الهدف"><option value="">اختر الدولة الهدف</option></select>
     <button class="success" id="moveSelected" disabled>نقل المحدد (0)</button>
    </div>
-   <div class="tablewrap"><table><thead><tr><th>اختيار</th><th>القناة</th><th>الدولة</th><th>التصنيف</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="rows"><tr><td colspan="6" class="empty">اتصل بالمستودع لتحميل القنوات.</td></tr></tbody></table></div>
+   <div class="pagination" id="pagination"><button class="secondary" id="previousPage" disabled>السابق</button><span id="pageInfo">صفحة 1</span><button class="secondary" id="nextPage" disabled>التالي</button></div>
    <div id="status" class="status">لم يتم الاتصال بعد.</div>
   </section>
   <aside>
@@ -92,7 +93,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
 const OWNER="vetdr66-ops",REPO="aio-tv-data",PATH="admin/overrides.json",BRANCH="main";
 const PAGES="https://vetdr66-ops.github.io/aio-tv-data/";
 const $=id=>document.getElementById(id);
-let fileSha=null,overrides=null,catalog=[],catalogIndex=null,selected=null,selectedChannelIds=new Set(),searchTimer=null,countryNames={eg:"مصر",sa:"السعودية",ae:"الإمارات",qa:"قطر",kw:"الكويت",bh:"البحرين",om:"عُمان",jo:"الأردن",lb:"لبنان",sy:"سوريا",iq:"العراق",ma:"المغرب",dz:"الجزائر",tn:"تونس",ly:"ليبيا",sd:"السودان",us:"أمريكا",gb:"بريطانيا",fr:"فرنسا",de:"ألمانيا",tr:"تركيا",in:"الهند",kr:"كوريا الجنوبية",cn:"الصين"};
+let fileSha=null,overrides=null,catalog=[],catalogIndex=null,selected=null,selectedChannelIds=new Set(),searchTimer=null,currentPage=1,streamHealthResults=[],countryNames={eg:"مصر",sa:"السعودية",ae:"الإمارات",qa:"قطر",kw:"الكويت",bh:"البحرين",om:"عُمان",jo:"الأردن",lb:"لبنان",sy:"سوريا",iq:"العراق",ma:"المغرب",dz:"الجزائر",tn:"تونس",ly:"ليبيا",sd:"السودان",us:"أمريكا",gb:"بريطانيا",fr:"فرنسا",de:"ألمانيا",tr:"تركيا",in:"الهند",kr:"كوريا الجنوبية",cn:"الصين"};
 function token(){return $("token").value.trim()}
 function setStatus(s){$("status").textContent=s}
 function countryLabel(c){return countryNames[String(c||"").toLowerCase()]||String(c||"غير محدد").toUpperCase()}
@@ -139,17 +140,29 @@ async function loadStreamHealth(){
  try{
   const response=await fetch(PAGES+"data/stream-health.json?v="+Date.now(),{cache:"no-store"});
   if(!response.ok)throw Error("لا يوجد تقرير منشور بعد");
-  const report=await response.json(),counts=report.summary||{};
+   const report=await response.json(),counts=report.summary||{};
+   streamHealthResults=report.results||[];
   summary.textContent="آخر فحص: "+new Date(report.generated_at).toLocaleString("ar-EG")+" — تم فحص "+Number(report.checked_count||0)+" رابطًا: يعمل مبدئيًا "+Number(counts.working||0)+"، متوقف "+Number(counts.down||0)+"، تعذر التحقق "+Number(counts.unknown||0)+".";
-  const labels={working:"يعمل مبدئيًا",down:"متوقف مؤكد",unknown:"تعذر التحقق"};
-  const accessLabels={free:"مفتوح / غير مشفر",encrypted:"مشفر / يتطلب صلاحية"};
-  rows.innerHTML=(report.results||[]).map(item=>{const override=(overrides?.channels||{})[item.channel_id]||{},added=(overrides?.added_channels||{})[item.channel_id]||{},access=override.access_status||added.access_status||"";return '<tr><td>'+esc(item.channel_name)+'<div class="subcell">'+esc(item.channel_id)+'</div></td><td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+esc(item.host||item.url)+'</a></td><td><span class="badge '+(item.status==="down"?"archived":"")+'">'+esc(labels[item.status]||"غير معروف")+'</span></td><td>'+esc(accessLabels[access]||"غير مسجلة")+(access==="encrypted"?' <span class="badge archived">يدوي</span>':"")+'</td><td>'+esc(item.http_status??"—")+'</td><td>'+esc(item.message||"")+'</td></tr>';}).join("")||'<tr><td colspan="6" class="empty">لا توجد روابط في العينة.</td></tr>';
+   renderStreamHealthRows();
   return true;
  }catch(error){
+  streamHealthResults=[];
   summary.textContent="لم يتوفر تقرير فحص منشور بعد. "+error.message;
   rows.innerHTML='<tr><td colspan="6" class="empty">سيظهر التقرير بعد نجاح تشغيل GitHub Actions.</td></tr>';
   return false;
  }
+}
+function renderStreamHealthRows(){
+ const filter=$("healthFilter").value;
+ const filtered=streamHealthResults.filter(item=>filter==="all"||item.status===filter);
+ const labels={working:"يعمل مبدئيًا",down:"متوقف مؤكد",unknown:"تعذر التحقق"};
+ const accessLabels={free:"مفتوح / غير مشفر",encrypted:"مشفر / يتطلب صلاحية"};
+ $("streamHealthRows").innerHTML=filtered.map(item=>{
+  const override=(overrides?.channels||{})[item.channel_id]||{};
+  const added=(overrides?.added_channels||{})[item.channel_id]||{};
+  const access=override.access_status||added.access_status||"";
+  return '<tr><td>'+esc(item.channel_name)+'<div class="subcell">'+esc(item.channel_id)+'</div></td><td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+esc(item.host||item.url)+'</a></td><td><span class="badge '+(item.status==="down"?"archived":"")+'">'+esc(labels[item.status]||"غير معروف")+'</span></td><td>'+esc(accessLabels[access]||"غير مسجلة")+(access==="encrypted"?' <span class="badge archived">يدوي</span>':"")+'</td><td>'+esc(item.http_status??"—")+'</td><td>'+esc(item.message||"")+'</td></tr>';
+ }).join("")||'<tr><td colspan="6" class="empty">لا توجد قنوات تطابق الفلتر.</td></tr>';
 }
 async function runStreamHealthCheck(){
  const button=$("refreshHealth"),originalText=button.textContent;
@@ -216,9 +229,13 @@ function render(){
  let list=catalog.filter(c=>(!q||c._searchKey.includes(q))&&(!co||String(c.country||"").toLowerCase()===co));
  list=list.filter(c=>st==="all"||(st==="archived"?c.is_archived:!c.is_archived));
  list.sort((a,b)=>String(a.name||a.id||"").localeCompare(String(b.name||b.id||""),"en",{sensitivity:"base"}));
- const totalMatches=list.length,shown=list.slice(0,100);
+ const totalMatches=list.length,pageSize=50,totalPages=Math.max(1,Math.ceil(totalMatches/pageSize));
+ currentPage=Math.min(currentPage,totalPages);
+ const start=(currentPage-1)*pageSize,shown=list.slice(start,start+pageSize);
  $("rows").innerHTML=shown.length?shown.map(c=>'<tr><td><input type="checkbox" data-select-channel="'+esc(c.id)+'" style="width:auto" '+(selectedChannelIds.has(c.id)?"checked":"")+'></td><td><div class="namecell">'+esc(c.name||c.id)+'</div><div class="subcell">'+esc(c.id)+'</div></td><td>'+esc(countryLabel(c.country))+'</td><td>'+esc((c.categories||[]).join(", ")||"—")+'</td><td><span class="badge '+(c.is_archived?"archived":"")+'">'+(c.is_archived?"مؤرشفة":"منشورة")+'</span></td><td><div class="actions"><button class="secondary" data-edit="'+esc(c.id)+'">تعديل</button>'+(c.is_archived?'<button class="success" data-restore="'+esc(c.id)+'">استعادة</button>':'<button class="danger" data-archive="'+esc(c.id)+'">أرشفة</button>')+'</div></td></tr>').join(""):'<tr><td colspan="6" class="empty">لا توجد نتائج.</td></tr>';
- if(totalMatches>100) $("rows").innerHTML+='<tr><td colspan="6" class="empty">عرض أول 100 نتيجة من '+totalMatches+' نتيجة. استخدم البحث أو فلتر الدولة لتضييق النتائج.</td></tr>';
+ $("pageInfo").textContent="عرض "+(totalMatches?start+1:0)+"–"+Math.min(start+pageSize,totalMatches)+" من "+totalMatches+" قناة — صفحة "+currentPage+" من "+totalPages;
+ $("previousPage").disabled=currentPage<=1;
+ $("nextPage").disabled=currentPage>=totalPages;
  $("rows").querySelectorAll("[data-select-channel]").forEach(b=>b.onchange=()=>{if(b.checked)selectedChannelIds.add(b.dataset.selectChannel);else selectedChannelIds.delete(b.dataset.selectChannel);updateMoveButton()});
  $("rows").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
  $("rows").querySelectorAll("[data-archive]").forEach(b=>b.onclick=()=>archive(b.dataset.archive));
@@ -247,6 +264,7 @@ async function archive(id){if(!overrides)return;const c=catalog.find(x=>x.id===i
 async function restore(id){const o=overrides.channels[id]||{};o.enabled=true;delete o.snapshot;overrides.channels[id]=o;audit(id,"restore_channel");try{await commit("Restore channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر الاستعادة: "+e.message)}}
 async function connect(){try{if(!token())throw Error("أدخل رمز GitHub الإداري");setStatus("جارٍ الاتصال وتحميل البيانات...");await loadOverrides();await loadCatalog();setStatus("تم الاتصال وتحميل القنوات والتعديلات بنجاح.");}catch(e){setStatus("فشل الاتصال: "+e.message)}}
 $("refreshHealth").onclick=runStreamHealthCheck;
-$("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
+$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{currentPage=1;render()},250)};$("countryFilter").onchange=()=>{currentPage=1;render()};$("stateFilter").onchange=()=>{currentPage=1;render()};
+$("previousPage").onclick=()=>{if(currentPage>1){currentPage--;render()}};$("nextPage").onclick=()=>{currentPage++;render()};$("healthFilter").onchange=renderStreamHealthRows;
 </script>
 </body></html>
