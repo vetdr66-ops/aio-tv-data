@@ -1,0 +1,615 @@
+{
+  "schema_version": 1,
+  "catalog_name": "International & World Radio",
+  "created_date": "2026-11-09",
+  "status": "shortwave_schedules_added_streams_not_verified",
+  "notes": [
+    "كتالوج الإذاعات الأجنبية والعالمية، بما فيها خدمات الموجات القصيرة والإذاعات القطبية.",
+    "تمت إضافة ترددات وجداول UTC مختارة لموسم B26 من 25 أكتوبر 2026 إلى 28 مارس 2027؛ الجداول المدرجة مختارات وليست كل فترات البث.",
+    "بيانات الترددات والجداول لا تعني وجود رابط بث إنترنت مباشر؛ روابط المشغلات والروابط المباشرة تحتاج تحققًا منفصلًا.",
+    "روابط البث المدرجة لم يتم اختبار جميعها بصورة مستقلة."
+  ],
+  "data_sources": [
+    {
+      "name": "Radio Browser API",
+      "url": "https://de1.api.radio-browser.info",
+      "purpose": "Worldwide internet radio discovery by country, language and tags"
+    },
+    {
+      "name": "FreqTrail Egypt",
+      "url": "https://www.freqtrail.com/stations/EG",
+      "purpose": "Egyptian radio stream directory"
+    },
+    {
+      "name": "FreqTrail Saudi Arabia",
+      "url": "https://www.freqtrail.com/stations/SA",
+      "purpose": "Saudi radio stream directory"
+    },
+    {
+      "name": "FreqTrail Kuwait",
+      "url": "https://www.freqtrail.com/stations/KW",
+      "purpose": "Kuwaiti radio stream directory"
+    },
+    {
+      "name": "MP3 Quran API",
+      "url": "https://www.mp3quran.net/api/radio/",
+      "purpose": "Multilingual Quran radio station lists"
+    },
+    {
+      "name": "Shortwave DB",
+      "url": "https://www.shortwavedb.org/",
+      "purpose": "International shortwave frequency schedules"
+    },
+    {
+      "name": "ILGRadio",
+      "url": "https://www.ilgradio.com/",
+      "purpose": "International shortwave broadcast and utility schedules"
+    }
+  ],
+  "stations": [
+    {
+      "id": "AQ_LRA36",
+      "name": "LRA 36 Arcángel San Gabriel - Antarctica",
+      "country": "Antarctica",
+      "country_code": "AQ",
+      "region": "Antarctica",
+      "languages": [
+        "Spanish"
+      ],
+      "categories": [
+        "polar",
+        "shortwave",
+        "community"
+      ],
+      "stream_url": "https://vmf.edge-apps.net/embed/live.php?streamname=sc_rad32-100131&autoplay=true",
+      "format": "web_player",
+      "source": "El Radioescucha / SWLing Post",
+      "source_url": "https://elradioescucha.net/2023/11/11/desde-la-antartida-uniendo-voces-lra-36-arcangel-san-gabriel/",
+      "status": "schedule_dependent_not_independently_tested"
+    },
+    {
+      "id": "SW_BBC_WORLD_SERVICE",
+      "name": "BBC World Service - shortwave",
+      "country": "United Kingdom",
+      "country_code": "GB",
+      "region": "Europe",
+      "languages": [
+        "multiple"
+      ],
+      "categories": [
+        "international",
+        "shortwave",
+        "news"
+      ],
+      "stream_url": null,
+      "frequencies_khz": [
+        5845,
+        5975,
+        6000,
+        6090,
+        6115,
+        6135,
+        6195,
+        7285,
+        7305,
+        7445,
+        9410,
+        9650,
+        9915,
+        11830,
+        12065,
+        12095,
+        13690,
+        13790,
+        15310,
+        15490,
+        17690,
+        17750,
+        17810
+      ],
+      "schedule_utc": [
+        {
+          "start": "00:30",
+          "end": "01:00",
+          "frequencies_khz": [
+            6195,
+            7445
+          ],
+          "language": "Dari",
+          "target": "Afghanistan",
+          "days": "daily"
+        },
+        {
+          "start": "05:00",
+          "end": "07:00",
+          "frequencies_khz": [
+            9410,
+            9915
+          ],
+          "language": "English",
+          "target": "West/Central Africa",
+          "days": "daily"
+        },
+        {
+          "start": "06:00",
+          "end": "06:29",
+          "frequencies_khz": [
+            7285,
+            7305,
+            12095
+          ],
+          "language": "French",
+          "target": "North/West Africa",
+          "days": "daily"
+        },
+        {
+          "start": "15:00",
+          "end": "15:30",
+          "frequencies_khz": [
+            9650,
+            11830
+          ],
+          "language": "Arabic",
+          "target": "Middle East",
+          "days": "weekdays"
+        }
+      ],
+      "source": "Shortwave DB",
+      "source_url": "https://www.shortwavedb.org/",
+      "status": "frequency_schedule_added_stream_not_verified",
+      "schedule_season": "B26",
+      "schedule_valid_from": "2026-10-25",
+      "schedule_valid_to": "2027-03-28",
+      "schedule_source_url": "https://europe.hfcc.org/data/schedbybrc.php?broadc=BBC&seas=B26"
+    },
+    {
+      "id": "SW_VOICE_OF_AMERICA",
+      "name": "Voice of America - shortwave",
+      "country": "United States",
+      "country_code": "US",
+      "region": "North America",
+      "languages": [
+        "multiple"
+      ],
+      "categories": [
+        "international",
+        "shortwave",
+        "news"
+      ],
+      "stream_url": null,
+      "frequencies_khz": [
+        4930,
+        5860,
+        5870,
+        5880,
+        5940,
+        6085,
+        7360,
+        9420,
+        9820,
+        9880,
+        11740,
+        11830,
+        11875,
+        12020,
+        13710,
+        13840,
+        15170,
+        15205,
+        15215,
+        15225,
+        15300,
+        17520,
+        17590,
+        17850,
+        21520,
+        21650,
+        21750
+      ],
+      "schedule_utc": [
+        {
+          "start": "01:00",
+          "end": "02:00",
+          "frequencies_khz": [
+            15205
+          ],
+          "language": "English",
+          "target": "Afghanistan"
+        },
+        {
+          "start": "01:15",
+          "end": "01:45",
+          "frequencies_khz": [
+            6085,
+            9420,
+            11740,
+            13710,
+            15300,
+            17750
+          ],
+          "language": "English",
+          "target": "Far East / Middle East"
+        },
+        {
+          "start": "05:30",
+          "end": "07:00",
+          "frequencies_khz": [
+            4930
+          ],
+          "language": "English",
+          "target": "Southern Africa"
+        },
+        {
+          "start": "07:00",
+          "end": "12:00",
+          "frequencies_khz": [
+            5860
+          ],
+          "language": "English",
+          "target": "Northern Europe"
+        }
+      ],
+      "source": "Shortwave DB",
+      "source_url": "https://www.shortwavedb.org/",
+      "status": "frequency_schedule_added_stream_not_verified",
+      "schedule_season": "B26",
+      "schedule_valid_from": "2026-10-25",
+      "schedule_valid_to": "2027-03-28",
+      "schedule_source_url": "https://hqshortwaveradio.com/stations/voice-of-america/"
+    },
+    {
+      "id": "SW_CHINA_RADIO_INT",
+      "name": "China Radio International - shortwave",
+      "country": "China",
+      "country_code": "CN",
+      "region": "Asia",
+      "languages": [
+        "multiple"
+      ],
+      "categories": [
+        "international",
+        "shortwave"
+      ],
+      "stream_url": null,
+      "frequencies_khz": [
+        5050,
+        5955,
+        5965,
+        5970,
+        5975,
+        5980,
+        5990,
+        6020,
+        6100,
+        6180,
+        6200,
+        7205,
+        7240,
+        7250,
+        7300,
+        7335,
+        7350,
+        7415,
+        9570,
+        9580,
+        9600,
+        9790
+      ],
+      "schedule_utc": [
+        {
+          "start": "00:00",
+          "end": "01:00",
+          "frequencies_khz": [
+            5990,
+            6100,
+            6180,
+            7205,
+            7350,
+            7415
+          ],
+          "language": "Russian / Portuguese / English",
+          "target": "Siberia / South America"
+        },
+        {
+          "start": "01:00",
+          "end": "02:00",
+          "frequencies_khz": [
+            6020,
+            6180,
+            7240,
+            7250,
+            7300,
+            7335
+          ],
+          "language": "Urdu / English / Mandarin",
+          "target": "South Asia / Europe"
+        }
+      ],
+      "source": "Shortwave DB",
+      "source_url": "https://www.shortwavedb.org/",
+      "status": "frequency_schedule_added_stream_not_verified",
+      "schedule_season": "B26",
+      "schedule_valid_from": "2026-10-25",
+      "schedule_valid_to": "2027-03-28",
+      "schedule_source_url": "https://hqshortwaveradio.com/stations/china-radio-international/"
+    },
+    {
+      "id": "SW_VOICE_OF_KOREA",
+      "name": "Voice of Korea - shortwave",
+      "country": "North Korea",
+      "country_code": "KP",
+      "region": "Asia",
+      "languages": [
+        "multiple"
+      ],
+      "categories": [
+        "international",
+        "shortwave"
+      ],
+      "stream_url": null,
+      "frequencies_khz": [
+        621,
+        6070,
+        6170,
+        6185,
+        7210,
+        7220,
+        7235,
+        7570,
+        7580,
+        9425,
+        9435,
+        9445,
+        9650,
+        9730,
+        9850,
+        9875,
+        9890,
+        11635,
+        11645,
+        11710,
+        11735,
+        11865,
+        11910,
+        12015,
+        13650,
+        13760,
+        15105,
+        15180,
+        15245.2
+      ],
+      "schedule_utc": [
+        {
+          "start": "03:00",
+          "end": "04:00",
+          "frequencies_khz": [
+            11735
+          ],
+          "language": "Spanish",
+          "target": "Latin America",
+          "days": "daily"
+        },
+        {
+          "start": "03:00",
+          "end": "04:00",
+          "frequencies_khz": [
+            13650
+          ],
+          "language": "Mandarin",
+          "target": "Southeast Asia",
+          "days": "daily"
+        },
+        {
+          "start": "03:00",
+          "end": "04:00",
+          "frequencies_khz": [
+            13760
+          ],
+          "language": "Spanish",
+          "target": "Latin America",
+          "days": "daily"
+        }
+      ],
+      "source": "Shortwave DB",
+      "source_url": "https://www.shortwavedb.org/",
+      "status": "frequency_schedule_added_stream_not_verified",
+      "schedule_season": "B26",
+      "schedule_valid_from": "2026-10-25",
+      "schedule_valid_to": "2027-03-28",
+      "schedule_source_url": "https://skywavedx.com/shortwave/voice-of-korea"
+    },
+    {
+      "id": "SW_VATICAN_RADIO",
+      "name": "Vatican Radio - shortwave",
+      "country": "Vatican City",
+      "country_code": "VA",
+      "region": "Europe",
+      "languages": [
+        "multiple"
+      ],
+      "categories": [
+        "international",
+        "shortwave",
+        "religious"
+      ],
+      "stream_url": null,
+      "frequencies_khz": [
+        6155,
+        7300,
+        7305,
+        7360,
+        9705,
+        9710,
+        11755,
+        11870,
+        13830,
+        15565,
+        15595,
+        17790,
+        21730,
+        21745,
+        21760
+      ],
+      "schedule_utc": [
+        {
+          "start": "16:30",
+          "end": "17:00",
+          "frequencies_khz": [
+            11755,
+            15595
+          ],
+          "language": "Arabic",
+          "target": "Middle East / North Africa",
+          "days": "daily"
+        },
+        {
+          "start": "16:30",
+          "end": "17:00",
+          "frequencies_khz": [
+            15565
+          ],
+          "language": "English",
+          "target": "East Africa",
+          "days": "daily"
+        },
+        {
+          "start": "20:00",
+          "end": "20:30",
+          "frequencies_khz": [
+            9705,
+            11870
+          ],
+          "language": "English",
+          "target": "West Africa",
+          "days": "daily"
+        },
+        {
+          "start": "22:00",
+          "end": "22:30",
+          "frequencies_khz": [
+            6155,
+            7300,
+            7410,
+            9580
+          ],
+          "language": "Chinese",
+          "target": "Asia",
+          "days": "daily"
+        }
+      ],
+      "source": "Shortwave DB",
+      "source_url": "https://www.shortwavedb.org/",
+      "status": "frequency_schedule_added_stream_not_verified",
+      "schedule_season": "B26",
+      "schedule_valid_from": "2026-10-25",
+      "schedule_valid_to": "2027-03-28",
+      "schedule_source_url": "https://whfr.hfcc.org/data/schedbybrc.php?broadc=VAT&seas=B26"
+    },
+    {
+      "id": "SW_RADIO_ROMANIA_INT",
+      "name": "Radio Romania International - shortwave",
+      "country": "Romania",
+      "country_code": "RO",
+      "region": "Europe",
+      "languages": [
+        "multiple"
+      ],
+      "categories": [
+        "international",
+        "shortwave"
+      ],
+      "stream_url": null,
+      "frequencies_khz": [
+        5955,
+        5960,
+        6010,
+        6030,
+        6090,
+        6145,
+        6160,
+        7220,
+        7250,
+        7300,
+        7310,
+        7325,
+        9460,
+        9770,
+        9780,
+        9810,
+        9870,
+        11620,
+        11640,
+        11660,
+        11930,
+        11950,
+        13600,
+        13750,
+        15120,
+        15170,
+        15200,
+        15210,
+        15260,
+        15300,
+        15320,
+        15370,
+        15430,
+        15460,
+        15520,
+        15620,
+        17560,
+        17640,
+        17700,
+        17750,
+        17780,
+        17790
+      ],
+      "schedule_utc": [
+        {
+          "start": "07:30",
+          "end": "08:00",
+          "frequencies_khz": [
+            15120,
+            15320
+          ],
+          "language": "Arabic",
+          "target": "North Africa"
+        },
+        {
+          "start": "16:30",
+          "end": "17:00",
+          "frequencies_khz": [
+            9780,
+            15430
+          ],
+          "language": "Arabic",
+          "target": "Middle East / North Africa"
+        },
+        {
+          "start": "18:00",
+          "end": "19:00",
+          "frequencies_khz": [
+            9770
+          ],
+          "language": "English",
+          "target": "Western Europe"
+        },
+        {
+          "start": "21:30",
+          "end": "22:00",
+          "frequencies_khz": [
+            6030
+          ],
+          "language": "English",
+          "target": "Western Europe"
+        }
+      ],
+      "source": "Shortwave DB",
+      "source_url": "https://www.shortwavedb.org/",
+      "status": "frequency_schedule_added_stream_not_verified",
+      "schedule_season": "B26",
+      "schedule_valid_from": "2026-10-25",
+      "schedule_valid_to": "2027-03-28",
+      "schedule_source_url": "https://hqshortwaveradio.com/stations/radio-romania-international/"
+    }
+  ]
+}
