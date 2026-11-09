@@ -50,6 +50,12 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
   <div class="panel"><h2>إحصائيات الدول</h2><div class="tablewrap"><table><thead><tr><th>الدولة</th><th>لديها بث</th><th>بلا بث</th><th>الإجمالي النشط</th></tr></thead><tbody id="countryStats"></tbody></table></div></div>
   <div class="panel"><h2>إحصائيات التصنيفات</h2><div class="tablewrap"><table><thead><tr><th>التصنيف</th><th>لديها بث</th><th>بلا بث</th><th>الإجمالي النشط</th></tr></thead><tbody id="categoryStats"></tbody></table></div></div>
  </section>
+ <section class="panel" style="margin:16px 0">
+  <div class="formtitle"><h2>مركز فحص البث — عينة تجريبية</h2><button class="secondary" id="refreshHealth">تحديث التقرير</button></div>
+  <div id="streamHealthSummary" class="help">لم يتم تحميل تقرير الفحص بعد.</div>
+  <div class="tablewrap" style="margin-top:10px"><table style="min-width:720px"><thead><tr><th>القناة</th><th>الرابط / المضيف</th><th>الحالة</th><th>HTTP</th><th>التفاصيل</th></tr></thead><tbody id="streamHealthRows"><tr><td colspan="5" class="empty">في انتظار أول تقرير.</td></tr></tbody></table></div>
+  <div class="help" style="margin-top:8px">الفحص تجريبي لأول 10 قنوات ذات روابط. «تعذر التحقق» لا يعني أن الرابط متوقف. لا يغيّر الفحص أي قناة أو رابط.</div>
+ </section>
  <div class="layout">
   <section class="panel">
    <div class="toolbar">
@@ -124,6 +130,21 @@ async function loadCatalog(){
  $("moveCountry").innerHTML='<option value="">اختر الدولة الهدف</option>'+$("channelCountry").innerHTML;
  render();
  renderAudit();
+ await loadStreamHealth();
+}
+async function loadStreamHealth(){
+ const summary=$("streamHealthSummary"),rows=$("streamHealthRows");
+ try{
+  const response=await fetch(PAGES+"data/stream-health.json",{cache:"no-store"});
+  if(!response.ok)throw Error("لا يوجد تقرير منشور بعد");
+  const report=await response.json(),counts=report.summary||{};
+  summary.textContent="آخر فحص: "+new Date(report.generated_at).toLocaleString("ar-EG")+" — تم فحص "+Number(report.checked_count||0)+" رابطًا: يعمل مبدئيًا "+Number(counts.working||0)+"، متوقف "+Number(counts.down||0)+"، تعذر التحقق "+Number(counts.unknown||0)+".";
+  const labels={working:"يعمل مبدئيًا",down:"متوقف مؤكد",unknown:"تعذر التحقق"};
+  rows.innerHTML=(report.results||[]).map(item=>'<tr><td>'+esc(item.channel_name)+'<div class="subcell">'+esc(item.channel_id)+'</div></td><td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+esc(item.host||item.url)+'</a></td><td><span class="badge '+(item.status==="down"?"archived":"")+'">'+esc(labels[item.status]||"غير معروف")+'</span></td><td>'+esc(item.http_status??"—")+'</td><td>'+esc(item.message||"")+'</td></tr>').join("")||'<tr><td colspan="5" class="empty">لا توجد روابط في العينة.</td></tr>';
+ }catch(error){
+  summary.textContent="لم يتوفر تقرير فحص منشور بعد. "+error.message;
+  rows.innerHTML='<tr><td colspan="5" class="empty">سيظهر التقرير بعد نجاح تشغيل GitHub Actions.</td></tr>';
+ }
 }
 function populateCategoryOptions(selectedCategories=[]){
  const idx=catalogIndex||{},known=idx.categories||{},missing=idx.categories_without_streams||{},labels=idx.category_labels||{};
@@ -183,6 +204,6 @@ async function saveChannel(){try{if(!overrides)throw Error("اتصل بالمس�
 async function archive(id){if(!overrides)return;const c=catalog.find(x=>x.id===id);if(!c)return;if(!confirm("أرشفة القناة "+(c.name||id)+"؟ ستختفي من التطبيق ويمكن استعادتها لاحقًا."))return;const o=overrides.channels[id]||{};o.snapshot={...c};o.enabled=false;overrides.channels[id]=o;audit(id,"archive_channel");try{await commit("Archive channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر تنفيذ الأرشفة: "+e.message)}}
 async function restore(id){const o=overrides.channels[id]||{};o.enabled=true;delete o.snapshot;overrides.channels[id]=o;audit(id,"restore_channel");try{await commit("Restore channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر الاستعادة: "+e.message)}}
 async function connect(){try{if(!token())throw Error("أدخل رمز GitHub الإداري");setStatus("جارٍ الاتصال وتحميل البيانات...");await loadOverrides();await loadCatalog();setStatus("تم الاتصال وتحميل القنوات والتعديلات بنجاح.");}catch(e){setStatus("فشل الاتصال: "+e.message)}}
-$("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
+$("refreshHealth").onclick=loadStreamHealth;\n$("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
 </script>
 </body></html>
