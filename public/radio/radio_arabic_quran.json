@@ -7,7 +7,8 @@
     "كتالوج الإذاعات العربية وإذاعات القرآن والبرامج الدينية الناطقة بالعربية.",
     "روابط البث مدرجة كما وردت في المصدر ولم يتم اختبار جميعها بصورة مستقلة.",
     "تمت إضافة إذاعة الجونة وراديو وياك من دليل FreqTrail كروابط مرشحة؛ لم يتم تأكيد التشغيل المستقل بعد.",
-    "إضافات مصرية جديدة من قائمة 72FM المبنية من Radio Browser؛ اجتازت فحص المصدر في آخر بناء 2026-10-26، ولم يُعد اختبارها مستقلاً قبل الإدراج."
+    "إضافات مصرية جديدة من قائمة 72FM المبنية من Radio Browser؛ اجتازت فحص المصدر في آخر بناء 2026-10-26، ولم يُعد اختبارها مستقلاً قبل الإدراج.",
+    "تم تأكيد تشغيل بث عين FM الأردنية بواسطة المستخدم؛ MP3 بمعدل 128 kbps."
   ],
   "data_sources": [
     {
@@ -941,6 +942,25 @@
       "source_url": "https://github.com/AlonDrilich/radio-playlists",
       "last_source_check": "2026-10-26",
       "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "JO_AIN_FM",
+      "name": "عين FM",
+      "country": "Jordan",
+      "country_code": "JO",
+      "region": "Asia",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "general"
+      ],
+      "stream_url": "https://radio.ainfm.site/ainfm",
+      "format": "MP3",
+      "bitrate_kbps": 128,
+      "source": "FreqTrail Jordan; playback confirmed by user",
+      "source_url": "https://www.freqtrail.com/stations/JO",
+      "status": "user_confirmed_working"
     }
   ]
 }
