@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T21:49:45.979Z",
+  "updated_at": "2026-11-09T08:03:05.624Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -268,6 +268,9 @@
     },
     "MoviesAction.sa": {
       "country": "eg"
+    },
+    "OSNMoviesAction.ae": {
+      "access_status": "encrypted"
     }
   },
   "groups": {},
