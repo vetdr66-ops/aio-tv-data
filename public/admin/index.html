@@ -53,6 +53,7 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
  <section class="panel" style="margin:16px 0">
   <div class="formtitle"><h2>مركز فحص البث — عينة تجريبية</h2><button class="secondary" id="refreshHealth">تحديث التقرير</button></div>
   <div id="streamHealthSummary" class="help">لم يتم تحميل تقرير الفحص بعد.</div>
+  <div style="max-width:220px;margin-top:10px"><select id="streamHealthFilter" aria-label="فلترة نتائج فحص البث"><option value="all">كل النتائج</option><option value="down">المتوقفة فقط</option><option value="unknown">تعذر التحقق فقط</option></select></div>
   <div class="tablewrap" style="margin-top:10px"><table style="min-width:720px"><thead><tr><th>القناة</th><th>الرابط / المضيف</th><th>الفحص التقني</th><th>الإتاحة</th><th>HTTP</th><th>التفاصيل</th></tr></thead><tbody id="streamHealthRows"><tr><td colspan="6" class="empty">في انتظار أول تقرير.</td></tr></tbody></table></div>
   <div class="help" style="margin-top:8px">الفحص تجريبي لأول 10 قنوات ذات روابط. «تعذر التحقق» لا يعني أن الرابط متوقف. لا يغيّر الفحص أي قناة أو رابط.</div>
  </section>
@@ -134,6 +135,14 @@ async function loadCatalog(){
  renderAudit();
  await loadStreamHealth();
 }
+let streamHealthResults=[];
+function renderStreamHealthRows(){
+ const rows=$("streamHealthRows"),filter=$("streamHealthFilter").value;
+ const results=streamHealthResults.filter(item=>filter==="all"||item.status===filter);
+ const labels={working:"يعمل مبدئيًا",down:"متوقف مؤكد",unknown:"تعذر التحقق"};
+ const accessLabels={free:"مفتوح / غير مشفر",encrypted:"مشفر / يتطلب صلاحية"};
+ rows.innerHTML=results.map(item=>{const override=(overrides?.channels||{})[item.channel_id]||{},added=(overrides?.added_channels||{})[item.channel_id]||{},access=override.access_status||added.access_status||"";return '<tr><td>'+esc(item.channel_name)+'<div class="subcell">'+esc(item.channel_id)+'</div></td><td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+esc(item.host||item.url)+'</a></td><td><span class="badge '+(item.status==="down"?"archived":"")+'">'+esc(labels[item.status]||"غير معروف")+'</span></td><td>'+esc(accessLabels[access]||"غير مسجلة")+(access==="encrypted"?' <span class="badge archived">يدوي</span>':"")+'</td><td>'+esc(item.http_status??"—")+'</td><td>'+esc(item.message||"")+'</td></tr>';}).join("")||'<tr><td colspan="6" class="empty">لا توجد نتائج بهذه الحالة.</td></tr>';
+}
 async function loadStreamHealth(){
  const summary=$("streamHealthSummary"),rows=$("streamHealthRows");
  try{
@@ -141,12 +150,12 @@ async function loadStreamHealth(){
   if(!response.ok)throw Error("لا يوجد تقرير منشور بعد");
   const report=await response.json(),counts=report.summary||{};
   summary.textContent="آخر فحص: "+new Date(report.generated_at).toLocaleString("ar-EG")+" — تم فحص "+Number(report.checked_count||0)+" رابطًا: يعمل مبدئيًا "+Number(counts.working||0)+"، متوقف "+Number(counts.down||0)+"، تعذر التحقق "+Number(counts.unknown||0)+".";
-  const labels={working:"يعمل مبدئيًا",down:"متوقف مؤكد",unknown:"تعذر التحقق"};
-  const accessLabels={free:"مفتوح / غير مشفر",encrypted:"مشفر / يتطلب صلاحية"};
-  rows.innerHTML=(report.results||[]).map(item=>{const override=(overrides?.channels||{})[item.channel_id]||{},added=(overrides?.added_channels||{})[item.channel_id]||{},access=override.access_status||added.access_status||"";return '<tr><td>'+esc(item.channel_name)+'<div class="subcell">'+esc(item.channel_id)+'</div></td><td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+esc(item.host||item.url)+'</a></td><td><span class="badge '+(item.status==="down"?"archived":"")+'">'+esc(labels[item.status]||"غير معروف")+'</span></td><td>'+esc(accessLabels[access]||"غير مسجلة")+(access==="encrypted"?' <span class="badge archived">يدوي</span>':"")+'</td><td>'+esc(item.http_status??"—")+'</td><td>'+esc(item.message||"")+'</td></tr>';}).join("")||'<tr><td colspan="6" class="empty">لا توجد روابط في العينة.</td></tr>';
+  streamHealthResults=report.results||[];
+  renderStreamHealthRows();
   return true;
  }catch(error){
   summary.textContent="لم يتوفر تقرير فحص منشور بعد. "+error.message;
+  streamHealthResults=[];
   rows.innerHTML='<tr><td colspan="6" class="empty">سيظهر التقرير بعد نجاح تشغيل GitHub Actions.</td></tr>';
   return false;
  }
@@ -247,6 +256,7 @@ async function archive(id){if(!overrides)return;const c=catalog.find(x=>x.id===i
 async function restore(id){const o=overrides.channels[id]||{};o.enabled=true;delete o.snapshot;overrides.channels[id]=o;audit(id,"restore_channel");try{await commit("Restore channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر الاستعادة: "+e.message)}}
 async function connect(){try{if(!token())throw Error("أدخل رمز GitHub الإداري");setStatus("جارٍ الاتصال وتحميل البيانات...");await loadOverrides();await loadCatalog();setStatus("تم الاتصال وتحميل القنوات والتعديلات بنجاح.");}catch(e){setStatus("فشل الاتصال: "+e.message)}}
 $("refreshHealth").onclick=runStreamHealthCheck;
+$("streamHealthFilter").onchange=renderStreamHealthRows;
 $("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
 </script>
 </body></html>
