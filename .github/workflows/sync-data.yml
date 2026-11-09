@@ -24,7 +24,11 @@ jobs:
           python-version: "3.12"
 
       - run: python scripts/build_data.py
-\n      - name: Check a small sample of stream URLs\n        run: python scripts/check_streams.py\n
+
+
+      - name: Check a small sample of stream URLs
+        run: python scripts/check_streams.py
+
       - name: Preserve camera catalog in Pages output
         run: |
           if [ -d cameras ]; then
