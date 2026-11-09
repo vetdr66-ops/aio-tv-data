@@ -26,7 +26,7 @@ jobs:
       - run: python scripts/build_data.py
 
 
-      - name: Check a small sample of stream URLs
+      - name: Check all channel stream URLs
         run: python scripts/check_streams.py
 
       - name: Preserve camera catalog in Pages output

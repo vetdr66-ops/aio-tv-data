@@ -51,11 +51,12 @@ textarea{min-height:105px;resize:vertical;direction:ltr;text-align:left;line-hei
   <div class="panel"><h2>إحصائيات التصنيفات</h2><div class="tablewrap"><table><thead><tr><th>التصنيف</th><th>لديها بث</th><th>بلا بث</th><th>الإجمالي النشط</th></tr></thead><tbody id="categoryStats"></tbody></table></div></div>
  </section>
  <section class="panel" style="margin:16px 0">
-  <div class="formtitle"><h2>مركز فحص البث — عينة تجريبية</h2><button class="secondary" id="refreshHealth">تحديث التقرير</button></div>
+  <div class="formtitle"><h2>مركز فحص البث</h2><button class="secondary" id="refreshHealth">تحديث التقرير</button></div>
   <div id="streamHealthSummary" class="help">لم يتم تحميل تقرير الفحص بعد.</div>
   <div style="max-width:220px;margin-top:10px"><select id="streamHealthFilter" aria-label="فلترة نتائج فحص البث"><option value="all">كل النتائج</option><option value="down">المتوقفة فقط</option><option value="unknown">تعذر التحقق فقط</option></select></div>
   <div class="tablewrap" style="margin-top:10px"><table style="min-width:720px"><thead><tr><th>القناة</th><th>الرابط / المضيف</th><th>الفحص التقني</th><th>الإتاحة</th><th>HTTP</th><th>التفاصيل</th></tr></thead><tbody id="streamHealthRows"><tr><td colspan="6" class="empty">في انتظار أول تقرير.</td></tr></tbody></table></div>
-  <div class="help" style="margin-top:8px">الفحص تجريبي لأول 10 قنوات ذات روابط. «تعذر التحقق» لا يعني أن الرابط متوقف. لا يغيّر الفحص أي قناة أو رابط.</div>
+  <div style="margin-top:10px"><button class="secondary" id="streamHealthMore" style="display:none">عرض 100 نتيجة إضافية</button></div>
+  <div class="help" style="margin-top:8px">يُفحص رابط واحد لكل قناة لديها رابط صالح. «تعذر التحقق» لا يعني أن الرابط متوقف. لا يغيّر الفحص أي قناة أو رابط.</div>
  </section>
  <div class="layout">
   <section class="panel">
@@ -135,13 +136,17 @@ async function loadCatalog(){
  renderAudit();
  await loadStreamHealth();
 }
-let streamHealthResults=[];
+let streamHealthResults=[],streamHealthVisibleCount=100;
 function renderStreamHealthRows(){
  const rows=$("streamHealthRows"),filter=$("streamHealthFilter").value;
  const results=streamHealthResults.filter(item=>filter==="all"||item.status===filter);
+ const visible=results.slice(0,streamHealthVisibleCount);
+ const more=$("streamHealthMore");
+ more.style.display=results.length>visible.length?"inline-block":"none";
+ more.textContent="عرض "+Math.min(100,results.length-visible.length)+" نتيجة إضافية ("+visible.length+" من "+results.length+")";
  const labels={working:"يعمل مبدئيًا",down:"متوقف مؤكد",unknown:"تعذر التحقق"};
  const accessLabels={free:"مفتوح / غير مشفر",encrypted:"مشفر / يتطلب صلاحية"};
- rows.innerHTML=results.map(item=>{const override=(overrides?.channels||{})[item.channel_id]||{},added=(overrides?.added_channels||{})[item.channel_id]||{},access=override.access_status||added.access_status||"";return '<tr><td>'+esc(item.channel_name)+'<div class="subcell">'+esc(item.channel_id)+'</div></td><td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+esc(item.host||item.url)+'</a></td><td><span class="badge '+(item.status==="down"?"archived":"")+'">'+esc(labels[item.status]||"غير معروف")+'</span></td><td>'+esc(accessLabels[access]||"غير مسجلة")+(access==="encrypted"?' <span class="badge archived">يدوي</span>':"")+'</td><td>'+esc(item.http_status??"—")+'</td><td>'+esc(item.message||"")+'</td></tr>';}).join("")||'<tr><td colspan="6" class="empty">لا توجد نتائج بهذه الحالة.</td></tr>';
+ rows.innerHTML=visible.map(item=>{const override=(overrides?.channels||{})[item.channel_id]||{},added=(overrides?.added_channels||{})[item.channel_id]||{},access=override.access_status||added.access_status||"";return '<tr><td>'+esc(item.channel_name)+'<div class="subcell">'+esc(item.channel_id)+'</div></td><td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+esc(item.host||item.url)+'</a></td><td><span class="badge '+(item.status==="down"?"archived":"")+'">'+esc(labels[item.status]||"غير معروف")+'</span></td><td>'+esc(accessLabels[access]||"غير مسجلة")+(access==="encrypted"?' <span class="badge archived">يدوي</span>':"")+'</td><td>'+esc(item.http_status??"—")+'</td><td>'+esc(item.message||"")+'</td></tr>';}).join("")||'<tr><td colspan="6" class="empty">لا توجد نتائج بهذه الحالة.</td></tr>';
 }
 async function loadStreamHealth(){
  const summary=$("streamHealthSummary"),rows=$("streamHealthRows");
@@ -151,11 +156,13 @@ async function loadStreamHealth(){
   const report=await response.json(),counts=report.summary||{};
   summary.textContent="آخر فحص: "+new Date(report.generated_at).toLocaleString("ar-EG")+" — تم فحص "+Number(report.checked_count||0)+" رابطًا: يعمل مبدئيًا "+Number(counts.working||0)+"، متوقف "+Number(counts.down||0)+"، تعذر التحقق "+Number(counts.unknown||0)+".";
   streamHealthResults=report.results||[];
+  streamHealthVisibleCount=100;
   renderStreamHealthRows();
   return true;
  }catch(error){
   summary.textContent="لم يتوفر تقرير فحص منشور بعد. "+error.message;
   streamHealthResults=[];
+  streamHealthVisibleCount=100;
   rows.innerHTML='<tr><td colspan="6" class="empty">سيظهر التقرير بعد نجاح تشغيل GitHub Actions.</td></tr>';
   return false;
  }
@@ -174,14 +181,14 @@ async function runStreamHealthCheck(){
   setStatus("تم طلب فحص جديد. جارٍ انتظار انتهاء الفحص والنشر...");
   button.textContent="جارٍ الفحص والنشر...";
   let run=null;
-  for(let attempt=0;attempt<90;attempt++){
-   await new Promise(resolve=>setTimeout(resolve,4000));
+  for(let attempt=0;attempt<360;attempt++){
+   await new Promise(resolve=>setTimeout(resolve,10000));
    const data=await api("https://api.github.com/repos/"+OWNER+"/"+REPO+"/actions/workflows/sync-data.yml/runs?branch="+BRANCH+"&event=workflow_dispatch&per_page=10");
    run=(data.workflow_runs||[]).find(item=>new Date(item.created_at).getTime()>=startedAt-15000);
    if(run&&run.status==="completed")break;
    run=null;
   }
-  if(!run)throw Error("لم يصل الفحص إلى نتيجة خلال 6 دقائق. يمكنك مراجعة GitHub Actions.");
+  if(!run)throw Error("لم يصل الفحص إلى نتيجة خلال 60 دقيقة. يمكنك مراجعة GitHub Actions؛ قد يظل التشغيل جاريًا.");
   if(run.conclusion!=="success")throw Error("فشل الفحص أو النشر. راجع سجل GitHub Actions.");
   button.textContent="تحميل التقرير الجديد...";
   if(!await loadStreamHealth())throw Error("اكتمل الفحص والنشر، لكن تعذر تحميل التقرير الجديد.");
@@ -256,7 +263,8 @@ async function archive(id){if(!overrides)return;const c=catalog.find(x=>x.id===i
 async function restore(id){const o=overrides.channels[id]||{};o.enabled=true;delete o.snapshot;overrides.channels[id]=o;audit(id,"restore_channel");try{await commit("Restore channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر الاستعادة: "+e.message)}}
 async function connect(){try{if(!token())throw Error("أدخل رمز GitHub الإداري");setStatus("جارٍ الاتصال وتحميل البيانات...");await loadOverrides();await loadCatalog();setStatus("تم الاتصال وتحميل القنوات والتعديلات بنجاح.");}catch(e){setStatus("فشل الاتصال: "+e.message)}}
 $("refreshHealth").onclick=runStreamHealthCheck;
-$("streamHealthFilter").onchange=renderStreamHealthRows;
+$("streamHealthFilter").onchange=()=>{streamHealthVisibleCount=100;renderStreamHealthRows()};
+$("streamHealthMore").onclick=()=>{streamHealthVisibleCount+=100;renderStreamHealthRows()};
 $("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
 </script>
 </body></html>

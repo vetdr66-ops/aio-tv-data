@@ -10,8 +10,7 @@ from urllib.parse import urljoin, urlparse
 ROOT = Path(__file__).resolve().parent.parent
 COUNTRIES = ROOT / "public" / "data" / "countries"
 REPORT = ROOT / "public" / "data" / "stream-health.json"
-SAMPLE_SIZE = 10
-MAX_WORKERS = 2
+MAX_WORKERS = 8
 TIMEOUT_SECONDS = 8
 PLAYLIST_BYTES = 16384
 SEGMENT_BYTES = 1024
@@ -46,8 +45,6 @@ def collect_sample():
                     "url": url,
                 })
                 break
-            if len(sample) >= SAMPLE_SIZE:
-                return sample
     return sample
 
 
@@ -225,7 +222,7 @@ def main():
         results = list(executor.map(check_stream, sample))
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "sample_size": SAMPLE_SIZE,
+        "total_channels": len(sample),
         "checked_count": len(results),
         "policy": "Diagnostic only. No channel, stream URL, or override is changed.",
         "summary": {
@@ -238,7 +235,7 @@ def main():
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
-        "Stream health sample: "
+        Stream health full scan: 
         f"{report['summary']['working']} working, "
         f"{report['summary']['down']} down, "
         f"{report['summary']['unknown']} unknown "
