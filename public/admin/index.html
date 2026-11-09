@@ -264,6 +264,7 @@ async function archive(id){if(!overrides)return;const c=catalog.find(x=>x.id===i
 async function restore(id){const o=overrides.channels[id]||{};o.enabled=true;delete o.snapshot;overrides.channels[id]=o;audit(id,"restore_channel");try{await commit("Restore channel "+id);await loadCatalog();clearForm()}catch(e){setStatus("تعذر الاستعادة: "+e.message)}}
 async function connect(){try{if(!token())throw Error("أدخل رمز GitHub الإداري");setStatus("جارٍ الاتصال وتحميل البيانات...");await loadOverrides();await loadCatalog();setStatus("تم الاتصال وتحميل القنوات والتعديلات بنجاح.");}catch(e){setStatus("فشل الاتصال: "+e.message)}}
 $("refreshHealth").onclick=runStreamHealthCheck;
+$("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);
 $("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{currentPage=1;render()},250)};$("countryFilter").onchange=()=>{currentPage=1;render()};$("stateFilter").onchange=()=>{currentPage=1;render()};
 $("previousPage").onclick=()=>{if(currentPage>1){currentPage--;render()}};$("nextPage").onclick=()=>{currentPage++;render()};$("healthFilter").onchange=renderStreamHealthRows;
 </script>
