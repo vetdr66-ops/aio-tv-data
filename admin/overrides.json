@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-09T08:44:57.553Z",
+  "updated_at": "2026-11-09T21:32:18.368Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -773,7 +773,29 @@
       "action": "move_channel",
       "changed_at": "2026-11-09T08:44:57.553Z",
       "new_country": "eg"
+    },
+    {
+      "channel_id": "admin.",
+      "action": "add_channel",
+      "changed_at": "2026-11-09T21:32:18.368Z",
+      "new_name": "قناة رؤيا"
     }
   ],
-  "added_channels": {}
+  "added_channels": {
+    "admin.": {
+      "name": "قناة رؤيا",
+      "country": "jo",
+      "categories": [
+        "general"
+      ],
+      "logo": "",
+      "streams": [
+        {
+          "url": "https://roya.tv/live-stream/1",
+          "channel": "admin."
+        }
+      ],
+      "access_status": ""
+    }
+  }
 }
