@@ -37,6 +37,9 @@ jobs:
           fi
           test -s public/cameras/global-index.json
 
+      - name: Check camera streams independently
+        run: python scripts/check_cameras.py
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public
