@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: "17 */12 * * *"
 
+concurrency:
+  group: aio-tv-data-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write
@@ -25,10 +29,6 @@ jobs:
 
       - run: python scripts/build_data.py
 
-
-      - name: Check all channel stream URLs
-        run: python scripts/check_streams.py
-
       - name: Preserve camera catalog in Pages output
         run: |
           if [ -d cameras ]; then
@@ -37,8 +37,26 @@ jobs:
           fi
           test -s public/cameras/global-index.json
 
-      - name: Check camera streams independently
-        run: python scripts/check_cameras.py
+      - name: Check channel and camera streams in parallel
+        run: |
+          set +e
+
+          python scripts/check_streams.py &
+          CHANNEL_PID=$!
+
+          python scripts/check_cameras.py &
+          CAMERA_PID=$!
+
+          wait "$CHANNEL_PID"
+          CHANNEL_STATUS=$?
+
+          wait "$CAMERA_PID"
+          CAMERA_STATUS=$?
+
+          if [ "$CHANNEL_STATUS" -ne 0 ] || [ "$CAMERA_STATUS" -ne 0 ]; then
+            echo "One or more stream health checks failed."
+            exit 1
+          fi
 
       - uses: actions/upload-pages-artifact@v3
         with:
