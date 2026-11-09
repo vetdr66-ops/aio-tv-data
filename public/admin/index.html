@@ -141,9 +141,11 @@ async function loadStreamHealth(){
   summary.textContent="آخر فحص: "+new Date(report.generated_at).toLocaleString("ar-EG")+" — تم فحص "+Number(report.checked_count||0)+" رابطًا: يعمل مبدئيًا "+Number(counts.working||0)+"، متوقف "+Number(counts.down||0)+"، تعذر التحقق "+Number(counts.unknown||0)+".";
   const labels={working:"يعمل مبدئيًا",down:"متوقف مؤكد",unknown:"تعذر التحقق"};
   rows.innerHTML=(report.results||[]).map(item=>'<tr><td>'+esc(item.channel_name)+'<div class="subcell">'+esc(item.channel_id)+'</div></td><td><a href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+esc(item.host||item.url)+'</a></td><td><span class="badge '+(item.status==="down"?"archived":"")+'">'+esc(labels[item.status]||"غير معروف")+'</span></td><td>'+esc(item.http_status??"—")+'</td><td>'+esc(item.message||"")+'</td></tr>').join("")||'<tr><td colspan="5" class="empty">لا توجد روابط في العينة.</td></tr>';
+  return true;
  }catch(error){
   summary.textContent="لم يتوفر تقرير فحص منشور بعد. "+error.message;
   rows.innerHTML='<tr><td colspan="5" class="empty">سيظهر التقرير بعد نجاح تشغيل GitHub Actions.</td></tr>';
+  return false;
  }
 }
 async function runStreamHealthCheck(){
@@ -170,7 +172,7 @@ async function runStreamHealthCheck(){
   if(!run)throw Error("لم يصل الفحص إلى نتيجة خلال 6 دقائق. يمكنك مراجعة GitHub Actions.");
   if(run.conclusion!=="success")throw Error("فشل الفحص أو النشر. راجع سجل GitHub Actions.");
   button.textContent="تحميل التقرير الجديد...";
-  await loadStreamHealth();
+  if(!await loadStreamHealth())throw Error("اكتمل الفحص والنشر، لكن تعذر تحميل التقرير الجديد.");
   setStatus("اكتمل الفحص الجديد ونشر التقرير بنجاح. آخر تقرير معروض الآن.");
  }catch(error){
   const message=error.message||String(error);
