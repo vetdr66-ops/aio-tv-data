@@ -5,7 +5,8 @@
   "status": "expanded_working_catalog",
   "notes": [
     "كتالوج الإذاعات العربية وإذاعات القرآن والبرامج الدينية الناطقة بالعربية.",
-    "روابط البث مدرجة كما وردت في المصدر ولم يتم اختبار جميعها بصورة مستقلة."
+    "روابط البث مدرجة كما وردت في المصدر ولم يتم اختبار جميعها بصورة مستقلة.",
+    "تمت إضافة إذاعة الجونة وراديو وياك من دليل FreqTrail كروابط مرشحة؛ لم يتم تأكيد التشغيل المستقل بعد."
   ],
   "data_sources": [
     {
@@ -680,6 +681,44 @@
       "format": "MP3",
       "source": "FreqTrail",
       "source_url": "https://www.freqtrail.com/stations/KW",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_EL_GOUNA_RADIO",
+      "name": "إذاعة الجونة",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "general"
+      ],
+      "stream_url": "http://82.201.132.237:8000/;stream.mp3",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
+      "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_RADIO_WAYAK",
+      "name": "راديو وياك",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "general",
+        "talk"
+      ],
+      "stream_url": "https://work.radiowayak.org/listen/live/live.mp3",
+      "format": "MP3",
+      "source": "FreqTrail",
+      "source_url": "https://www.freqtrail.com/stations/EG",
       "status": "listed_not_independently_tested"
     }
   ]
