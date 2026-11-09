@@ -1,5 +1,6 @@
 import concurrent.futures
 import json
+import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -14,6 +15,9 @@ MAX_WORKERS = 2
 TIMEOUT_SECONDS = 8
 PLAYLIST_BYTES = 16384
 SEGMENT_BYTES = 1024
+MAX_SEGMENTS_TO_CHECK = 2
+MIN_REFRESH_WAIT_SECONDS = 6
+MAX_REFRESH_WAIT_SECONDS = 20
 USER_AGENT = "AIO-TV-StreamHealth/1.0 (+https://github.com/vetdr66-ops/aio-tv-data)"
 
 
@@ -54,6 +58,8 @@ def read_url(url, byte_limit):
             "User-Agent": USER_AGENT,
             "Range": f"bytes=0-{byte_limit - 1}",
             "Accept": "*/*",
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache",
         },
         method="GET",
     )
@@ -64,17 +70,76 @@ def read_url(url, byte_limit):
         return error.code, error.headers.get("Content-Type", "").lower(), b""
 
 
-def first_playlist_uri(body):
+def parse_media_playlist(body):
     lines = [line.strip() for line in body.decode("utf-8", errors="replace").splitlines()]
+    media_sequence = 0
+    target_duration = 6
+    end_list = False
+    segments = []
+
+    for line in lines:
+        if line.startswith("#EXT-X-MEDIA-SEQUENCE:"):
+            try:
+                media_sequence = int(line.split(":", 1)[1])
+            except ValueError:
+                pass
+        elif line.startswith("#EXT-X-TARGETDURATION:"):
+            try:
+                target_duration = max(1, int(float(line.split(":", 1)[1])))
+            except ValueError:
+                pass
+        elif line == "#EXT-X-ENDLIST":
+            end_list = True
+        elif line and not line.startswith("#"):
+            segments.append(line)
+
+    return {
+        "media_sequence": media_sequence,
+        "target_duration": target_duration,
+        "end_list": end_list,
+        "segments": segments,
+    }
+
+
+def load_media_playlist(url):
+    status, content_type, body = read_url(url, PLAYLIST_BYTES)
+    if not 200 <= status < 300 or not body.lstrip().startswith(b"#EXTM3U"):
+        return status, content_type, url, None
+
+    lines = [line.strip() for line in body.decode("utf-8", errors="replace").splitlines()]
+    variant_uri = None
     for index, line in enumerate(lines):
         if line.startswith("#EXT-X-STREAM-INF"):
-            for candidate in lines[index + 1:]:
-                if candidate and not candidate.startswith("#"):
-                    return candidate
-    for line in lines:
-        if line and not line.startswith("#"):
-            return line
-    return None
+            variant_uri = next(
+                (candidate for candidate in lines[index + 1:] if candidate and not candidate.startswith("#")),
+                None,
+            )
+            break
+
+    if variant_uri:
+        media_url = urljoin(url, variant_uri)
+        variant_status, variant_type, variant_body = read_url(media_url, PLAYLIST_BYTES)
+        if not 200 <= variant_status < 300 or not variant_body.lstrip().startswith(b"#EXTM3U"):
+            return variant_status, variant_type, media_url, None
+        return variant_status, variant_type or content_type, media_url, parse_media_playlist(variant_body)
+
+    return status, content_type, url, parse_media_playlist(body)
+
+
+def check_latest_segments(media_url, playlist):
+    segments = playlist["segments"][-MAX_SEGMENTS_TO_CHECK:]
+    if not segments:
+        return "unknown", "قائمة HLS موجودة لكن لم يظهر بها مقطع بث قابل للفحص"
+
+    for segment_uri in segments:
+        segment_url = urljoin(media_url, segment_uri)
+        status, _, body = read_url(segment_url, SEGMENT_BYTES)
+        if status in (404, 410):
+            return "down", f"أحدث مقطع بث غير موجود (HTTP {status})"
+        if not 200 <= status < 300 or not body:
+            return "unknown", f"تعذر الوصول إلى أحد أحدث مقاطع البث (HTTP {status})"
+
+    return "working", "تجددت قائمة HLS وتم الوصول إلى أحدث مقطعين"
 
 
 def check_stream(item):
@@ -92,72 +157,63 @@ def check_stream(item):
     }
 
     try:
-        status, content_type, body = read_url(url, PLAYLIST_BYTES)
+        status, content_type, media_url, playlist = load_media_playlist(url)
         result["http_status"] = status
         result["content_type"] = content_type
 
         if status in (404, 410):
-            result.update(status="down", message=f"الرابط غير موجود (HTTP {status})")
+            result.update(status="down", message=f"قائمة البث غير موجودة (HTTP {status})")
             return result
-        if not 200 <= status < 300:
-            result.update(message=f"تعذر التأكد (HTTP {status})")
+        if not 200 <= status < 300 or playlist is None:
+            result.update(message=f"تعذر التأكد من قائمة البث (HTTP {status})")
             return result
 
-        looks_like_hls = (
-            url.lower().split("?", 1)[0].endswith(".m3u8")
-            or "mpegurl" in content_type
-            or "vnd.apple.mpegurl" in content_type
-            or body.lstrip().startswith(b"#EXTM3U")
+        if playlist["end_list"]:
+            state, message = check_latest_segments(media_url, playlist)
+            if state == "down":
+                result.update(status=state, message=message)
+            else:
+                result.update(message="قائمة HLS منتهية؛ لا يمكن إثبات أن البث المباشر ما زال يتجدد")
+            return result
+
+        wait_seconds = min(
+            max(playlist["target_duration"] * 2 + 1, MIN_REFRESH_WAIT_SECONDS),
+            MAX_REFRESH_WAIT_SECONDS,
+        )
+        if playlist["target_duration"] * 2 + 1 > MAX_REFRESH_WAIT_SECONDS:
+            result.update(message="فترة تحديث قائمة HLS طويلة؛ تعذر التحقق ضمن حد الانتظار الآمن")
+            return result
+
+        time.sleep(wait_seconds)
+        second_status, second_type, second_media_url, second_playlist = load_media_playlist(media_url)
+        if second_status in (404, 410):
+            result.update(status="down", http_status=second_status, message=f"قائمة البث اختفت أثناء الفحص (HTTP {second_status})")
+            return result
+        if not 200 <= second_status < 300 or second_playlist is None:
+            result.update(http_status=second_status, message=f"تعذر إعادة قراءة قائمة البث (HTTP {second_status})")
+            return result
+
+        first_last = playlist["segments"][-1] if playlist["segments"] else None
+        second_last = second_playlist["segments"][-1] if second_playlist["segments"] else None
+        advanced = (
+            second_playlist["media_sequence"] > playlist["media_sequence"]
+            or second_last != first_last
         )
 
-        if looks_like_hls:
-            if not body.lstrip().startswith(b"#EXTM3U"):
-                result.update(message="استجابة ناجحة لكن محتوى قائمة HLS غير واضح")
-                return result
-
-            media_url = url
-            media_body = body
-            variant_uri = None
-            lines = [line.strip() for line in body.decode("utf-8", errors="replace").splitlines()]
-            for index, line in enumerate(lines):
-                if line.startswith("#EXT-X-STREAM-INF"):
-                    variant_uri = next((candidate for candidate in lines[index + 1:] if candidate and not candidate.startswith("#")), None)
-                    break
-
-            if variant_uri:
-                media_url = urljoin(url, variant_uri)
-                variant_status, _, variant_body = read_url(media_url, PLAYLIST_BYTES)
-                if variant_status in (404, 410):
-                    result.update(status="down", message=f"قائمة البث الفرعية غير موجودة (HTTP {variant_status})")
-                    return result
-                if not 200 <= variant_status < 300 or not variant_body.lstrip().startswith(b"#EXTM3U"):
-                    result.update(message=f"تعذر التحقق من قائمة البث الفرعية (HTTP {variant_status})")
-                    return result
-                media_body = variant_body
-
-            segment_uri = first_playlist_uri(media_body)
-            if not segment_uri:
-                result.update(message="قائمة HLS موجودة لكن لم يظهر بها مقطع بث قابل للفحص")
-                return result
-
-            segment_url = urljoin(media_url, segment_uri)
-            segment_status, segment_type, segment_body = read_url(segment_url, SEGMENT_BYTES)
-            if segment_status in (404, 410):
-                result.update(status="down", message=f"مقطع البث غير موجود (HTTP {segment_status})")
-            elif 200 <= segment_status < 300 and segment_body:
-                result.update(status="working", content_type=segment_type or content_type, message="قائمة HLS ومقطع بث واحد متاحان مبدئيًا")
-            else:
-                result.update(message=f"قائمة HLS موجودة لكن تعذر الوصول إلى مقطع البث (HTTP {segment_status})")
+        if not advanced:
+            result.update(
+                message=f"قائمة HLS لم تتجدد خلال {wait_seconds} ثانية؛ البث غير مؤكد"
+            )
             return result
 
-        if body and (
-            content_type.startswith("video/")
-            or "octet-stream" in content_type
-            or "mp2t" in content_type
-        ):
-            result.update(status="working", message="استجابة وسائط ناجحة مبدئيًا")
+        state, message = check_latest_segments(second_media_url, second_playlist)
+        if state == "working":
+            result.update(status="working", content_type=second_type or content_type, message=message)
+        elif state == "down":
+            result.update(status="down", message=message)
         else:
-            result.update(message="استجابة ناجحة لكن نوع المحتوى لا يثبت أنه بث")
+            result.update(message=message)
+
     except Exception as error:
         result.update(message=f"تعذر الاتصال: {type(error).__name__}")
     return result
