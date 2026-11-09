@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-09T21:32:18.368Z",
+  "updated_at": "2026-11-09T21:37:31.108Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -779,12 +779,18 @@
       "action": "add_channel",
       "changed_at": "2026-11-09T21:32:18.368Z",
       "new_name": "قناة رؤيا"
+    },
+    {
+      "channel_id": "admin.",
+      "action": "move_channel",
+      "changed_at": "2026-11-09T21:37:31.108Z",
+      "new_country": "eg"
     }
   ],
   "added_channels": {
     "admin.": {
       "name": "قناة رؤيا",
-      "country": "jo",
+      "country": "eg",
       "categories": [
         "general"
       ],
