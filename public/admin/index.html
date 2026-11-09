@@ -147,7 +147,7 @@ async function loadStreamHealth(){
   return true;
  }catch(error){
   summary.textContent="لم يتوفر تقرير فحص منشور بعد. "+error.message;
-  rows.innerHTML='<tr><td colspan="5" class="empty">سيظهر التقرير بعد نجاح تشغيل GitHub Actions.</td></tr>';
+  rows.innerHTML='<tr><td colspan="6" class="empty">سيظهر التقرير بعد نجاح تشغيل GitHub Actions.</td></tr>';
   return false;
  }
 }
