@@ -6,7 +6,8 @@
   "notes": [
     "كتالوج الإذاعات العربية وإذاعات القرآن والبرامج الدينية الناطقة بالعربية.",
     "روابط البث مدرجة كما وردت في المصدر ولم يتم اختبار جميعها بصورة مستقلة.",
-    "تمت إضافة إذاعة الجونة وراديو وياك من دليل FreqTrail كروابط مرشحة؛ لم يتم تأكيد التشغيل المستقل بعد."
+    "تمت إضافة إذاعة الجونة وراديو وياك من دليل FreqTrail كروابط مرشحة؛ لم يتم تأكيد التشغيل المستقل بعد.",
+    "إضافات مصرية جديدة من قائمة 72FM المبنية من Radio Browser؛ اجتازت فحص المصدر في آخر بناء 2026-10-26، ولم يُعد اختبارها مستقلاً قبل الإدراج."
   ],
   "data_sources": [
     {
@@ -720,6 +721,226 @@
       "source": "FreqTrail",
       "source_url": "https://www.freqtrail.com/stations/EG",
       "status": "listed_not_independently_tested"
+    },
+    {
+      "id": "EG_TES3ENAT_FM",
+      "name": "تسعينات FM",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "http://178.33.135.244:20095/;?DIST=TuneIn&TGT=TuneIn&maxServers=2&partnertok=eyJhbGciOiJIUzI1NiIsImtpZCI6InR1bmVpbiIsInR5cCI6IkpXVCJ9.eyJ0cnVzdGVkX3BhcnRuZXIiOnRydWUsImlhdCI6MTYzNjA1OTE3OCwiaXNzIjoidGlzcnYifQ.Me0snc2PBcQhvlzte9L7zQxa-IHgNinhu3XdNJ6_Xa8",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_NRj_EGYPT",
+      "name": "NRJ Egypt",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "http://nrjstreaming.ahmed-melege.com/nrjegypt",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_MIX_FM_878",
+      "name": "87.8 Mix FM",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "https://stream-29.zeno.fm/na3vpvn10qruv",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_90S_FM",
+      "name": "90s FM",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "https://eu1.fastcast4u.com/proxy/prontofm?mp=/1",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_ARAB_MIX_FM",
+      "name": "Arab Mix FM",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "https://stream.zeno.fm/na3vpvn10qruv",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_ARAB_MIX_256",
+      "name": "Arab Mix 256",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "https://stream.zeno.fm/wvqgc9kb1d0uv",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_ELISSA_FM",
+      "name": "Elissa FM",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "https://stream.zeno.fm/v7n499m8ckhvv",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_ARAB_MIX_DRAMA",
+      "name": "Arab Mix Drama",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "https://stream.zeno.fm/egynebf171zuv.acc",
+      "format": "AAC",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_CORLEONE_RADIO",
+      "name": "Corleone Radio",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "http://198.244.189.86:8000/listen/corleone",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_SOLLY_RADIO",
+      "name": "Solly Radio",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "https://stream.zeno.fm/juwfhuodjgmuv",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
+    },
+    {
+      "id": "EG_REBEL_RADIO",
+      "name": "Rebel Radio Online",
+      "country": "Egypt",
+      "country_code": "EG",
+      "region": "Africa",
+      "languages": [
+        "Arabic"
+      ],
+      "categories": [
+        "music",
+        "internet_radio"
+      ],
+      "stream_url": "https://azuracast-nuremberg.myautodj.com/listen/station_660_1777579648/radio.mp3",
+      "format": "MP3",
+      "source": "Radio Browser via 72FM radio-playlists",
+      "source_url": "https://github.com/AlonDrilich/radio-playlists",
+      "last_source_check": "2026-10-26",
+      "status": "source_check_passed_not_independently_retested"
     }
   ]
 }
