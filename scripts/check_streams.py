@@ -235,7 +235,7 @@ def main():
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
-        Stream health full scan: 
+        "Stream health full scan: "
         f"{report['summary']['working']} working, "
         f"{report['summary']['down']} down, "
         f"{report['summary']['unknown']} unknown "
