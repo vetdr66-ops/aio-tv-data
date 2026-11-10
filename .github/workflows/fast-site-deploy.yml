@@ -1,0 +1,64 @@
+name: Fast site deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'public/admin-shell/**'
+      - 'public/admin/**'
+      - 'public/radio/**'
+
+concurrency:
+  group: aio-tv-pages-fast-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build current channel data
+        run: python scripts/build_data.py
+
+      - name: Preserve camera catalog in Pages output
+        run: |
+          mkdir -p public/cameras
+          cp -a cameras/. public/cameras/
+          test -s public/cameras/global-index.json
+
+      - name: Preserve latest stream health reports
+        run: |
+          mkdir -p public/data public/cameras
+          curl --fail --show-error --silent --location --retry 3 --retry-delay 2 \
+            "https://vetdr66-ops.github.io/aio-tv-data/data/stream-health.json" \
+            -o public/data/stream-health.json
+          curl --fail --show-error --silent --location --retry 3 --retry-delay 2 \
+            "https://vetdr66-ops.github.io/aio-tv-data/cameras/health-report.json" \
+            -o public/cameras/health-report.json
+          test -s public/data/stream-health.json
+          test -s public/cameras/health-report.json
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
