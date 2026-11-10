@@ -87,7 +87,7 @@ pageBody.addEventListener("keydown",event=>{
  if(card&&(event.key==="Enter"||event.key===" ")){event.preventDefault();navigate(card.dataset.openSection);}
 });
 window.addEventListener("message",event=>{
- const frame=pageBody.querySelector(".tv-frame");
+ const frame=tvFrameWrap.querySelector(".tv-frame");
  if(event.origin!==window.location.origin||!frame||event.source!==frame.contentWindow)return;
  const data=event.data||{};
  if(data.type!=="AIO_TV_DASHBOARD_SUMMARY"||!data.summary)return;
