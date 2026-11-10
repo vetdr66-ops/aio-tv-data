@@ -824,7 +824,8 @@
         "روابط البث مدرجة كما وردت في المصدر ولم يتم اختبار جميعها بصورة مستقلة.",
         "تمت إضافة إذاعة الجونة وراديو وياك من دليل FreqTrail كروابط مرشحة؛ لم يتم تأكيد التشغيل المستقل بعد.",
         "إضافات مصرية جديدة من قائمة 72FM المبنية من Radio Browser؛ اجتازت فحص المصدر في آخر بناء 2026-10-26، ولم يُعد اختبارها مستقلاً قبل الإدراج.",
-        "تم تأكيد تشغيل بث عين FM الأردنية بواسطة المستخدم؛ MP3 بمعدل 128 kbps."
+        "تم تأكيد تشغيل بث عين FM الأردنية بواسطة المستخدم؛ MP3 بمعدل 128 kbps.",
+        "تم إدراج خدمات شبكة الإذاعات الإقليمية المصرية العشر كسجلات اكتشاف إدارية؛ لم تُثبت بعد روابط صوت مباشرة أو أذونات إعادة البث التجاري، لذلك لا تُعرض كتدفقات قابلة للتشغيل في التطبيق حتى التحقق."
       ],
       "data_sources": [
         {
@@ -1777,6 +1778,216 @@
           "source": "FreqTrail Jordan; playback confirmed by user",
           "source_url": "https://www.freqtrail.com/stations/JO",
           "status": "user_confirmed_working"
+        },
+        {
+          "id": "EG_GREATER_CAIRO_LOCAL",
+          "name": "إذاعة القاهرة الكبرى",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for Greater Cairo; city of origin: Cairo. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_ALEXANDRIA_LOCAL",
+          "name": "إذاعة الإسكندرية",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for Alexandria; city of origin: Alexandria. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_MIDDLE_DELTA_LOCAL",
+          "name": "إذاعة وسط الدلتا",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for Middle Delta; city of origin: Tanta. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_NORTH_UPPER_EGYPT_LOCAL",
+          "name": "إذاعة شمال الصعيد",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for North Upper Egypt; city of origin: Minya. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_SOUTH_UPPER_EGYPT_LOCAL",
+          "name": "إذاعة جنوب الصعيد",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for South Upper Egypt; city of origin: Aswan. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_NORTH_SINAI_LOCAL",
+          "name": "إذاعة شمال سيناء",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for North Sinai; city of origin: Arish. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_SOUTH_SINAI_LOCAL",
+          "name": "إذاعة جنوب سيناء",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for South Sinai; city of origin: El Tor. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_CANAL_LOCAL",
+          "name": "إذاعة القناة",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for Canal; city of origin: Ismailia. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_NEW_VALLEY_LOCAL",
+          "name": "إذاعة الوادي الجديد",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for New Valley; city of origin: Kharga. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_MATROUH_LOCAL",
+          "name": "إذاعة مطروح",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "local",
+            "regional",
+            "public"
+          ],
+          "stream_url": null,
+          "format": null,
+          "source": "National Media Authority / Egyptian Regional Radio Network",
+          "source_url": "https://www.maspero.eg/",
+          "status": "discovery_only_stream_and_commercial_rights_unverified",
+          "notes": "Regional service for Matrouh; city of origin: Marsa Matrouh. No direct audio stream or commercial redistribution permission verified yet."
         }
       ]
     },
