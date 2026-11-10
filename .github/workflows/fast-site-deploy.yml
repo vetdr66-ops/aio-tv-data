@@ -8,6 +8,7 @@ on:
     paths:
       - 'public/admin-shell/**'
       - 'public/admin/**'
+      - 'admin/overrides.json'
       - 'public/radio/**'
 
 concurrency:
