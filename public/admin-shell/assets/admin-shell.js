@@ -64,6 +64,8 @@ function navigate(key){
   if(key==="dashboard"){
    renderDashboardTvSummary();
    requestTvDashboardSummary();
+   renderRadioDashboardSummary();
+   loadRadioAdminData();
   }
   if(key==="dashboard"||key==="cameras"){
    renderCameraSummary();
@@ -162,9 +164,14 @@ function radioEscape(value){return String(value==null?"":value).replace(/[&<>"']
 function radioCatalog(){return radioCatalogs&&radioCatalogs[selectedRadioCatalog]}
 function renderRadioDashboardSummary(){
  const target=document.getElementById("radioDashboardSummary");if(!target)return;
- if(!radioCatalogs){target.textContent="افتح قسم الإذاعات لتحميل الكتالوجين.";return;}
- const all=Object.values(radioCatalogs).flatMap(c=>c.stations||[]);
- target.textContent="إذاعات: "+all.length+" • دول: "+new Set(all.map(s=>s.country_code).filter(Boolean)).size+" • روابط بث: "+all.filter(s=>s.stream_url).length;
+ if(!radioCatalogs){target.textContent="جارٍ تحميل إحصائيات الإذاعات من GitHub...";return;}
+ const arabic=radioCatalogs.radio_arabic_quran?.stations||[];
+ const world=radioCatalogs.radio_world?.stations||[];
+ const all=[...arabic,...world];
+ const countries=new Set(all.map(s=>String(s.country_code||"").trim().toUpperCase()).filter(Boolean));
+ const categories=new Set(all.flatMap(s=>Array.isArray(s.categories)?s.categories:[]).map(c=>String(c).trim().toLowerCase()).filter(Boolean));
+ const streams=all.filter(s=>String(s.stream_url||"").trim()).length;
+ target.textContent="الإجمالي: "+all.length+" • العربية والقرآن: "+arabic.length+" • العالمية: "+world.length+" • الدول: "+countries.size+" • التصنيفات: "+categories.size+" • روابط البث: "+streams+" • بدون رابط: "+(all.length-streams);
 }
 function setRadioStatus(message){const node=document.getElementById("radioStatus");if(node)node.textContent=message}
 async function loadRadioAdminData(){
