@@ -213,8 +213,7 @@ async function saveRadio(){
   for(const url of [streamUrl,sourceUrl])if(url&&!/^https?:\/\//i.test(url))throw Error("تأكد من صحة روابط البث والمصدر.");
   const stations=radioCatalog().stations,existing=selectedRadioId?stations.find(s=>s.id===selectedRadioId):null;
   if(!existing&&stations.some(s=>s.id===id))throw Error("هذا المعرّف موجود بالفعل.");
-  const station={id,name,country,country_code:countryCode,region:value("radioRegion"),languages:radioList(value("radioLanguages")),categories:radioList(value("radioCategories")),format:value("radioFormat"),source:value("radioSource"),source_url:sourceUrl,status:value("radioStationStatus")||"listed_not_independently_tested"};
-  if(streamUrl)station.stream_url=streamUrl;
+  const station={id,name,country,country_code:countryCode,region:value("radioRegion"),languages:radioList(value("radioLanguages")),categories:radioList(value("radioCategories")),stream_url:streamUrl,format:value("radioFormat"),source:value("radioSource"),source_url:sourceUrl,status:value("radioStationStatus")||"listed_not_independently_tested"};
   if(existing)Object.assign(existing,station);else stations.push(station);
   await saveRadioCatalogs(existing?"edit":"add",id);resetRadioEditor();renderRadioTable();renderRadioDashboardSummary();setRadioStatus("تم حفظ الإذاعة في GitHub. يجري نشر الكتالوج المحدّث تلقائيًا.");
  }catch(error){setRadioStatus("تعذر حفظ الإذاعة: "+(error.message||String(error)));}
