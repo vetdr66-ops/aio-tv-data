@@ -26,9 +26,47 @@ function dashboardMarkup(){return `
     <article class="overview-card"><div class="card-icon">▥</div><strong>التقارير ومراقبة النظام</strong><small>مؤشرات الأداء وسجل العمليات وصحة الخدمات.</small></article>
   </div>
   <section class="panel"><h2>حالة تجهيز اللوحة</h2><p>يتم ربط الأقسام تدريجيًا. لا تُعرض إحصائيات إلا بعد تحميل بيانات القسم الفعلية والتحقق منها.</p></section>`;}
-function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();if(section.legacy)return '<div class="tv-frame-wrap"><iframe class="tv-frame" title="لوحة إدارة TV الحالية" src="../admin/" loading="eager"></iframe></div>';return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
+function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
 
-function navigate(key){if(!sections[key])return;const section=sections[key];pageTitle.textContent=section.title;pageDescription.textContent=section.description;currentSection.textContent=section.title;pageBody.innerHTML=sectionMarkup(key);if(key==="dashboard")renderDashboardTvSummary();const tvFrame=pageBody.querySelector(".tv-frame");if(tvFrame)tvFrame.addEventListener("load",()=>tvFrame.contentWindow.postMessage({type:"AIO_TV_ADMIN_SESSION",accessToken:sessionToken},window.location.origin));document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.section===key));document.title="AIO_TV | "+section.title;app.classList.remove("mobile-nav-open");}
+const tvFrameWrap=document.getElementById("tvFrameWrap");
+let tvFrameSessionSent=false;
+function ensureTvFrame(){
+ let frame=tvFrameWrap.querySelector(".tv-frame");
+ if(frame)return frame;
+ frame=document.createElement("iframe");
+ frame.className="tv-frame";
+ frame.title="لوحة إدارة TV الحالية";
+ frame.src="../admin/";
+ frame.loading="eager";
+ frame.addEventListener("load",()=>{
+  if(sessionToken&&!tvFrameSessionSent){
+   frame.contentWindow.postMessage({type:"AIO_TV_ADMIN_SESSION",accessToken:sessionToken},window.location.origin);
+   tvFrameSessionSent=true;
+  }
+ });
+ tvFrameWrap.appendChild(frame);
+ return frame;
+}
+function navigate(key){
+ if(!sections[key])return;
+ const section=sections[key];
+ pageTitle.textContent=section.title;
+ pageDescription.textContent=section.description;
+ currentSection.textContent=section.title;
+ if(section.legacy){
+  pageBody.hidden=true;
+  tvFrameWrap.hidden=false;
+  ensureTvFrame();
+ }else{
+  tvFrameWrap.hidden=true;
+  pageBody.hidden=false;
+  pageBody.innerHTML=sectionMarkup(key);
+  if(key==="dashboard")renderDashboardTvSummary();
+ }
+ document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.section===key));
+ document.title="AIO_TV | "+section.title;
+ app.classList.remove("mobile-nav-open");
+}
 let tvDashboardSummary=null;
 function renderDashboardTvSummary(){
  const target=document.getElementById("tvDashboardSummary");
