@@ -35,8 +35,8 @@ function renderDashboardTvSummary(){
  if(!target)return;
  if(!tvDashboardSummary){target.textContent="افتح قسم TV لتحميل بياناته الفعلية.";return;}
  const s=tvDashboardSummary;
- const parts=["قنوات لديها بث: "+s.channelsWithStreams,"الدول: "+s.countries,"التصنيفات: "+s.categories,"روابط البث: "+s.streamLinks];
- if(s.health){parts.push("آخر فحص: يعمل "+s.health.working+" — متوقف "+s.health.down+" — تعذر التحقق "+s.health.unknown);}
+ const parts=["قنوات لديها بث: "+s.channelsWithStreams,"بلا بث: "+s.channelsWithoutStreams,"الدول: "+s.countries,"التصنيفات: "+s.categories,"روابط البث: "+s.streamLinks,"المؤرشفة: "+s.archivedChannels];
+ if(s.health){parts.push("آخر فحص"+(s.health.generatedAt?" ("+new Date(s.health.generatedAt).toLocaleString("ar-EG")+")":"")+": يعمل "+s.health.working+" — متوقف "+s.health.down+" — تعذر التحقق "+s.health.unknown);}
  else{parts.push("تقرير فحص البث غير متاح حاليًا.");}
  target.textContent=parts.join(" • ");
 }
