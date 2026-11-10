@@ -133,9 +133,34 @@ async function loadCatalog(){
  $("moveCountry").innerHTML='<option value="">اختر الدولة الهدف</option>'+$("channelCountry").innerHTML;
  render();
  renderAudit();
+ publishDashboardSummary(archived.length);
  await loadStreamHealth();
+ publishDashboardSummary(archived.length);
 }
-let streamHealthResults=[],streamHealthVisibleCount=100;
+let streamHealthResults=[],streamHealthVisibleCount=100,streamHealthReport=null;
+function publishDashboardSummary(archivedCount){
+ if(window.parent===window)return;
+ const active=catalog.filter(channel=>!channel.is_archived);
+ const withStreams=active.filter(channel=>urlsOf(channel).length>0);
+ const countries=new Set(withStreams.map(channel=>String(channel.country||"").toLowerCase()).filter(Boolean));
+ const categories=new Set(active.flatMap(channel=>channel.categories||[]).map(String));
+ const streamLinks=active.reduce((total,channel)=>total+urlsOf(channel).length,0);
+ const report=streamHealthReport,health=report?{
+  working:Number((report.summary||{}).working||0),
+  down:Number((report.summary||{}).down||0),
+  unknown:Number((report.summary||{}).unknown||0),
+  generatedAt:report.generated_at||null
+ }:null;
+ window.parent.postMessage({type:"AIO_TV_DASHBOARD_SUMMARY",summary:{
+  channelsWithStreams:withStreams.length,
+  channelsWithoutStreams:active.length-withStreams.length,
+  countries:countries.size,
+  categories:categories.size,
+  streamLinks:streamLinks,
+  archivedChannels:Number(archivedCount||0),
+  health:health
+ }},window.location.origin);
+}
 function renderStreamHealthRows(){
  const rows=$("streamHealthRows"),filter=$("streamHealthFilter").value;
  const results=streamHealthResults.filter(item=>filter==="all"||item.status===filter);
@@ -153,12 +178,14 @@ async function loadStreamHealth(){
   const response=await fetch(PAGES+"data/stream-health.json?v="+Date.now(),{cache:"no-store"});
   if(!response.ok)throw Error("لا يوجد تقرير منشور بعد");
   const report=await response.json(),counts=report.summary||{};
+  streamHealthReport=report;
   summary.textContent="آخر فحص: "+new Date(report.generated_at).toLocaleString("ar-EG")+" — تم فحص "+Number(report.checked_count||0)+" رابطًا: يعمل مبدئيًا "+Number(counts.working||0)+"، متوقف "+Number(counts.down||0)+"، تعذر التحقق "+Number(counts.unknown||0)+".";
   streamHealthResults=report.results||[];
   streamHealthVisibleCount=100;
   renderStreamHealthRows();
   return true;
  }catch(error){
+  streamHealthReport=null;
   summary.textContent="لم يتوفر تقرير فحص منشور بعد. "+error.message;
   streamHealthResults=[];
   streamHealthVisibleCount=100;
@@ -187,6 +214,7 @@ async function runStreamHealthCheck(){
   if(run.conclusion!=="success")throw Error("فشل الفحص أو النشر. راجع سجل GitHub Actions.");
   button.textContent="تحميل التقرير الجديد...";
   if(!await loadStreamHealth())throw Error("اكتمل الفحص والنشر، لكن تعذر تحميل التقرير الجديد.");
+  publishDashboardSummary(catalog.filter(channel=>channel.is_archived).length);
   setStatus("اكتمل الفحص الجديد ونشر التقرير بنجاح. آخر تقرير معروض الآن.");
  }catch(error){
   const message=error.message||String(error);
@@ -262,6 +290,13 @@ $("streamHealthFilter").onchange=()=>{streamHealthVisibleCount=100;renderStreamH
 $("streamHealthMore").onclick=()=>{streamHealthVisibleCount+=100;renderStreamHealthRows()};
 $("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
 
+window.addEventListener("message",event=>{
+ if(event.origin!==window.location.origin||event.source!==window.parent)return;
+ const data=event.data||{};
+ if(data.type==="AIO_TV_REQUEST_DASHBOARD_SUMMARY"){
+  publishDashboardSummary(catalog.filter(channel=>channel.is_archived).length);
+ }
+});
 window.addEventListener("message",async event=>{
  if(event.origin!==window.location.origin||event.source!==window.parent)return;
  const data=event.data||{};
