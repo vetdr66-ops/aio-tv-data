@@ -21,12 +21,12 @@ function dashboardMarkup(){return `
     <article class="overview-card overview-card-link" data-open-section="tv" role="button" tabindex="0" aria-label="فتح قسم البث التلفزيوني TV"><div class="card-icon">▣</div><strong>البث التلفزيوني TV</strong><small>القنوات والدول والتصنيفات وفحص البث.</small><div class="tv-summary" id="tvDashboardSummary">افتح قسم TV لتحميل بياناته الفعلية.</div></article>
     <article class="overview-card overview-card-link" data-open-section="cameras" role="button" tabindex="0" aria-label="فتح قسم الكاميرات Cameras"><div class="card-icon">◉</div><strong>الكاميرات Cameras</strong><small>الفيديو المباشر والصور الثابتة ومصادر API.</small><div class="camera-summary" id="cameraDashboardSummary">جارٍ تحميل بيانات الكاميرات...</div></article>
     <article class="overview-card"><div class="card-icon">▷</div><strong>مكتبة VOD</strong><small>الأفلام والمسلسلات والمواسم والحلقات.</small></article>
-    <article class="overview-card"><div class="card-icon">♫</div><strong>الإذاعات Radios</strong><small>الإذاعات العربية والعالمية وإدارتها.</small></article>
+    <article class="overview-card overview-card-link" data-open-section="radios" role="button" tabindex="0" aria-label="فتح قسم الإذاعات Radios"><div class="card-icon">♫</div><strong>الإذاعات Radios</strong><small>الإذاعات العربية والعالمية وإدارتها.</small><div class="radio-summary" id="radioDashboardSummary">افتح قسم الإذاعات لتحميل الكتالوجين.</div></article>
     <article class="overview-card"><div class="card-icon">♙</div><strong>المستخدمون</strong><small>الحسابات والتسجيل والصلاحيات.</small></article>
     <article class="overview-card"><div class="card-icon">▥</div><strong>التقارير ومراقبة النظام</strong><small>مؤشرات الأداء وسجل العمليات وصحة الخدمات.</small></article>
   </div>
   <section class="panel"><h2>حالة تجهيز اللوحة</h2><p>يتم ربط الأقسام تدريجيًا. لا تُعرض إحصائيات إلا بعد تحميل بيانات القسم الفعلية والتحقق منها.</p></section>`;}
-function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();if(key==="cameras")return `<section class="panel camera-panel"><h2>ملخص الكاميرات ومصادر البيانات</h2><p id="cameraSectionSummary">جارٍ تحميل بيانات الكاميرات...</p><div class="camera-stats"><div><strong id="cameraVideoCount">—</strong><span>فيديو مباشر HLS / MJPEG / MP4</span></div><div><strong id="cameraSnapshotCount">—</strong><span>صور ثابتة JPEG / PNG</span></div><div><strong id="cameraCountryCount">—</strong><span>الدول</span></div><div><strong id="cameraActiveSources">—</strong><span>مصادر API نشطة</span></div><div><strong id="cameraPendingSources">—</strong><span>مصادر API معلّقة</span></div></div><div class="camera-health" id="cameraHealthSummary">تقرير فحص الكاميرات غير متاح حاليًا.</div><p class="camera-note">الأعداد أعلاه من كتالوج الكاميرات. الصور الثابتة ليست بث فيديو، والمصادر المعلّقة لا تُعد مصادر نشطة. هذا القسم للعرض فقط ولا يغيّر الكتالوج أو روابط الكاميرات أو آلية الفحص.</p></section>`;return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
+function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();if(key==="radios")return radioMarkup();if(key==="cameras")return `<section class="panel camera-panel"><h2>ملخص الكاميرات ومصادر البيانات</h2><p id="cameraSectionSummary">جارٍ تحميل بيانات الكاميرات...</p><div class="camera-stats"><div><strong id="cameraVideoCount">—</strong><span>فيديو مباشر HLS / MJPEG / MP4</span></div><div><strong id="cameraSnapshotCount">—</strong><span>صور ثابتة JPEG / PNG</span></div><div><strong id="cameraCountryCount">—</strong><span>الدول</span></div><div><strong id="cameraActiveSources">—</strong><span>مصادر API نشطة</span></div><div><strong id="cameraPendingSources">—</strong><span>مصادر API معلّقة</span></div></div><div class="camera-health" id="cameraHealthSummary">تقرير فحص الكاميرات غير متاح حاليًا.</div><p class="camera-note">الأعداد أعلاه من كتالوج الكاميرات. الصور الثابتة ليست بث فيديو، والمصادر المعلّقة لا تُعد مصادر نشطة. هذا القسم للعرض فقط ولا يغيّر الكتالوج أو روابط الكاميرات أو آلية الفحص.</p></section>`;return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
 
 const tvFrameWrap=document.getElementById("tvFrameWrap");
 let tvFrameSessionSent=false;
@@ -68,6 +68,11 @@ function navigate(key){
   if(key==="dashboard"||key==="cameras"){
    renderCameraSummary();
    loadCameraDashboardData();
+  }
+  if(key==="radios"){
+   bindRadioControls();
+   renderRadioDashboardSummary();
+   loadRadioAdminData();
   }
  }
  document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.section===key));
@@ -119,6 +124,125 @@ async function loadCameraDashboardData(){
  })();
  return cameraLoadPromise;
 }
+
+let radioCatalogs=null,radioLoadPromise=null,radioFileSha=null,radioOverrides=null;
+let selectedRadioCatalog="radio_arabic_quran",selectedRadioId=null;
+function radioMarkup(){
+ return `
+ <section class="panel radio-panel">
+  <div class="radio-toolbar">
+   <div><h2>كتالوج الإذاعات</h2><p>إدارة الإذاعات العربية والقرآن والعالمية. التعديلات تُحفظ في GitHub وتُنشر تلقائيًا.</p></div>
+   <div class="radio-toolbar-actions">
+    <select id="radioCatalogSelect" aria-label="نوع كتالوج الإذاعة"><option value="radio_arabic_quran">الإذاعات العربية والقرآن</option><option value="radio_world">الإذاعات العالمية والموجات القصيرة</option></select>
+    <button class="radio-primary" id="radioAddButton" type="button">إضافة إذاعة</button>
+   </div>
+  </div>
+  <div class="radio-stats">
+   <div><strong id="radioTotalCount">—</strong><span>إجمالي الإذاعات</span></div><div><strong id="radioCountryCount">—</strong><span>الدول</span></div><div><strong id="radioStreamCount">—</strong><span>روابط بث مباشرة</span></div><div><strong id="radioNoStreamCount">—</strong><span>بدون رابط مباشر</span></div>
+  </div>
+  <div class="radio-list-tools"><input id="radioSearch" type="search" placeholder="ابحث بالاسم أو الدولة أو المعرّف..."><span id="radioListCount"></span></div>
+  <div class="radio-table-wrap"><table class="radio-table"><thead><tr><th>اسم الإذاعة</th><th>الدولة</th><th>التصنيف</th><th>البث</th><th>الإجراءات</th></tr></thead><tbody id="radioRows"><tr><td colspan="5">جارٍ تحميل الكتالوج...</td></tr></tbody></table></div>
+  <p class="radio-status" id="radioStatus" role="status">يتم تحميل بيانات الإذاعات...</p>
+ </section>
+ <section class="panel radio-editor" id="radioEditor" hidden>
+  <div class="radio-toolbar"><h2 id="radioEditorTitle">إضافة إذاعة جديدة</h2><span class="radio-editor-note">الحقول الأساسية مطلوبة؛ رابط البث اختياري لخدمات الموجات القصيرة.</span></div>
+  <div class="radio-form-grid">
+   <label>المعرّف الفريد<input id="radioId" autocomplete="off" placeholder="EG_STATION_NAME"></label><label>اسم الإذاعة<input id="radioName" autocomplete="off"></label>
+   <label>الدولة<input id="radioCountry" autocomplete="off" placeholder="Egypt"></label><label>رمز الدولة<input id="radioCountryCode" maxlength="2" autocomplete="off" placeholder="EG"></label>
+   <label>المنطقة<input id="radioRegion" autocomplete="off" placeholder="Africa / Asia"></label><label>اللغات<input id="radioLanguages" autocomplete="off" placeholder="Arabic, English"></label>
+   <label>التصنيفات<input id="radioCategories" autocomplete="off" placeholder="music, news, quran"></label><label>صيغة البث<input id="radioFormat" autocomplete="off" placeholder="MP3 / AAC / HLS"></label>
+   <label class="radio-wide">رابط البث<input id="radioStreamUrl" type="url" autocomplete="off" placeholder="https://..."></label>
+   <label>المصدر<input id="radioSource" autocomplete="off"></label><label>رابط المصدر<input id="radioSourceUrl" type="url" autocomplete="off" placeholder="https://..."></label>
+   <label class="radio-wide">حالة التحقق<input id="radioStationStatus" autocomplete="off" placeholder="listed_not_independently_tested"></label>
+  </div>
+  <div class="radio-editor-actions"><button class="radio-primary" id="radioSaveButton" type="button">حفظ الإذاعة</button><button class="radio-secondary" id="radioCancelButton" type="button">إلغاء</button></div>
+ </section>`;
+}
+function radioEscape(value){return String(value==null?"":value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function radioCatalog(){return radioCatalogs&&radioCatalogs[selectedRadioCatalog]}
+function renderRadioDashboardSummary(){
+ const target=document.getElementById("radioDashboardSummary");if(!target)return;
+ if(!radioCatalogs){target.textContent="افتح قسم الإذاعات لتحميل الكتالوجين.";return;}
+ const all=Object.values(radioCatalogs).flatMap(c=>c.stations||[]);
+ target.textContent="إذاعات: "+all.length+" • دول: "+new Set(all.map(s=>s.country_code).filter(Boolean)).size+" • روابط بث: "+all.filter(s=>s.stream_url).length;
+}
+function setRadioStatus(message){const node=document.getElementById("radioStatus");if(node)node.textContent=message}
+async function loadRadioAdminData(){
+ if(radioLoadPromise){try{await radioLoadPromise;}catch(_){}renderRadioDashboardSummary();renderRadioTable();return;}
+ radioLoadPromise=(async()=>{
+  try{
+   const response=await fetch(WORKER+"/github/overrides",{headers:{Accept:"application/json",Authorization:"Bearer "+sessionToken},cache:"no-store"});
+   const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.message||data.error||("HTTP "+response.status));
+   radioFileSha=data.sha;radioOverrides=JSON.parse(radioDecode64(data.content));radioCatalogs=radioOverrides.radio_catalogs;
+   if(!radioCatalogs||!radioCatalogs.radio_arabic_quran||!radioCatalogs.radio_world)throw Error("كتالوجات الإذاعات غير مهيأة داخل بيانات الإدارة.");
+   renderRadioDashboardSummary();renderRadioTable();
+   setRadioStatus("تم تحميل "+radioCatalog().stations.length+" إذاعة من GitHub. يمكنك الإضافة والتعديل والحذف.");
+  }catch(error){setRadioStatus("تعذر تحميل كتالوج الإذاعات: "+(error.message||String(error)));throw error;}
+ })();
+ try{await radioLoadPromise;}catch(_){}
+}
+function renderRadioTable(){
+ const catalog=radioCatalog(),rows=document.getElementById("radioRows");if(!catalog||!rows)return;
+ const query=(document.getElementById("radioSearch")?.value||"").trim().toLocaleLowerCase();
+ const stations=(catalog.stations||[]).filter(s=>[s.id,s.name,s.country,s.country_code,...(s.categories||[]),...(s.languages||[])].join(" ").toLocaleLowerCase().includes(query));
+ const countries=new Set((catalog.stations||[]).map(s=>s.country_code).filter(Boolean)),streams=(catalog.stations||[]).filter(s=>s.stream_url).length;
+ const values={radioTotalCount:catalog.stations.length,radioCountryCount:countries.size,radioStreamCount:streams,radioNoStreamCount:catalog.stations.length-streams,radioListCount:"عرض "+stations.length+" من "+catalog.stations.length};
+ Object.entries(values).forEach(([id,value])=>{const node=document.getElementById(id);if(node)node.textContent=typeof value==="number"?value.toLocaleString("en-US"):value;});
+ rows.innerHTML=stations.map(s=>'<tr><td><strong>'+radioEscape(s.name)+'</strong><small>'+radioEscape(s.id)+'</small></td><td>'+radioEscape(s.country)+' ('+radioEscape(s.country_code)+')</td><td>'+radioEscape((s.categories||[]).join(", ")||"—")+'</td><td><span class="radio-stream-badge '+(s.stream_url?"has-stream":"no-stream")+'">'+(s.stream_url?"رابط متاح":"بدون رابط")+'</span></td><td><div class="radio-row-actions"><button type="button" data-radio-edit="'+radioEscape(s.id)+'">تعديل</button><button type="button" class="delete" data-radio-delete="'+radioEscape(s.id)+'">حذف</button></div></td></tr>').join("")||'<tr><td colspan="5">لا توجد إذاعات مطابقة.</td></tr>';
+ rows.querySelectorAll("[data-radio-edit]").forEach(button=>button.addEventListener("click",()=>editRadio(button.dataset.radioEdit)));
+ rows.querySelectorAll("[data-radio-delete]").forEach(button=>button.addEventListener("click",()=>deleteRadio(button.dataset.radioDelete)));
+}
+function resetRadioEditor(){selectedRadioId=null;const editor=document.getElementById("radioEditor");if(editor)editor.hidden=true;const id=document.getElementById("radioId");if(id)id.disabled=false}
+function editRadio(id){
+ const station=radioCatalog().stations.find(s=>s.id===id);if(!station)return;selectedRadioId=id;
+ const fields={radioId:station.id,radioName:station.name,radioCountry:station.country,radioCountryCode:station.country_code,radioRegion:station.region||"",radioLanguages:(station.languages||[]).join(", "),radioCategories:(station.categories||[]).join(", "),radioStreamUrl:station.stream_url||"",radioFormat:station.format||"",radioSource:station.source||"",radioSourceUrl:station.source_url||"",radioStationStatus:station.status||""};
+ Object.entries(fields).forEach(([key,value])=>{const node=document.getElementById(key);if(node)node.value=value});
+ document.getElementById("radioId").disabled=true;document.getElementById("radioEditorTitle").textContent="تعديل بيانات الإذاعة";document.getElementById("radioEditor").hidden=false;document.getElementById("radioEditor").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function addRadio(){
+ selectedRadioId=null;["radioId","radioName","radioCountry","radioCountryCode","radioRegion","radioLanguages","radioCategories","radioStreamUrl","radioFormat","radioSource","radioSourceUrl","radioStationStatus"].forEach(id=>{const node=document.getElementById(id);if(node)node.value=""});
+ document.getElementById("radioId").disabled=false;document.getElementById("radioStationStatus").value="listed_not_independently_tested";document.getElementById("radioEditorTitle").textContent="إضافة إذاعة جديدة";document.getElementById("radioEditor").hidden=false;document.getElementById("radioEditor").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function radioList(value){return value.split(",").map(s=>s.trim()).filter(Boolean)}
+async function saveRadio(){
+ try{
+  if(!radioCatalogs||!radioOverrides)throw Error("لم يتم تحميل كتالوج الإذاعات.");
+  const value=id=>document.getElementById(id).value.trim(),id=value("radioId"),name=value("radioName"),country=value("radioCountry"),countryCode=value("radioCountryCode").toUpperCase(),streamUrl=value("radioStreamUrl"),sourceUrl=value("radioSourceUrl");
+  if(!id||!name||!country||!countryCode)throw Error("أدخل المعرّف والاسم والدولة ورمز الدولة.");
+  if(!/^[A-Za-z0-9_-]+$/.test(id))throw Error("المعرّف يقبل الحروف الإنجليزية والأرقام والشرطة فقط.");
+  for(const url of [streamUrl,sourceUrl])if(url&&!/^https?:\/\//i.test(url))throw Error("تأكد من صحة روابط البث والمصدر.");
+  const stations=radioCatalog().stations,existing=selectedRadioId?stations.find(s=>s.id===selectedRadioId):null;
+  if(!existing&&stations.some(s=>s.id===id))throw Error("هذا المعرّف موجود بالفعل.");
+  const station={id,name,country,country_code:countryCode,region:value("radioRegion"),languages:radioList(value("radioLanguages")),categories:radioList(value("radioCategories")),format:value("radioFormat"),source:value("radioSource"),source_url:sourceUrl,status:value("radioStationStatus")||"listed_not_independently_tested"};
+  if(streamUrl)station.stream_url=streamUrl;
+  if(existing)Object.assign(existing,station);else stations.push(station);
+  await saveRadioCatalogs(existing?"edit":"add",id);resetRadioEditor();renderRadioTable();renderRadioDashboardSummary();setRadioStatus("تم حفظ الإذاعة في GitHub. يجري نشر الكتالوج المحدّث تلقائيًا.");
+ }catch(error){setRadioStatus("تعذر حفظ الإذاعة: "+(error.message||String(error)));}
+}
+async function deleteRadio(id){
+ const stations=radioCatalog().stations,index=stations.findIndex(s=>s.id===id);if(index<0)return;const station=stations[index];
+ if(!confirm("حذف الإذاعة «"+station.name+"» نهائيًا من الكتالوج؟"))return;
+ stations.splice(index,1);
+ try{await saveRadioCatalogs("delete",id);resetRadioEditor();renderRadioTable();renderRadioDashboardSummary();setRadioStatus("تم حذف الإذاعة من GitHub ونشر التغيير تلقائيًا.");}
+ catch(error){setRadioStatus("تعذر حذف الإذاعة: "+(error.message||String(error)));}
+}
+function radioDecode64(value){const binary=atob(String(value||"").replace(/\n/g,""));return new TextDecoder().decode(Uint8Array.from(binary,c=>c.charCodeAt(0)))}
+function radioEncode64(value){const bytes=new TextEncoder().encode(value);let binary="";bytes.forEach(byte=>binary+=String.fromCharCode(byte));return btoa(binary)}
+async function saveRadioCatalogs(action,id){
+ radioOverrides.radio_catalogs=radioCatalogs;radioOverrides.radio_audit=radioOverrides.radio_audit||[];radioOverrides.radio_audit.push({catalog:selectedRadioCatalog,station_id:id,action,changed_at:new Date().toISOString()});
+ const content=JSON.stringify(radioOverrides,null,2)+"\n";
+ const response=await fetch(WORKER+"/github/overrides",{method:"PUT",headers:{Accept:"application/json","Content-Type":"application/json",Authorization:"Bearer "+sessionToken},body:JSON.stringify({message:action+" radio station "+id,content:radioEncode64(content),sha:radioFileSha})});
+ const result=await response.json().catch(()=>({}));if(!response.ok)throw Error(result.message||result.error||("HTTP "+response.status));radioFileSha=result.sha;
+}
+function bindRadioControls(){
+ const select=document.getElementById("radioCatalogSelect");
+ if(select){select.value=selectedRadioCatalog;select.addEventListener("change",()=>{selectedRadioCatalog=select.value;resetRadioEditor();renderRadioTable()})}
+ document.getElementById("radioSearch")?.addEventListener("input",renderRadioTable);
+ document.getElementById("radioAddButton")?.addEventListener("click",addRadio);
+ document.getElementById("radioSaveButton")?.addEventListener("click",saveRadio);
+ document.getElementById("radioCancelButton")?.addEventListener("click",resetRadioEditor);
+}
+
 function requestTvDashboardSummary(){
  const frame=tvFrameWrap.querySelector(".tv-frame");
  if(frame)frame.contentWindow.postMessage({type:"AIO_TV_REQUEST_DASHBOARD_SUMMARY"},window.location.origin);

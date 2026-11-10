@@ -812,5 +812,1589 @@
       ],
       "access_status": ""
     }
-  }
+  },
+  "radio_catalogs": {
+    "radio_arabic_quran": {
+      "schema_version": 1,
+      "catalog_name": "Arabic & Quran Radio",
+      "created_date": "2026-11-09",
+      "status": "expanded_working_catalog",
+      "notes": [
+        "كتالوج الإذاعات العربية وإذاعات القرآن والبرامج الدينية الناطقة بالعربية.",
+        "روابط البث مدرجة كما وردت في المصدر ولم يتم اختبار جميعها بصورة مستقلة.",
+        "تمت إضافة إذاعة الجونة وراديو وياك من دليل FreqTrail كروابط مرشحة؛ لم يتم تأكيد التشغيل المستقل بعد.",
+        "إضافات مصرية جديدة من قائمة 72FM المبنية من Radio Browser؛ اجتازت فحص المصدر في آخر بناء 2026-10-26، ولم يُعد اختبارها مستقلاً قبل الإدراج.",
+        "تم تأكيد تشغيل بث عين FM الأردنية بواسطة المستخدم؛ MP3 بمعدل 128 kbps."
+      ],
+      "data_sources": [
+        {
+          "name": "Radio Browser API",
+          "url": "https://de1.api.radio-browser.info",
+          "purpose": "Worldwide internet radio discovery by country, language and tags"
+        },
+        {
+          "name": "FreqTrail Egypt",
+          "url": "https://www.freqtrail.com/stations/EG",
+          "purpose": "Egyptian radio stream directory"
+        },
+        {
+          "name": "FreqTrail Saudi Arabia",
+          "url": "https://www.freqtrail.com/stations/SA",
+          "purpose": "Saudi radio stream directory"
+        },
+        {
+          "name": "FreqTrail Kuwait",
+          "url": "https://www.freqtrail.com/stations/KW",
+          "purpose": "Kuwaiti radio stream directory"
+        },
+        {
+          "name": "MP3 Quran API",
+          "url": "https://www.mp3quran.net/api/radio/",
+          "purpose": "Multilingual Quran radio station lists"
+        },
+        {
+          "name": "Shortwave DB",
+          "url": "https://www.shortwavedb.org/",
+          "purpose": "International shortwave frequency schedules"
+        },
+        {
+          "name": "ILGRadio",
+          "url": "https://www.ilgradio.com/",
+          "purpose": "International shortwave broadcast and utility schedules"
+        }
+      ],
+      "stations": [
+        {
+          "id": "EG_QURAN_CAIRO",
+          "name": "إذاعة القرآن الكريم من القاهرة",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran"
+          ],
+          "stream_url": "http://n12.radiojar.com/8s5u5tpdtwzuv?listen",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_MISHARY_ALAFASY",
+          "name": "إذاعة مشاري العفاسي",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://qurango.net/radio/mishary_alafasi",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_HUSSARY_WARSH",
+          "name": "إذاعة محمود خليل الحصري - ورش",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://qurango.net/radio/mahmoud_khalil_alhussary_warsh",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_MUSTAFA_ISMAIL",
+          "name": "إذاعة مصطفى إسماعيل",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://qurango.net/radio/mustafa_ismail",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_YASSER_ALDOSARI",
+          "name": "إذاعة ياسر الدوسري",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://qurango.net/radio/yasser_aldosari",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_RADIO_9090",
+          "name": "Radio 9090",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "talk",
+            "general"
+          ],
+          "stream_url": "http://9090streaming.mobtada.com/9090FMEGYPT",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_OM_KALTHOUM",
+          "name": "OM Kalthom / أم كلثوم",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "classics"
+          ],
+          "stream_url": "https://stream.zeno.fm/zsgrfxg71s8uv",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_NOGOUM_FM",
+          "name": "Nogoum FM",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "pop"
+          ],
+          "stream_url": "https://stream-159.zeno.fm/qb1zvsykm98uv",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_SHA3BY_FM",
+          "name": "SHA3BY FM",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "shaabi"
+          ],
+          "stream_url": "https://radio95.radioca.st/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_ABDEL_HALIM",
+          "name": "Abdel Halim Hafez / عبدالحليم حافظ",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "classics"
+          ],
+          "stream_url": "https://stream.zeno.fm/8a4eqkd0pnhvv",
+          "format": "AAC",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_AMR_DIAB",
+          "name": "Amr Diab Radio",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "pop"
+          ],
+          "stream_url": "https://stream-40.zeno.fm/xa4yhh4k838uv",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_RADIO_HITS",
+          "name": "Radio Hits 88.2 Cairo",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "arabic"
+          ],
+          "stream_url": "https://radiohits882.radioca.st/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_ONSPORT_FM",
+          "name": "On Sport FM",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "sports",
+            "talk"
+          ],
+          "stream_url": "https://carina.streamerr.co:2020/stream/OnSportFM",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_QURAN_RADIO",
+          "name": "Saudi Quran1",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran"
+          ],
+          "stream_url": "http://n01.radiojar.com/0tpy1h0kxtzuv",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_AL_ARABIYA_FM",
+          "name": "العربية FM",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "news",
+            "talk"
+          ],
+          "stream_url": "https://fm.alarabiya.net/fm/myStream/playlist.m3u8",
+          "format": "HLS",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_TARATEEL",
+          "name": "Mp3Quran Tarateel",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran"
+          ],
+          "stream_url": "https://qurango.net/radio/tarateel",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_SUNNA_RADIO",
+          "name": "إذاعة السنة",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "hadith"
+          ],
+          "stream_url": "http://andromeda.shoutca.st:8189/live",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_QURAN_MAKKAH",
+          "name": "إذاعة القرآن الكريم - مكة المكرمة",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran"
+          ],
+          "stream_url": "https://edge.mixlr.com/channel/rwumx",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_REPLAY_NEWS",
+          "name": "Replay News - العربية",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "news"
+          ],
+          "stream_url": "https://replaynewsar.ice.infomaniak.ch/replaynewsar-128.mp3",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_ASHARQ_BLOOMBERG",
+          "name": "راديو الشرق مع بلومبرغ",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "news",
+            "business",
+            "talk"
+          ],
+          "stream_url": "https://l3.itworkscdn.net/asharqradioalive/asharqradioaudio.aac",
+          "format": "AAC",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_ROTANA_FM",
+          "name": "Rotana FM",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "general"
+          ],
+          "stream_url": "http://philae.shoutca.st:8250/stream",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_ALIFALIF_FM",
+          "name": "AlifAlif FM",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "general"
+          ],
+          "stream_url": "https://alifalifjobs.com/radio/8000/AlifAlifLive.mp3",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_SBA_JEDDAH",
+          "name": "SBA Jeddah Radio 98.0 FM",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "general",
+            "public"
+          ],
+          "stream_url": "https://live.kwikmotion.com/sbrksajeddahradio/radio/chunks.m3u8",
+          "format": "HLS",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "SA_MBC_MOOD",
+          "name": "MBC Mood",
+          "country": "Saudi Arabia",
+          "country_code": "SA",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music"
+          ],
+          "stream_url": "https://radio-mbc-mood.mbc.net/radio-mbc-mood.m3u8",
+          "format": "HLS",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/SA",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_GENERAL_RADIO",
+          "name": "Kuwait General Radio",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "general",
+            "public"
+          ],
+          "stream_url": "https://kwtkrdota.cdn.mangomolo.com/k1rdo/k1rdo/playlist.m3u8",
+          "format": "HLS",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_SUNAN_DARIMI",
+          "name": "Sunan ad-Darimi",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "hadith"
+          ],
+          "stream_url": "https://serverkw.quran-uni.com:8358/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_ADAB_MUFRAD",
+          "name": "Al-Adab Al-Mufrad",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "hadith"
+          ],
+          "stream_url": "https://serverkw.quran-uni.com:8366/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_QURAN_HUSSARY",
+          "name": "محمود خليل الحصري",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://serverkw.quran-uni.com:8018/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_QURAN_GHAMIDI",
+          "name": "سعد الغامدي",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://serverkw.quran-uni.com:8026/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_QURAN_ALSUFI",
+          "name": "عبدالرشيد الصوفي",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://serverkw.quran-uni.com:8054/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_QURAN_KHALID_JALIL",
+          "name": "خالد الجليل",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://serverkw.quran-uni.com:8062/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_TAFSEER_SAADY",
+          "name": "تفسير الشيخ السعدي",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "tafsir"
+          ],
+          "stream_url": "https://serverkw.quran-uni.com:8012/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "KW_WARSH_ALKOUCHI",
+          "name": "رواية ورش - العكوشي",
+          "country": "Kuwait",
+          "country_code": "KW",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "religious",
+            "quran",
+            "recitation"
+          ],
+          "stream_url": "https://serverkw.quran-uni.com:8164/;",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/KW",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_EL_GOUNA_RADIO",
+          "name": "إذاعة الجونة",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "general"
+          ],
+          "stream_url": "http://82.201.132.237:8000/;stream.mp3",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_RADIO_WAYAK",
+          "name": "راديو وياك",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "general",
+            "talk"
+          ],
+          "stream_url": "https://work.radiowayak.org/listen/live/live.mp3",
+          "format": "MP3",
+          "source": "FreqTrail",
+          "source_url": "https://www.freqtrail.com/stations/EG",
+          "status": "listed_not_independently_tested"
+        },
+        {
+          "id": "EG_TES3ENAT_FM",
+          "name": "تسعينات FM",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "http://178.33.135.244:20095/;?DIST=TuneIn&TGT=TuneIn&maxServers=2&partnertok=eyJhbGciOiJIUzI1NiIsImtpZCI6InR1bmVpbiIsInR5cCI6IkpXVCJ9.eyJ0cnVzdGVkX3BhcnRuZXIiOnRydWUsImlhdCI6MTYzNjA1OTE3OCwiaXNzIjoidGlzcnYifQ.Me0snc2PBcQhvlzte9L7zQxa-IHgNinhu3XdNJ6_Xa8",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_NRj_EGYPT",
+          "name": "NRJ Egypt",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "http://nrjstreaming.ahmed-melege.com/nrjegypt",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_MIX_FM_878",
+          "name": "87.8 Mix FM",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "https://stream-29.zeno.fm/na3vpvn10qruv",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_90S_FM",
+          "name": "90s FM",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "https://eu1.fastcast4u.com/proxy/prontofm?mp=/1",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_ARAB_MIX_FM",
+          "name": "Arab Mix FM",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "https://stream.zeno.fm/na3vpvn10qruv",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_ARAB_MIX_256",
+          "name": "Arab Mix 256",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "https://stream.zeno.fm/wvqgc9kb1d0uv",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_ELISSA_FM",
+          "name": "Elissa FM",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "https://stream.zeno.fm/v7n499m8ckhvv",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_ARAB_MIX_DRAMA",
+          "name": "Arab Mix Drama",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "https://stream.zeno.fm/egynebf171zuv.acc",
+          "format": "AAC",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_CORLEONE_RADIO",
+          "name": "Corleone Radio",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "http://198.244.189.86:8000/listen/corleone",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_SOLLY_RADIO",
+          "name": "Solly Radio",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "https://stream.zeno.fm/juwfhuodjgmuv",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "EG_REBEL_RADIO",
+          "name": "Rebel Radio Online",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "music",
+            "internet_radio"
+          ],
+          "stream_url": "https://azuracast-nuremberg.myautodj.com/listen/station_660_1777579648/radio.mp3",
+          "format": "MP3",
+          "source": "Radio Browser via 72FM radio-playlists",
+          "source_url": "https://github.com/AlonDrilich/radio-playlists",
+          "last_source_check": "2026-10-26",
+          "status": "source_check_passed_not_independently_retested"
+        },
+        {
+          "id": "JO_AIN_FM",
+          "name": "عين FM",
+          "country": "Jordan",
+          "country_code": "JO",
+          "region": "Asia",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "general"
+          ],
+          "stream_url": "https://radio.ainfm.site/ainfm",
+          "format": "MP3",
+          "bitrate_kbps": 128,
+          "source": "FreqTrail Jordan; playback confirmed by user",
+          "source_url": "https://www.freqtrail.com/stations/JO",
+          "status": "user_confirmed_working"
+        }
+      ]
+    },
+    "radio_world": {
+      "schema_version": 1,
+      "catalog_name": "International & World Radio",
+      "created_date": "2026-11-09",
+      "status": "shortwave_schedules_added_streams_not_verified",
+      "notes": [
+        "كتالوج الإذاعات الأجنبية والعالمية، بما فيها خدمات الموجات القصيرة والإذاعات القطبية.",
+        "تمت إضافة ترددات وجداول UTC مختارة لموسم B26 من 25 أكتوبر 2026 إلى 28 مارس 2027؛ الجداول المدرجة مختارات وليست كل فترات البث.",
+        "بيانات الترددات والجداول لا تعني وجود رابط بث إنترنت مباشر؛ روابط المشغلات والروابط المباشرة تحتاج تحققًا منفصلًا.",
+        "روابط البث المدرجة لم يتم اختبار جميعها بصورة مستقلة."
+      ],
+      "data_sources": [
+        {
+          "name": "Radio Browser API",
+          "url": "https://de1.api.radio-browser.info",
+          "purpose": "Worldwide internet radio discovery by country, language and tags"
+        },
+        {
+          "name": "FreqTrail Egypt",
+          "url": "https://www.freqtrail.com/stations/EG",
+          "purpose": "Egyptian radio stream directory"
+        },
+        {
+          "name": "FreqTrail Saudi Arabia",
+          "url": "https://www.freqtrail.com/stations/SA",
+          "purpose": "Saudi radio stream directory"
+        },
+        {
+          "name": "FreqTrail Kuwait",
+          "url": "https://www.freqtrail.com/stations/KW",
+          "purpose": "Kuwaiti radio stream directory"
+        },
+        {
+          "name": "MP3 Quran API",
+          "url": "https://www.mp3quran.net/api/radio/",
+          "purpose": "Multilingual Quran radio station lists"
+        },
+        {
+          "name": "Shortwave DB",
+          "url": "https://www.shortwavedb.org/",
+          "purpose": "International shortwave frequency schedules"
+        },
+        {
+          "name": "ILGRadio",
+          "url": "https://www.ilgradio.com/",
+          "purpose": "International shortwave broadcast and utility schedules"
+        }
+      ],
+      "stations": [
+        {
+          "id": "AQ_LRA36",
+          "name": "LRA 36 Arcángel San Gabriel - Antarctica",
+          "country": "Antarctica",
+          "country_code": "AQ",
+          "region": "Antarctica",
+          "languages": [
+            "Spanish"
+          ],
+          "categories": [
+            "polar",
+            "shortwave",
+            "community"
+          ],
+          "stream_url": "https://vmf.edge-apps.net/embed/live.php?streamname=sc_rad32-100131&autoplay=true",
+          "format": "web_player",
+          "source": "El Radioescucha / SWLing Post",
+          "source_url": "https://elradioescucha.net/2023/11/11/desde-la-antartida-uniendo-voces-lra-36-arcangel-san-gabriel/",
+          "status": "schedule_dependent_not_independently_tested"
+        },
+        {
+          "id": "SW_BBC_WORLD_SERVICE",
+          "name": "BBC World Service - shortwave",
+          "country": "United Kingdom",
+          "country_code": "GB",
+          "region": "Europe",
+          "languages": [
+            "multiple"
+          ],
+          "categories": [
+            "international",
+            "shortwave",
+            "news"
+          ],
+          "stream_url": null,
+          "frequencies_khz": [
+            5845,
+            5975,
+            6000,
+            6090,
+            6115,
+            6135,
+            6195,
+            7285,
+            7305,
+            7445,
+            9410,
+            9650,
+            9915,
+            11830,
+            12065,
+            12095,
+            13690,
+            13790,
+            15310,
+            15490,
+            17690,
+            17750,
+            17810
+          ],
+          "schedule_utc": [
+            {
+              "start": "00:30",
+              "end": "01:00",
+              "frequencies_khz": [
+                6195,
+                7445
+              ],
+              "language": "Dari",
+              "target": "Afghanistan",
+              "days": "daily"
+            },
+            {
+              "start": "05:00",
+              "end": "07:00",
+              "frequencies_khz": [
+                9410,
+                9915
+              ],
+              "language": "English",
+              "target": "West/Central Africa",
+              "days": "daily"
+            },
+            {
+              "start": "06:00",
+              "end": "06:29",
+              "frequencies_khz": [
+                7285,
+                7305,
+                12095
+              ],
+              "language": "French",
+              "target": "North/West Africa",
+              "days": "daily"
+            },
+            {
+              "start": "15:00",
+              "end": "15:30",
+              "frequencies_khz": [
+                9650,
+                11830
+              ],
+              "language": "Arabic",
+              "target": "Middle East",
+              "days": "weekdays"
+            }
+          ],
+          "source": "Shortwave DB",
+          "source_url": "https://www.shortwavedb.org/",
+          "status": "frequency_schedule_added_stream_not_verified",
+          "schedule_season": "B26",
+          "schedule_valid_from": "2026-10-25",
+          "schedule_valid_to": "2027-03-28",
+          "schedule_source_url": "https://europe.hfcc.org/data/schedbybrc.php?broadc=BBC&seas=B26"
+        },
+        {
+          "id": "SW_VOICE_OF_AMERICA",
+          "name": "Voice of America - shortwave",
+          "country": "United States",
+          "country_code": "US",
+          "region": "North America",
+          "languages": [
+            "multiple"
+          ],
+          "categories": [
+            "international",
+            "shortwave",
+            "news"
+          ],
+          "stream_url": null,
+          "frequencies_khz": [
+            4930,
+            5860,
+            5870,
+            5880,
+            5940,
+            6085,
+            7360,
+            9420,
+            9820,
+            9880,
+            11740,
+            11830,
+            11875,
+            12020,
+            13710,
+            13840,
+            15170,
+            15205,
+            15215,
+            15225,
+            15300,
+            17520,
+            17590,
+            17850,
+            21520,
+            21650,
+            21750
+          ],
+          "schedule_utc": [
+            {
+              "start": "01:00",
+              "end": "02:00",
+              "frequencies_khz": [
+                15205
+              ],
+              "language": "English",
+              "target": "Afghanistan"
+            },
+            {
+              "start": "01:15",
+              "end": "01:45",
+              "frequencies_khz": [
+                6085,
+                9420,
+                11740,
+                13710,
+                15300,
+                17750
+              ],
+              "language": "English",
+              "target": "Far East / Middle East"
+            },
+            {
+              "start": "05:30",
+              "end": "07:00",
+              "frequencies_khz": [
+                4930
+              ],
+              "language": "English",
+              "target": "Southern Africa"
+            },
+            {
+              "start": "07:00",
+              "end": "12:00",
+              "frequencies_khz": [
+                5860
+              ],
+              "language": "English",
+              "target": "Northern Europe"
+            }
+          ],
+          "source": "Shortwave DB",
+          "source_url": "https://www.shortwavedb.org/",
+          "status": "frequency_schedule_added_stream_not_verified",
+          "schedule_season": "B26",
+          "schedule_valid_from": "2026-10-25",
+          "schedule_valid_to": "2027-03-28",
+          "schedule_source_url": "https://hqshortwaveradio.com/stations/voice-of-america/"
+        },
+        {
+          "id": "SW_CHINA_RADIO_INT",
+          "name": "China Radio International - shortwave",
+          "country": "China",
+          "country_code": "CN",
+          "region": "Asia",
+          "languages": [
+            "multiple"
+          ],
+          "categories": [
+            "international",
+            "shortwave"
+          ],
+          "stream_url": null,
+          "frequencies_khz": [
+            5050,
+            5955,
+            5965,
+            5970,
+            5975,
+            5980,
+            5990,
+            6020,
+            6100,
+            6180,
+            6200,
+            7205,
+            7240,
+            7250,
+            7300,
+            7335,
+            7350,
+            7415,
+            9570,
+            9580,
+            9600,
+            9790
+          ],
+          "schedule_utc": [
+            {
+              "start": "00:00",
+              "end": "01:00",
+              "frequencies_khz": [
+                5990,
+                6100,
+                6180,
+                7205,
+                7350,
+                7415
+              ],
+              "language": "Russian / Portuguese / English",
+              "target": "Siberia / South America"
+            },
+            {
+              "start": "01:00",
+              "end": "02:00",
+              "frequencies_khz": [
+                6020,
+                6180,
+                7240,
+                7250,
+                7300,
+                7335
+              ],
+              "language": "Urdu / English / Mandarin",
+              "target": "South Asia / Europe"
+            }
+          ],
+          "source": "Shortwave DB",
+          "source_url": "https://www.shortwavedb.org/",
+          "status": "frequency_schedule_added_stream_not_verified",
+          "schedule_season": "B26",
+          "schedule_valid_from": "2026-10-25",
+          "schedule_valid_to": "2027-03-28",
+          "schedule_source_url": "https://hqshortwaveradio.com/stations/china-radio-international/"
+        },
+        {
+          "id": "SW_VOICE_OF_KOREA",
+          "name": "Voice of Korea - shortwave",
+          "country": "North Korea",
+          "country_code": "KP",
+          "region": "Asia",
+          "languages": [
+            "multiple"
+          ],
+          "categories": [
+            "international",
+            "shortwave"
+          ],
+          "stream_url": null,
+          "frequencies_khz": [
+            621,
+            6070,
+            6170,
+            6185,
+            7210,
+            7220,
+            7235,
+            7570,
+            7580,
+            9425,
+            9435,
+            9445,
+            9650,
+            9730,
+            9850,
+            9875,
+            9890,
+            11635,
+            11645,
+            11710,
+            11735,
+            11865,
+            11910,
+            12015,
+            13650,
+            13760,
+            15105,
+            15180,
+            15245.2
+          ],
+          "schedule_utc": [
+            {
+              "start": "03:00",
+              "end": "04:00",
+              "frequencies_khz": [
+                11735
+              ],
+              "language": "Spanish",
+              "target": "Latin America",
+              "days": "daily"
+            },
+            {
+              "start": "03:00",
+              "end": "04:00",
+              "frequencies_khz": [
+                13650
+              ],
+              "language": "Mandarin",
+              "target": "Southeast Asia",
+              "days": "daily"
+            },
+            {
+              "start": "03:00",
+              "end": "04:00",
+              "frequencies_khz": [
+                13760
+              ],
+              "language": "Spanish",
+              "target": "Latin America",
+              "days": "daily"
+            }
+          ],
+          "source": "Shortwave DB",
+          "source_url": "https://www.shortwavedb.org/",
+          "status": "frequency_schedule_added_stream_not_verified",
+          "schedule_season": "B26",
+          "schedule_valid_from": "2026-10-25",
+          "schedule_valid_to": "2027-03-28",
+          "schedule_source_url": "https://skywavedx.com/shortwave/voice-of-korea"
+        },
+        {
+          "id": "SW_VATICAN_RADIO",
+          "name": "Vatican Radio - shortwave",
+          "country": "Vatican City",
+          "country_code": "VA",
+          "region": "Europe",
+          "languages": [
+            "multiple"
+          ],
+          "categories": [
+            "international",
+            "shortwave",
+            "religious"
+          ],
+          "stream_url": null,
+          "frequencies_khz": [
+            6155,
+            7300,
+            7305,
+            7360,
+            9705,
+            9710,
+            11755,
+            11870,
+            13830,
+            15565,
+            15595,
+            17790,
+            21730,
+            21745,
+            21760
+          ],
+          "schedule_utc": [
+            {
+              "start": "16:30",
+              "end": "17:00",
+              "frequencies_khz": [
+                11755,
+                15595
+              ],
+              "language": "Arabic",
+              "target": "Middle East / North Africa",
+              "days": "daily"
+            },
+            {
+              "start": "16:30",
+              "end": "17:00",
+              "frequencies_khz": [
+                15565
+              ],
+              "language": "English",
+              "target": "East Africa",
+              "days": "daily"
+            },
+            {
+              "start": "20:00",
+              "end": "20:30",
+              "frequencies_khz": [
+                9705,
+                11870
+              ],
+              "language": "English",
+              "target": "West Africa",
+              "days": "daily"
+            },
+            {
+              "start": "22:00",
+              "end": "22:30",
+              "frequencies_khz": [
+                6155,
+                7300,
+                7410,
+                9580
+              ],
+              "language": "Chinese",
+              "target": "Asia",
+              "days": "daily"
+            }
+          ],
+          "source": "Shortwave DB",
+          "source_url": "https://www.shortwavedb.org/",
+          "status": "frequency_schedule_added_stream_not_verified",
+          "schedule_season": "B26",
+          "schedule_valid_from": "2026-10-25",
+          "schedule_valid_to": "2027-03-28",
+          "schedule_source_url": "https://whfr.hfcc.org/data/schedbybrc.php?broadc=VAT&seas=B26"
+        },
+        {
+          "id": "SW_RADIO_ROMANIA_INT",
+          "name": "Radio Romania International - shortwave",
+          "country": "Romania",
+          "country_code": "RO",
+          "region": "Europe",
+          "languages": [
+            "multiple"
+          ],
+          "categories": [
+            "international",
+            "shortwave"
+          ],
+          "stream_url": null,
+          "frequencies_khz": [
+            5955,
+            5960,
+            6010,
+            6030,
+            6090,
+            6145,
+            6160,
+            7220,
+            7250,
+            7300,
+            7310,
+            7325,
+            9460,
+            9770,
+            9780,
+            9810,
+            9870,
+            11620,
+            11640,
+            11660,
+            11930,
+            11950,
+            13600,
+            13750,
+            15120,
+            15170,
+            15200,
+            15210,
+            15260,
+            15300,
+            15320,
+            15370,
+            15430,
+            15460,
+            15520,
+            15620,
+            17560,
+            17640,
+            17700,
+            17750,
+            17780,
+            17790
+          ],
+          "schedule_utc": [
+            {
+              "start": "07:30",
+              "end": "08:00",
+              "frequencies_khz": [
+                15120,
+                15320
+              ],
+              "language": "Arabic",
+              "target": "North Africa"
+            },
+            {
+              "start": "16:30",
+              "end": "17:00",
+              "frequencies_khz": [
+                9780,
+                15430
+              ],
+              "language": "Arabic",
+              "target": "Middle East / North Africa"
+            },
+            {
+              "start": "18:00",
+              "end": "19:00",
+              "frequencies_khz": [
+                9770
+              ],
+              "language": "English",
+              "target": "Western Europe"
+            },
+            {
+              "start": "21:30",
+              "end": "22:00",
+              "frequencies_khz": [
+                6030
+              ],
+              "language": "English",
+              "target": "Western Europe"
+            }
+          ],
+          "source": "Shortwave DB",
+          "source_url": "https://www.shortwavedb.org/",
+          "status": "frequency_schedule_added_stream_not_verified",
+          "schedule_season": "B26",
+          "schedule_valid_from": "2026-10-25",
+          "schedule_valid_to": "2027-03-28",
+          "schedule_source_url": "https://hqshortwaveradio.com/stations/radio-romania-international/"
+        }
+      ]
+    }
+  },
+  "radio_audit": []
 }
