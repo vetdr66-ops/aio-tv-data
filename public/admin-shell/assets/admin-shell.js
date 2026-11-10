@@ -18,16 +18,44 @@ const sections={
 const app=document.getElementById("app"),pageTitle=document.getElementById("pageTitle"),pageDescription=document.getElementById("pageDescription"),pageBody=document.getElementById("pageBody"),currentSection=document.getElementById("currentSection");
 function dashboardMarkup(){return `
   <div class="section-grid">
-    <article class="overview-card"><div class="card-icon">▣</div><strong>البث التلفزيوني TV</strong><small>القنوات والدول والتصنيفات وفحص البث.</small></article>
+    <article class="overview-card overview-card-link" data-open-section="tv" role="button" tabindex="0" aria-label="فتح قسم البث التلفزيوني TV"><div class="card-icon">▣</div><strong>البث التلفزيوني TV</strong><small>القنوات والدول والتصنيفات وفحص البث.</small><div class="tv-summary" id="tvDashboardSummary">افتح قسم TV لتحميل بياناته الفعلية.</div></article>
     <article class="overview-card"><div class="card-icon">◉</div><strong>الكاميرات Cameras</strong><small>مصادر الكاميرات ومتابعة حالة التشغيل.</small></article>
     <article class="overview-card"><div class="card-icon">▷</div><strong>مكتبة VOD</strong><small>الأفلام والمسلسلات والمواسم والحلقات.</small></article>
     <article class="overview-card"><div class="card-icon">♫</div><strong>الإذاعات Radios</strong><small>الإذاعات العربية والعالمية وإدارتها.</small></article>
     <article class="overview-card"><div class="card-icon">♙</div><strong>المستخدمون</strong><small>الحسابات والتسجيل والصلاحيات.</small></article>
     <article class="overview-card"><div class="card-icon">▥</div><strong>التقارير ومراقبة النظام</strong><small>مؤشرات الأداء وسجل العمليات وصحة الخدمات.</small></article>
   </div>
-  <section class="panel"><h2>حالة تجهيز اللوحة</h2><p>هذه مرحلة بناء الهيكل والتنقل فقط. لم يتم توصيل بيانات الأقسام أو إنشاء إحصائيات وهمية. سيظهر المحتوى الفعلي بعد تنفيذ وربط كل قسم واختباره.</p></section>`;}
+  <section class="panel"><h2>حالة تجهيز اللوحة</h2><p>يتم ربط الأقسام تدريجيًا. لا تُعرض إحصائيات إلا بعد تحميل بيانات القسم الفعلية والتحقق منها.</p></section>`;}
 function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();if(section.legacy)return '<div class="tv-frame-wrap"><iframe class="tv-frame" title="لوحة إدارة TV الحالية" src="../admin/" loading="eager"></iframe></div>';return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
+
 function navigate(key){if(!sections[key])return;const section=sections[key];pageTitle.textContent=section.title;pageDescription.textContent=section.description;currentSection.textContent=section.title;pageBody.innerHTML=sectionMarkup(key);const tvFrame=pageBody.querySelector(".tv-frame");if(tvFrame)tvFrame.addEventListener("load",()=>tvFrame.contentWindow.postMessage({type:"AIO_TV_ADMIN_SESSION",accessToken:sessionToken},window.location.origin));document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.section===key));document.title="AIO_TV | "+section.title;app.classList.remove("mobile-nav-open");}
+let tvDashboardSummary=null;
+function renderDashboardTvSummary(){
+ const target=document.getElementById("tvDashboardSummary");
+ if(!target)return;
+ if(!tvDashboardSummary){target.textContent="افتح قسم TV لتحميل بياناته الفعلية.";return;}
+ const s=tvDashboardSummary;
+ const parts=["قنوات لديها بث: "+s.channelsWithStreams,"الدول: "+s.countries,"التصنيفات: "+s.categories,"روابط البث: "+s.streamLinks];
+ if(s.health){parts.push("آخر فحص: يعمل "+s.health.working+" — متوقف "+s.health.down+" — تعذر التحقق "+s.health.unknown);}
+ else{parts.push("تقرير فحص البث غير متاح حاليًا.");}
+ target.textContent=parts.join(" • ");
+}
+pageBody.addEventListener("click",event=>{
+ const card=event.target.closest("[data-open-section]");
+ if(card)navigate(card.dataset.openSection);
+});
+pageBody.addEventListener("keydown",event=>{
+ const card=event.target.closest("[data-open-section]");
+ if(card&&(event.key==="Enter"||event.key===" ")){event.preventDefault();navigate(card.dataset.openSection);}
+});
+window.addEventListener("message",event=>{
+ const frame=pageBody.querySelector(".tv-frame");
+ if(event.origin!==window.location.origin||!frame||event.source!==frame.contentWindow)return;
+ const data=event.data||{};
+ if(data.type!=="AIO_TV_DASHBOARD_SUMMARY"||!data.summary)return;
+ tvDashboardSummary=data.summary;
+ renderDashboardTvSummary();
+});
 document.getElementById("mainNav").addEventListener("click",event=>{const button=event.target.closest("[data-section]");if(button)navigate(button.dataset.section);});
 document.getElementById("sidebarToggle").addEventListener("click",()=>{if(window.matchMedia("(max-width: 720px)").matches)app.classList.toggle("mobile-nav-open");else app.classList.toggle("sidebar-collapsed");});
 document.getElementById("sectionSearch").addEventListener("input",event=>{const query=event.target.value.trim().toLocaleLowerCase();if(!query)return;const match=Object.entries(sections).find(([key,value])=>(value.title+" "+key).toLocaleLowerCase().includes(query));if(match)navigate(match[0]);});
