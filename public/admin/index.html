@@ -139,8 +139,11 @@ async function loadCatalog(){
 let streamHealthResults=[],streamHealthVisibleCount=100,streamHealthReport=null;
 function publishDashboardSummary(archivedCount){
  if(window.parent===window)return;
- const idx=catalogIndex||{},ready=idx.countries||{},missing=idx.countries_without_streams||{},categories=idx.categories||{},missingCategories=idx.categories_without_streams||{};
- const sum=values=>Object.values(values).reduce((total,value)=>total+Number(value||0),0);
+ const active=catalog.filter(channel=>!channel.is_archived);
+ const withStreams=active.filter(channel=>urlsOf(channel).length>0);
+ const countries=new Set(withStreams.map(channel=>String(channel.country||"").toLowerCase()).filter(Boolean));
+ const categories=new Set(active.flatMap(channel=>channel.categories||[]).map(String));
+ const streamLinks=active.reduce((total,channel)=>total+urlsOf(channel).length,0);
  const report=streamHealthReport,health=report?{
   working:Number((report.summary||{}).working||0),
   down:Number((report.summary||{}).down||0),
@@ -148,11 +151,11 @@ function publishDashboardSummary(archivedCount){
   generatedAt:report.generated_at||null
  }:null;
  window.parent.postMessage({type:"AIO_TV_DASHBOARD_SUMMARY",summary:{
-  channelsWithStreams:sum(ready),
-  channelsWithoutStreams:sum(missing),
-  countries:Object.keys(ready).length,
-  categories:new Set([...Object.keys(categories),...Object.keys(missingCategories)]).size,
-  streamLinks:Number(idx.total_streams||0),
+  channelsWithStreams:withStreams.length,
+  channelsWithoutStreams:active.length-withStreams.length,
+  countries:countries.size,
+  categories:categories.size,
+  streamLinks:streamLinks,
   archivedChannels:Number(archivedCount||0),
   health:health
  }},window.location.origin);
@@ -210,6 +213,7 @@ async function runStreamHealthCheck(){
   if(run.conclusion!=="success")throw Error("فشل الفحص أو النشر. راجع سجل GitHub Actions.");
   button.textContent="تحميل التقرير الجديد...";
   if(!await loadStreamHealth())throw Error("اكتمل الفحص والنشر، لكن تعذر تحميل التقرير الجديد.");
+  publishDashboardSummary(catalog.filter(channel=>channel.is_archived).length);
   setStatus("اكتمل الفحص الجديد ونشر التقرير بنجاح. آخر تقرير معروض الآن.");
  }catch(error){
   const message=error.message||String(error);
