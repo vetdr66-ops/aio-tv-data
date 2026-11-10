@@ -18,3 +18,8 @@
 .auth-card button{height:44px;border:0;border-radius:9px;background:#3984f7;color:white;font-weight:700;cursor:pointer}
 .auth-card button:disabled{opacity:.55;cursor:wait}
 #loginStatus{min-height:18px;color:#ffb7bf;font-size:11px;line-height:1.7}
+
+.overview-card-link{cursor:pointer;transition:border-color .18s ease,transform .18s ease}
+.overview-card-link:hover{border-color:#477fc4;transform:translateY(-2px)}
+.overview-card-link:focus-visible{outline:2px solid #78aefb;outline-offset:3px}
+.tv-summary{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);color:#a9c9f4;font-size:10px;line-height:1.9}
