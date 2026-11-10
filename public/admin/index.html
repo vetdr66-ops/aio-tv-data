@@ -133,6 +133,7 @@ async function loadCatalog(){
  $("moveCountry").innerHTML='<option value="">اختر الدولة الهدف</option>'+$("channelCountry").innerHTML;
  render();
  renderAudit();
+ publishDashboardSummary(archived.length);
  await loadStreamHealth();
  publishDashboardSummary(archived.length);
 }
