@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'scripts/**'
+      - 'sources/**'
+      - 'admin/overrides.json'
+      - 'cameras/**'
   schedule:
     - cron: "17 */12 * * *"
 
@@ -57,6 +62,22 @@ jobs:
             echo "One or more stream health checks failed."
             exit 1
           fi
+
+      - name: Refresh admin and static sections from latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: latest-main
+          persist-credentials: false
+
+      - name: Preserve latest admin and radio files
+        run: |
+          for section in admin-shell admin radio; do
+            if [ -d "latest-main/public/$section" ]; then
+              mkdir -p "public/$section"
+              cp -a "latest-main/public/$section/." "public/$section/"
+            fi
+          done
 
       - uses: actions/upload-pages-artifact@v3
         with:
