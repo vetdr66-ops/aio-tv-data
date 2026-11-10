@@ -31,4 +31,29 @@ function navigate(key){if(!sections[key])return;const section=sections[key];page
 document.getElementById("mainNav").addEventListener("click",event=>{const button=event.target.closest("[data-section]");if(button)navigate(button.dataset.section);});
 document.getElementById("sidebarToggle").addEventListener("click",()=>{if(window.matchMedia("(max-width: 720px)").matches)app.classList.toggle("mobile-nav-open");else app.classList.toggle("sidebar-collapsed");});
 document.getElementById("sectionSearch").addEventListener("input",event=>{const query=event.target.value.trim().toLocaleLowerCase();if(!query)return;const match=Object.entries(sections).find(([key,value])=>(value.title+" "+key).toLocaleLowerCase().includes(query));if(match)navigate(match[0]);});
-navigate("dashboard");
+
+const WORKER="https://aio-tv-admin-api.vetdr66-1fe.workers.dev";
+const authGate=document.getElementById("authGate"),loginForm=document.getElementById("loginForm"),loginButton=document.getElementById("loginButton"),loginStatus=document.getElementById("loginStatus"),adminPassword=document.getElementById("adminPassword");
+let sessionToken=null;
+loginForm.addEventListener("submit",async event=>{
+ event.preventDefault();
+ const password=adminPassword.value;
+ if(!password)return;
+ loginButton.disabled=true;loginStatus.textContent="جارٍ التحقق من بيانات الدخول...";
+ try{
+  const response=await fetch(WORKER+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password})});
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok)throw Error(result.message||result.error||("HTTP "+response.status));
+  if(!result.access_token)throw Error("لم يُرجع الخادم رمز جلسة صالحًا.");
+  sessionToken=result.access_token;
+  adminPassword.value="";
+  authGate.hidden=true;
+  app.hidden=false;
+  loginStatus.textContent="";
+  navigate("dashboard");
+ }catch(error){
+  sessionToken=null;
+  loginStatus.textContent="تعذر تسجيل الدخول: "+(error.message||String(error));
+ }finally{loginButton.disabled=false;}
+});
+
