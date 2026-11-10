@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111c2e">
+  <title>AIO_TV | لوحة الإدارة</title>
+  <link rel="stylesheet" href="./assets/admin-shell.css">
+</head>
+<body>
+  <section class="auth-gate" id="authGate">
+    <form class="auth-card" id="loginForm">
+      <div class="auth-mark">A</div>
+      <h1>تسجيل الدخول إلى AIO_TV</h1>
+      <p>سجّل الدخول مرة واحدة للوصول إلى أقسام لوحة الإدارة.</p>
+      <label for="adminPassword">كلمة مرور الإدارة</label>
+      <input id="adminPassword" type="password" autocomplete="current-password" required>
+      <button id="loginButton" type="submit">دخول وتحميل</button>
+      <div id="loginStatus" role="status" aria-live="polite"></div>
+    </form>
+  </section>
+  <div class="app" id="app" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="AIO TV Dashboard">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy"><strong>AIO_TV</strong><small>مركز الإدارة</small></span>
+      </a>
+      <div class="nav-caption">القائمة الرئيسية</div>
+      <nav class="nav" id="mainNav" aria-label="الأقسام الرئيسية">
+        <button class="nav-item active" data-section="dashboard"><span class="nav-icon">⌂</span><span>Dashboard</span></button>
+        <button class="nav-item" data-section="tv"><span class="nav-icon">▣</span><span>TV</span></button>
+        <button class="nav-item" data-section="cameras"><span class="nav-icon">◉</span><span>Cameras</span></button>
+        <button class="nav-item" data-section="vod"><span class="nav-icon">▷</span><span>VOD</span></button>
+        <button class="nav-item" data-section="radios"><span class="nav-icon">♫</span><span>Radios</span></button>
+        <button class="nav-item" data-section="users"><span class="nav-icon">♙</span><span>المستخدمون والتسجيل</span></button>
+        <button class="nav-item" data-section="stores"><span class="nav-icon">▤</span><span>المتاجر والتقييمات</span></button>
+        <button class="nav-item" data-section="subscriptions"><span class="nav-icon">◇</span><span>الاشتراكات وإزالة الإعلانات</span></button>
+        <button class="nav-item" data-section="ads"><span class="nav-icon">▧</span><span>الإعلانات والإيرادات</span></button>
+        <button class="nav-item" data-section="campaigns"><span class="nav-icon">◈</span><span>المعلنون والحملات</span></button>
+        <button class="nav-item" data-section="billing"><span class="nav-icon">▣</span><span>الفواتير والمدفوعات</span></button>
+        <button class="nav-item" data-section="reports"><span class="nav-icon">▥</span><span>التقارير</span></button>
+        <button class="nav-item" data-section="settings"><span class="nav-icon">⚙</span><span>الإعدادات</span></button>
+        <button class="nav-item" data-section="audit"><span class="nav-icon">☷</span><span>سجل العمليات</span></button>
+        <button class="nav-item" data-section="monitoring"><span class="nav-icon">⌁</span><span>مراقبة النظام</span></button>
+      </nav>
+      <div class="sidebar-foot"><span class="status-dot"></span><span>الهيكل الأولي — دون ربط بيانات</span></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-start">
+          <button class="icon-button" id="sidebarToggle" aria-label="طي القائمة">☰</button>
+          <div class="breadcrumb"><span>AIO_TV</span><b>/</b><strong id="currentSection">Dashboard</strong></div>
+        </div>
+        <div class="topbar-end">
+          <label class="search-box"><span>⌕</span><input id="sectionSearch" type="search" placeholder="ابحث في أقسام اللوحة..." autocomplete="off"></label>
+          <button class="icon-button notification-button" type="button" title="الإشعارات" aria-label="الإشعارات">♧<i></i></button>
+          <div class="user-chip"><span class="avatar">A</span><span><strong>مدير النظام</strong><small>حساب الإدارة</small></span></div>
+        </div>
+      </header>
+
+      <section class="content" id="content">
+        <section class="page-heading">
+          <div><p class="eyebrow">نظرة عامة</p><h1 id="pageTitle">Dashboard</h1><p id="pageDescription">مركز موحد لمتابعة أقسام AIO_TV.</p></div>
+          <span class="draft-tag">هيكل أولي</span>
+        </section>
+        <div id="pageBody" class="page-body"></div>
+      </section>
+      <footer class="footer">AIO_TV Administration <span>•</span> واجهة مستقلة قيد التجهيز</footer>
+    </main>
+  </div>
+  <script src="./assets/admin-shell.js"></script>
+</body>
+</html>
