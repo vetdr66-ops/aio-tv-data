@@ -1988,6 +1988,28 @@
           "source_url": "https://www.maspero.eg/",
           "status": "discovery_only_stream_and_commercial_rights_unverified",
           "notes": "Regional service for Matrouh; city of origin: Marsa Matrouh. No direct audio stream or commercial redistribution permission verified yet."
+        },
+        {
+          "id": "EG_MIDDLE_EAST_RADIO",
+          "name": "إذاعة الشرق الأوسط",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "general",
+            "music",
+            "talk",
+            "public"
+          ],
+          "stream_url": "https://live.eu-north-1b.cf.dmcdn.net/sec2(ZSedFQzLMNjLiv-10F-Oo-dlJuC5XxIYpR6DtACW0JhUcKGaEum7QIPRNSOmsIqE9NiVpO7-mEnZh_C0Rp1iaIMNqMIncfaZKx4ftbUc_Q1L-IcdVR_q3z4skfA5EAYL7vTF-Y4Px9e9A3ZKMs0bnC2go_vVUWv0Zt6JCAxR9YfJCdFT6HJ732Z_OQ-s9oBO)/dm/3/x8n6drt/s/live-aac-64.m3u8",
+          "format": "HLS (AAC)",
+          "source": "User-provided working Dailymotion HLS stream; associated station page: Maspero",
+          "source_url": "https://www.maspero.eg/",
+          "status": "user_playback_confirmed_rights_unverified",
+          "notes": "The user confirmed this HLS URL plays directly in a browser. The URL contains a signed Dailymotion token and may expire or rotate. Playback confirmation is not evidence of permission for commercial redistribution or embedding in AIO_TV; obtain rights confirmation and a stable official stream URL before treating it as commercially cleared."
         }
       ]
     },
