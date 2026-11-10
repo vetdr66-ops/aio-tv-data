@@ -134,8 +134,29 @@ async function loadCatalog(){
  render();
  renderAudit();
  await loadStreamHealth();
+ publishDashboardSummary(archived.length);
 }
-let streamHealthResults=[],streamHealthVisibleCount=100;
+let streamHealthResults=[],streamHealthVisibleCount=100,streamHealthReport=null;
+function publishDashboardSummary(archivedCount){
+ if(window.parent===window)return;
+ const idx=catalogIndex||{},ready=idx.countries||{},missing=idx.countries_without_streams||{},categories=idx.categories||{},missingCategories=idx.categories_without_streams||{};
+ const sum=values=>Object.values(values).reduce((total,value)=>total+Number(value||0),0);
+ const report=streamHealthReport,health=report?{
+  working:Number((report.summary||{}).working||0),
+  down:Number((report.summary||{}).down||0),
+  unknown:Number((report.summary||{}).unknown||0),
+  generatedAt:report.generated_at||null
+ }:null;
+ window.parent.postMessage({type:"AIO_TV_DASHBOARD_SUMMARY",summary:{
+  channelsWithStreams:sum(ready),
+  channelsWithoutStreams:sum(missing),
+  countries:Object.keys(ready).length,
+  categories:new Set([...Object.keys(categories),...Object.keys(missingCategories)]).size,
+  streamLinks:Number(idx.total_streams||0),
+  archivedChannels:Number(archivedCount||0),
+  health:health
+ }},window.location.origin);
+}
 function renderStreamHealthRows(){
  const rows=$("streamHealthRows"),filter=$("streamHealthFilter").value;
  const results=streamHealthResults.filter(item=>filter==="all"||item.status===filter);
@@ -153,12 +174,14 @@ async function loadStreamHealth(){
   const response=await fetch(PAGES+"data/stream-health.json?v="+Date.now(),{cache:"no-store"});
   if(!response.ok)throw Error("لا يوجد تقرير منشور بعد");
   const report=await response.json(),counts=report.summary||{};
+  streamHealthReport=report;
   summary.textContent="آخر فحص: "+new Date(report.generated_at).toLocaleString("ar-EG")+" — تم فحص "+Number(report.checked_count||0)+" رابطًا: يعمل مبدئيًا "+Number(counts.working||0)+"، متوقف "+Number(counts.down||0)+"، تعذر التحقق "+Number(counts.unknown||0)+".";
   streamHealthResults=report.results||[];
   streamHealthVisibleCount=100;
   renderStreamHealthRows();
   return true;
  }catch(error){
+  streamHealthReport=null;
   summary.textContent="لم يتوفر تقرير فحص منشور بعد. "+error.message;
   streamHealthResults=[];
   streamHealthVisibleCount=100;
