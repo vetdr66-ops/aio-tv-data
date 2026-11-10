@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - 'scripts/**'
+      - '!scripts/build_radio.py'
       - 'sources/**'
       - 'cameras/**'
   schedule:
@@ -77,6 +78,9 @@ jobs:
               cp -a "latest-main/public/$section/." "public/$section/"
             fi
           done
+
+      - name: Build managed radio catalogs
+        run: python scripts/build_radio.py
 
       - uses: actions/upload-pages-artifact@v3
         with:
