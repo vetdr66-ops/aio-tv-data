@@ -8,7 +8,18 @@
   <link rel="stylesheet" href="./assets/admin-shell.css">
 </head>
 <body>
-  <div class="app" id="app">
+  <section class="auth-gate" id="authGate">
+    <form class="auth-card" id="loginForm">
+      <div class="auth-mark">A</div>
+      <h1>تسجيل الدخول إلى AIO_TV</h1>
+      <p>سجّل الدخول مرة واحدة للوصول إلى أقسام لوحة الإدارة.</p>
+      <label for="adminPassword">كلمة مرور الإدارة</label>
+      <input id="adminPassword" type="password" autocomplete="current-password" required>
+      <button id="loginButton" type="submit">دخول وتحميل</button>
+      <div id="loginStatus" role="status" aria-live="polite"></div>
+    </form>
+  </section>
+  <div class="app" id="app" hidden>
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#dashboard" aria-label="AIO TV Dashboard">
         <span class="brand-mark">A</span>
