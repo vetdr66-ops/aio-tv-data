@@ -61,13 +61,20 @@ function navigate(key){
   tvFrameWrap.hidden=true;
   pageBody.hidden=false;
   pageBody.innerHTML=sectionMarkup(key);
-  if(key==="dashboard")renderDashboardTvSummary();
+  if(key==="dashboard"){
+   renderDashboardTvSummary();
+   requestTvDashboardSummary();
+  }
  }
  document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.section===key));
  document.title="AIO_TV | "+section.title;
  app.classList.remove("mobile-nav-open");
 }
 let tvDashboardSummary=null;
+function requestTvDashboardSummary(){
+ const frame=tvFrameWrap.querySelector(".tv-frame");
+ if(frame)frame.contentWindow.postMessage({type:"AIO_TV_REQUEST_DASHBOARD_SUMMARY"},window.location.origin);
+}
 function renderDashboardTvSummary(){
  const target=document.getElementById("tvDashboardSummary");
  if(!target)return;
