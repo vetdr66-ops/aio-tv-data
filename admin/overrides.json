@@ -2010,6 +2010,28 @@
           "source_url": "https://www.maspero.eg/",
           "status": "user_playback_confirmed_rights_unverified",
           "notes": "The user confirmed this HLS URL plays directly in a browser. The URL contains a signed Dailymotion token and may expire or rotate. Playback confirmation is not evidence of permission for commercial redistribution or embedding in AIO_TV; obtain rights confirmation and a stable official stream URL before treating it as commercially cleared."
+        },
+        {
+          "id": "EG_SAWT_AL_ARAB",
+          "name": "إذاعة صوت العرب",
+          "country": "Egypt",
+          "country_code": "EG",
+          "region": "Africa",
+          "languages": [
+            "Arabic"
+          ],
+          "categories": [
+            "general",
+            "news",
+            "talk",
+            "public"
+          ],
+          "stream_url": "https://live.eu-north-1a.cf.dmcdn.net/sec2(R-JoIRZbC4tWuBmkA1Favrdet_Ub6_vWm0Z2GmKqVmVkZgmtoeVXg4lO5l4Kbvv1kWjlXEbjveI3trU5E6WnVx1NUugpXHMWc_fhbsrW4PWlnN7fQp1NMZhwHok5XspGnIdjoWneGIvqmpYIPQhobtiGwKKVVEzEzR1kNFgFeldTR7hZJyfbekQ_yzcrh2Qy)/dm/3/x8n6dqq/s/live-aac-64.m3u8",
+          "format": "HLS (AAC)",
+          "source": "User-provided Dailymotion HLS stream; associated station page: Maspero",
+          "source_url": "https://www.maspero.eg/",
+          "status": "user_provided_stream_rights_unverified",
+          "notes": "The user supplied this direct HLS URL for Sawt Al Arab. The URL contains a signed Dailymotion token and may expire or rotate. It has not been independently tested in this session. A working stream does not establish permission for commercial redistribution or embedding in AIO_TV; obtain rights confirmation and a stable official stream URL before treating it as commercially cleared."
         }
       ]
     },
