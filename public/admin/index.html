@@ -290,6 +290,13 @@ $("streamHealthFilter").onchange=()=>{streamHealthVisibleCount=100;renderStreamH
 $("streamHealthMore").onclick=()=>{streamHealthVisibleCount+=100;renderStreamHealthRows()};
 $("connect").onclick=connect;$("reload").onclick=connect;$("moveSelected").onclick=moveSelectedToCountry;$("add").onclick=add;$("clear").onclick=clearForm;$("cancel").onclick=clearForm;$("save").onclick=saveChannel;$("archive").onclick=()=>selected&&archive(selected.id);$("restore").onclick=()=>selected&&restore(selected.id);$("search").oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(render,250)};$("countryFilter").onchange=render;$("stateFilter").onchange=render;
 
+window.addEventListener("message",event=>{
+ if(event.origin!==window.location.origin||event.source!==window.parent)return;
+ const data=event.data||{};
+ if(data.type==="AIO_TV_REQUEST_DASHBOARD_SUMMARY"){
+  publishDashboardSummary(catalog.filter(channel=>channel.is_archived).length);
+ }
+});
 window.addEventListener("message",async event=>{
  if(event.origin!==window.location.origin||event.source!==window.parent)return;
  const data=event.data||{};
