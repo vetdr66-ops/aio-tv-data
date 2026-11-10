@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-09T21:37:31.108Z",
+  "updated_at": "2026-11-10T20:01:44.245Z",
   "channels": {
     "AlAlamAlYawm.sa": {
       "display_name": "Mekameleen",
@@ -273,6 +273,9 @@
       "access_status": "encrypted"
     },
     "AlShallalTV.ae": {
+      "country": "eg"
+    },
+    "13MaxTelevision.ar": {
       "country": "eg"
     }
   },
@@ -784,6 +787,12 @@
       "channel_id": "admin.",
       "action": "move_channel",
       "changed_at": "2026-11-09T21:37:31.108Z",
+      "new_country": "eg"
+    },
+    {
+      "channel_id": "13MaxTelevision.ar",
+      "action": "move_channel",
+      "changed_at": "2026-11-10T20:01:44.245Z",
       "new_country": "eg"
     }
   ],
