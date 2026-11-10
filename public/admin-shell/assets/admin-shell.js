@@ -19,14 +19,14 @@ const app=document.getElementById("app"),pageTitle=document.getElementById("page
 function dashboardMarkup(){return `
   <div class="section-grid">
     <article class="overview-card overview-card-link" data-open-section="tv" role="button" tabindex="0" aria-label="فتح قسم البث التلفزيوني TV"><div class="card-icon">▣</div><strong>البث التلفزيوني TV</strong><small>القنوات والدول والتصنيفات وفحص البث.</small><div class="tv-summary" id="tvDashboardSummary">افتح قسم TV لتحميل بياناته الفعلية.</div></article>
-    <article class="overview-card"><div class="card-icon">◉</div><strong>الكاميرات Cameras</strong><small>مصادر الكاميرات ومتابعة حالة التشغيل.</small></article>
+    <article class="overview-card overview-card-link" data-open-section="cameras" role="button" tabindex="0" aria-label="فتح قسم الكاميرات Cameras"><div class="card-icon">◉</div><strong>الكاميرات Cameras</strong><small>الفيديو المباشر والصور الثابتة ومصادر API.</small><div class="camera-summary" id="cameraDashboardSummary">جارٍ تحميل بيانات الكاميرات...</div></article>
     <article class="overview-card"><div class="card-icon">▷</div><strong>مكتبة VOD</strong><small>الأفلام والمسلسلات والمواسم والحلقات.</small></article>
     <article class="overview-card"><div class="card-icon">♫</div><strong>الإذاعات Radios</strong><small>الإذاعات العربية والعالمية وإدارتها.</small></article>
     <article class="overview-card"><div class="card-icon">♙</div><strong>المستخدمون</strong><small>الحسابات والتسجيل والصلاحيات.</small></article>
     <article class="overview-card"><div class="card-icon">▥</div><strong>التقارير ومراقبة النظام</strong><small>مؤشرات الأداء وسجل العمليات وصحة الخدمات.</small></article>
   </div>
   <section class="panel"><h2>حالة تجهيز اللوحة</h2><p>يتم ربط الأقسام تدريجيًا. لا تُعرض إحصائيات إلا بعد تحميل بيانات القسم الفعلية والتحقق منها.</p></section>`;}
-function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
+function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();if(key==="cameras")return `<section class="panel camera-panel"><h2>ملخص الكاميرات ومصادر البيانات</h2><p id="cameraSectionSummary">جارٍ تحميل بيانات الكاميرات...</p><div class="camera-stats"><div><strong id="cameraVideoCount">—</strong><span>فيديو مباشر HLS / MJPEG / MP4</span></div><div><strong id="cameraSnapshotCount">—</strong><span>صور ثابتة JPEG / PNG</span></div><div><strong id="cameraCountryCount">—</strong><span>الدول</span></div><div><strong id="cameraActiveSources">—</strong><span>مصادر API نشطة</span></div><div><strong id="cameraPendingSources">—</strong><span>مصادر API معلّقة</span></div></div><div class="camera-health" id="cameraHealthSummary">تقرير فحص الكاميرات غير متاح حاليًا.</div><p class="camera-note">الأعداد أعلاه من كتالوج الكاميرات. الصور الثابتة ليست بث فيديو، والمصادر المعلّقة لا تُعد مصادر نشطة. هذا القسم للعرض فقط ولا يغيّر الكتالوج أو روابط الكاميرات أو آلية الفحص.</p></section>`;return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
 
 const tvFrameWrap=document.getElementById("tvFrameWrap");
 let tvFrameSessionSent=false;
@@ -65,12 +65,60 @@ function navigate(key){
    renderDashboardTvSummary();
    requestTvDashboardSummary();
   }
+  if(key==="dashboard"||key==="cameras"){
+   renderCameraSummary();
+   loadCameraDashboardData();
+  }
  }
  document.querySelectorAll(".nav-item").forEach(button=>button.classList.toggle("active",button.dataset.section===key));
  document.title="AIO_TV | "+section.title;
  app.classList.remove("mobile-nav-open");
 }
 let tvDashboardSummary=null;
+let cameraCatalogSummary=null,cameraHealthSummary=null,cameraLoadPromise=null,cameraLoadError="";
+function cameraHealthText(){
+ if(!cameraHealthSummary)return "تقرير فحص الكاميرات غير متاح حاليًا.";
+ const s=cameraHealthSummary.summary||{};
+ const date=cameraHealthSummary.generated_at?new Date(cameraHealthSummary.generated_at).toLocaleString("ar-EG"):"غير محدد";
+ return "آخر فحص: "+date+" — تم فحص "+Number(cameraHealthSummary.checked_count||0)+" كاميرا فيديو: يعمل "+Number(s.working||0)+" — متوقف "+Number(s.down||0)+" — تعذر التحقق "+Number(s.unknown||0)+".";
+}
+function cameraCatalogText(){
+ if(!cameraCatalogSummary)return cameraLoadError||"جارٍ تحميل بيانات الكاميرات...";
+ const types=cameraCatalogSummary.camera_types||{},api=cameraCatalogSummary.api_source_catalog||{};
+ return "فيديو مباشر: "+Number((types.video||{}).count||0)+" • صور ثابتة: "+Number((types.snapshots||{}).count||0)+" • الدول: "+Number(cameraCatalogSummary.country_count||0)+" • مصادر API نشطة: "+Number(api.active_source_count||0)+" • معلّقة: "+Number(api.pending_source_count||0);
+}
+function renderCameraSummary(){
+ const dashboard=document.getElementById("cameraDashboardSummary");
+ if(dashboard)dashboard.textContent=cameraCatalogText()+" • "+cameraHealthText();
+ const section=document.getElementById("cameraSectionSummary");
+ if(section)section.textContent=cameraCatalogText();
+ const health=document.getElementById("cameraHealthSummary");
+ if(health)health.textContent=cameraHealthText();
+ if(cameraCatalogSummary){
+  const types=cameraCatalogSummary.camera_types||{},api=cameraCatalogSummary.api_source_catalog||{};
+  const values={cameraVideoCount:(types.video||{}).count,cameraSnapshotCount:(types.snapshots||{}).count,cameraCountryCount:cameraCatalogSummary.country_count,cameraActiveSources:api.active_source_count,cameraPendingSources:api.pending_source_count};
+  Object.entries(values).forEach(([id,value])=>{const node=document.getElementById(id);if(node)node.textContent=Number(value||0).toLocaleString("en-US");});
+ }
+}
+async function loadCameraDashboardData(){
+ if(cameraLoadPromise)return cameraLoadPromise;
+ cameraLoadPromise=(async()=>{
+  try{
+   const base=new URL("../cameras/",window.location.href);
+   const catalogResponse=await fetch(new URL("catalog.json",base),{cache:"no-store"});
+   if(!catalogResponse.ok)throw Error("تعذر تحميل كتالوج الكاميرات (HTTP "+catalogResponse.status+")");
+   cameraCatalogSummary=await catalogResponse.json();
+   cameraLoadError="";
+   try{
+    const healthResponse=await fetch(new URL("health-report.json",base),{cache:"no-store"});
+    if(healthResponse.ok)cameraHealthSummary=await healthResponse.json();
+    else cameraHealthSummary=null;
+   }catch(_){cameraHealthSummary=null;}
+  }catch(error){cameraLoadError="تعذر تحميل بيانات الكاميرات: "+(error.message||String(error));}
+  renderCameraSummary();
+ })();
+ return cameraLoadPromise;
+}
 function requestTvDashboardSummary(){
  const frame=tvFrameWrap.querySelector(".tv-frame");
  if(frame)frame.contentWindow.postMessage({type:"AIO_TV_REQUEST_DASHBOARD_SUMMARY"},window.location.origin);
