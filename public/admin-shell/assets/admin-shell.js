@@ -26,7 +26,7 @@ function dashboardMarkup(){return `
     <article class="overview-card"><div class="card-icon">▥</div><strong>التقارير ومراقبة النظام</strong><small>مؤشرات الأداء وسجل العمليات وصحة الخدمات.</small></article>
   </div>
   <section class="panel"><h2>حالة تجهيز اللوحة</h2><p>يتم ربط الأقسام تدريجيًا. لا تُعرض إحصائيات إلا بعد تحميل بيانات القسم الفعلية والتحقق منها.</p></section>`;}
-function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();if(key==="radios")return radioMarkup();if(key==="cameras")return `<section class="panel camera-panel"><h2>ملخص الكاميرات ومصادر البيانات</h2><p id="cameraSectionSummary">جارٍ تحميل بيانات الكاميرات...</p><div class="camera-stats"><div><strong id="cameraVideoCount">—</strong><span>فيديو مباشر HLS / MJPEG / MP4</span></div><div><strong id="cameraSnapshotCount">—</strong><span>صور ثابتة JPEG / PNG</span></div><div><strong id="cameraCountryCount">—</strong><span>الدول</span></div><div><strong id="cameraActiveSources">—</strong><span>مصادر API نشطة</span></div><div><strong id="cameraPendingSources">—</strong><span>مصادر API معلّقة</span></div></div><div class="camera-health" id="cameraHealthSummary">تقرير فحص الكاميرات غير متاح حاليًا.</div><p class="camera-note">الأعداد أعلاه من كتالوج الكاميرات. الصور الثابتة ليست بث فيديو، والمصادر المعلّقة لا تُعد مصادر نشطة. هذا القسم للعرض فقط ولا يغيّر الكتالوج أو روابط الكاميرات أو آلية الفحص.</p></section>`;return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
+function sectionMarkup(key){const section=sections[key];if(key==="dashboard")return dashboardMarkup();if(key==="subscriptions")return subscriptionMarkup();if(key==="radios")return radioMarkup();if(key==="cameras")return `<section class="panel camera-panel"><h2>ملخص الكاميرات ومصادر البيانات</h2><p id="cameraSectionSummary">جارٍ تحميل بيانات الكاميرات...</p><div class="camera-stats"><div><strong id="cameraVideoCount">—</strong><span>فيديو مباشر HLS / MJPEG / MP4</span></div><div><strong id="cameraSnapshotCount">—</strong><span>صور ثابتة JPEG / PNG</span></div><div><strong id="cameraCountryCount">—</strong><span>الدول</span></div><div><strong id="cameraActiveSources">—</strong><span>مصادر API نشطة</span></div><div><strong id="cameraPendingSources">—</strong><span>مصادر API معلّقة</span></div></div><div class="camera-health" id="cameraHealthSummary">تقرير فحص الكاميرات غير متاح حاليًا.</div><p class="camera-note">الأعداد أعلاه من كتالوج الكاميرات. الصور الثابتة ليست بث فيديو، والمصادر المعلّقة لا تُعد مصادر نشطة. هذا القسم للعرض فقط ولا يغيّر الكتالوج أو روابط الكاميرات أو آلية الفحص.</p></section>`;return `<div class="placeholder"><div class="placeholder-icon">${section.icon}</div><h2>${section.title}</h2><p>${section.description}</p><span class="note">هذا القسم ضمن خطة التنفيذ — لم يتم ربط وظائفه أو بياناته بعد.</span></div>`;}
 
 const tvFrameWrap=document.getElementById("tvFrameWrap");
 let tvFrameSessionSent=false;
@@ -71,6 +71,7 @@ function navigate(key){
    renderCameraSummary();
    loadCameraDashboardData();
   }
+  if(key==="subscriptions")bindSubscriptionControls();
   if(key==="radios"){
    bindRadioControls();
    renderRadioDashboardSummary();
@@ -247,6 +248,86 @@ function bindRadioControls(){
  document.getElementById("radioAddButton")?.addEventListener("click",addRadio);
  document.getElementById("radioSaveButton")?.addEventListener("click",saveRadio);
  document.getElementById("radioCancelButton")?.addEventListener("click",resetRadioEditor);
+}
+
+
+let subscriptionData=null,subscriptionSha=null,subscriptionPlans=[],subscriptionEditing=null,subscriptionLoading=false;
+function subscriptionMarkup(){return \`
+<section class="panel subscription-panel">
+ <div class="radio-toolbar"><div><h2>باقات الاشتراك</h2><p>إعداد الباقات وميزة إزالة الإعلانات. الحفظ يتم في ملف إعدادات الإدارة عبر خدمة GitHub الحالية.</p></div><button class="radio-primary" id="subAdd">إضافة باقة</button></div>
+ <div class="radio-stats"><div><strong id="subCount">—</strong><span>الباقات</span></div><div><strong id="subEnabled">—</strong><span>باقات مفعّلة</span></div><div><strong id="subAdFree">—</strong><span>باقات إزالة الإعلانات</span></div></div>
+ <div class="radio-table-wrap"><table class="radio-table"><thead><tr><th>الباقة</th><th>السعر</th><th>المدة</th><th>إزالة الإعلانات</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="subRows"><tr><td colspan="6">جارٍ تحميل الإعدادات...</td></tr></tbody></table></div>
+ <p class="radio-status" id="subStatus" role="status">تحميل إعدادات الاشتراك...</p>
+</section>
+<section class="panel radio-editor" id="subEditor" hidden>
+ <div class="radio-toolbar"><h2 id="subEditorTitle">إضافة باقة</h2></div>
+ <div class="radio-form-grid">
+ <label>معرّف الباقة<input id="subId" placeholder="monthly" autocomplete="off"></label>
+ <label>اسم الباقة<input id="subName" placeholder="اشتراك شهري"></label>
+ <label>السعر<input id="subPrice" type="number" min="0" step="0.01" value="0"></label>
+ <label>العملة<input id="subCurrency" maxlength="3" value="EGP"></label>
+ <label>المدة بالأيام<input id="subDays" type="number" min="0" step="1" value="30"></label>
+ <label>الحالة<select id="subActive"><option value="true">مفعّلة</option><option value="false">متوقفة</option></select></label>
+ <label class="radio-wide"><span><input id="subRemoveAds" type="checkbox"> إزالة الإعلانات للمشترك في هذه الباقة</span></label>
+ </div>
+ <div class="radio-editor-actions"><button class="radio-primary" id="subSave">حفظ الباقة</button><button class="radio-secondary" id="subCancel">إلغاء</button></div>
+</section>\`; }
+function setSubStatus(s){const e=document.getElementById("subStatus");if(e)e.textContent=s}
+async function loadSubscriptionPlans(){
+ try{
+  setSubStatus("جارٍ تحميل إعدادات الباقات...");
+  const r=await fetch(WORKER+"/github/overrides",{headers:{Accept:"application/json",Authorization:"Bearer "+sessionToken},cache:"no-store"});
+  const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.message||d.error||("HTTP "+r.status));
+  subscriptionSha=d.sha;subscriptionData=JSON.parse(radioDecode64(d.content));
+  if(!Array.isArray(subscriptionData.subscription_plans))subscriptionData.subscription_plans=[];
+  subscriptionPlans=subscriptionData.subscription_plans;
+  renderSubscriptionPlans();setSubStatus("تم تحميل "+subscriptionPlans.length+" باقة من إعدادات الإدارة.");
+ }catch(e){setSubStatus("تعذر تحميل الباقات: "+(e.message||String(e)));}
+}
+function renderSubscriptionPlans(){
+ const body=document.getElementById("subRows");if(!body)return;
+ const count=subscriptionPlans.length,enabled=subscriptionPlans.filter(p=>p.enabled!==false).length,adfree=subscriptionPlans.filter(p=>p.remove_ads).length;
+ [["subCount",count],["subEnabled",enabled],["subAdFree",adfree]].forEach(([id,v])=>{const n=document.getElementById(id);if(n)n.textContent=v.toLocaleString("en-US")});
+ body.innerHTML=subscriptionPlans.map(p=>'<tr><td><strong>'+radioEscape(p.name)+'</strong><small>'+radioEscape(p.id)+'</small></td><td>'+radioEscape(p.price)+' '+radioEscape(p.currency||"EGP")+'</td><td>'+radioEscape(p.duration_days===0?"بدون انتهاء":p.duration_days+" يوم")+'</td><td>'+ (p.remove_ads?"نعم":"لا")+'</td><td><span class="radio-stream-badge '+(p.enabled===false?"no-stream":"has-stream")+'">'+(p.enabled===false?"متوقفة":"مفعّلة")+'</span></td><td><div class="radio-row-actions"><button data-sub-edit="'+radioEscape(p.id)+'">تعديل</button><button class="delete" data-sub-delete="'+radioEscape(p.id)+'">حذف</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد باقات بعد. أضف أول باقة.</td></tr>';
+ body.querySelectorAll("[data-sub-edit]").forEach(b=>b.addEventListener("click",()=>editSubscription(b.dataset.subEdit)));
+ body.querySelectorAll("[data-sub-delete]").forEach(b=>b.addEventListener("click",()=>deleteSubscription(b.dataset.subDelete)));
+}
+function openSubscriptionEditor(plan=null){
+ subscriptionEditing=plan?plan.id:null;
+ const val=(id,v)=>{const n=document.getElementById(id);if(n)n.value=v};
+ val("subId",plan?.id||"");val("subName",plan?.name||"");val("subPrice",plan?.price??0);val("subCurrency",plan?.currency||"EGP");val("subDays",plan?.duration_days??30);val("subActive",String(plan?.enabled!==false));document.getElementById("subRemoveAds").checked=!!plan?.remove_ads;
+ document.getElementById("subId").disabled=!!plan;document.getElementById("subEditorTitle").textContent=plan?"تعديل الباقة":"إضافة باقة";document.getElementById("subEditor").hidden=false;document.getElementById("subEditor").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function editSubscription(id){openSubscriptionEditor(subscriptionPlans.find(p=>p.id===id)||null)}
+function closeSubscriptionEditor(){subscriptionEditing=null;document.getElementById("subEditor").hidden=true;document.getElementById("subId").disabled=false}
+async function saveSubscription(){
+ try{
+  if(!subscriptionData||!Array.isArray(subscriptionPlans))throw Error("إعدادات الباقات لم تُحمّل.");
+  const get=id=>document.getElementById(id).value.trim(),id=get("subId"),name=get("subName"),price=Number(get("subPrice")),days=Number(get("subDays")),currency=get("subCurrency").toUpperCase();
+  if(!/^[a-zA-Z0-9_-]+$/.test(id)||!name)throw Error("أدخل معرّفًا إنجليزيًا واسم الباقة.");
+  if(!Number.isFinite(price)||price<0||!Number.isInteger(days)||days<0||!/^[A-Z]{3}$/.test(currency))throw Error("تحقق من السعر والمدة ورمز العملة (3 أحرف).");
+  const p={id,name,price,currency,duration_days:days,enabled:get("subActive")==="true",remove_ads:document.getElementById("subRemoveAds").checked};
+  if(subscriptionEditing){const i=subscriptionPlans.findIndex(x=>x.id===subscriptionEditing);if(i<0)throw Error("الباقة لم تعد موجودة.");subscriptionPlans[i]=p;}
+  else{if(subscriptionPlans.some(x=>x.id===id))throw Error("معرّف الباقة موجود بالفعل.");subscriptionPlans.push(p);}
+  await persistSubscriptionPlans(subscriptionEditing?"تعديل":"إضافة",id);closeSubscriptionEditor();renderSubscriptionPlans();setSubStatus("تم حفظ إعداد الباقات في GitHub. هذا لا ينشئ أو يخصم اشتراكات المستخدمين تلقائيًا.");
+ }catch(e){setSubStatus("لم يتم الحفظ: "+(e.message||String(e)));}
+}
+async function deleteSubscription(id){
+ if(!confirm("حذف باقة "+id+" من إعدادات الإدارة؟"))return;
+ const i=subscriptionPlans.findIndex(p=>p.id===id);if(i<0)return;subscriptionPlans.splice(i,1);
+ try{await persistSubscriptionPlans("حذف",id);renderSubscriptionPlans();setSubStatus("تم حذف الباقة من إعدادات الإدارة.");}catch(e){setSubStatus("تعذر الحذف: "+(e.message||String(e)));}
+}
+async function persistSubscriptionPlans(action,id){
+ subscriptionData.subscription_plans=subscriptionPlans;subscriptionData.subscription_audit=subscriptionData.subscription_audit||[];subscriptionData.subscription_audit.push({plan_id:id,action,changed_at:new Date().toISOString()});
+ const body=JSON.stringify(subscriptionData,null,2)+"\n";
+ const r=await fetch(WORKER+"/github/overrides",{method:"PUT",headers:{Accept:"application/json","Content-Type":"application/json",Authorization:"Bearer "+sessionToken},body:JSON.stringify({message:action+" subscription plan "+id,content:radioEncode64(body),sha:subscriptionSha})});
+ const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.message||d.error||("HTTP "+r.status));subscriptionSha=d.sha;
+}
+function bindSubscriptionControls(){
+ document.getElementById("subAdd")?.addEventListener("click",()=>openSubscriptionEditor());
+ document.getElementById("subSave")?.addEventListener("click",saveSubscription);
+ document.getElementById("subCancel")?.addEventListener("click",closeSubscriptionEditor);
+ loadSubscriptionPlans();
 }
 
 function requestTvDashboardSummary(){
