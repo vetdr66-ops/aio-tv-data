@@ -213,6 +213,8 @@ function addRadio(){
 function radioList(value){return value.split(",").map(s=>s.trim()).filter(Boolean)}
 async function saveRadio(){
  try{
+  const catalogBefore=radioCatalogs?JSON.stringify(radioCatalogs):null;
+  const overridesBefore=radioOverrides?JSON.stringify(radioOverrides):null;
   if(!radioCatalogs||!radioOverrides)throw Error("لم يتم تحميل كتالوج الإذاعات.");
   const value=id=>document.getElementById(id).value.trim(),id=value("radioId"),name=value("radioName"),country=value("radioCountry"),countryCode=value("radioCountryCode").toUpperCase(),streamUrl=value("radioStreamUrl"),sourceUrl=value("radioSourceUrl");
   if(!id||!name||!country||!countryCode)throw Error("أدخل المعرّف والاسم والدولة ورمز الدولة.");
@@ -222,8 +224,14 @@ async function saveRadio(){
   if(!existing&&stations.some(s=>s.id===id))throw Error("هذا المعرّف موجود بالفعل.");
   const station={id,name,country,country_code:countryCode,region:value("radioRegion"),languages:radioList(value("radioLanguages")),categories:radioList(value("radioCategories")),stream_url:streamUrl,format:value("radioFormat"),source:value("radioSource"),source_url:sourceUrl,status:value("radioStationStatus")||"listed_not_independently_tested"};
   if(existing)Object.assign(existing,station);else stations.push(station);
-  await saveRadioCatalogs(existing?"edit":"add",id);resetRadioEditor();renderRadioTable();renderRadioDashboardSummary();setRadioStatus("تم حفظ الإذاعة في GitHub. يجري نشر الكتالوج المحدّث تلقائيًا.");
- }catch(error){setRadioStatus("تعذر حفظ الإذاعة: "+(error.message||String(error)));}
+  await saveRadioCatalogs(existing?"edit":"add",id);resetRadioEditor();renderRadioTable();renderRadioDashboardSummary();setRadioStatus("تم حفظ الإذاعة في GitHub. يجري نشر الكتالوج المحدّث تلقائيًا.");alert("تم حفظ رابط الإذاعة بنجاح في GitHub.");
+ }catch(error){
+  if(catalogBefore)radioCatalogs=JSON.parse(catalogBefore);
+  if(overridesBefore)radioOverrides=JSON.parse(overridesBefore);
+  renderRadioTable();renderRadioDashboardSummary();
+  const message="فشل حفظ الإذاعة في GitHub: "+(error.message||String(error));
+  setRadioStatus(message);alert(message);
+ }
 }
 async function deleteRadio(id){
  const stations=radioCatalog().stations,index=stations.findIndex(s=>s.id===id);if(index<0)return;const station=stations[index];
